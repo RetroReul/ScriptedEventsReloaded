@@ -35,9 +35,14 @@ public class Script
         get;
         init
         {
-            if (value is RemoteAdminExecutor { Sender: { } sender } && Player.TryGet(sender, out var player))
+            switch (value)
             {
-                AddVariable(new PlayerVariable("sender", new([player])));
+                case RemoteAdminExecutor { Sender: { } sender } when Player.TryGet(sender, out var player):
+                    AddVariable(new PlayerVariable("sender", new([player])));
+                    break;
+                case PlayerConsoleExecutor { Sender: { } hub }:
+                    AddVariable(new PlayerVariable("sender", new([Player.Get(hub)])));
+                    break;
             }
 
             field = value;
