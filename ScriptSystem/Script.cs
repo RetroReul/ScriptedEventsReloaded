@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using LabApi.Features.Console;
@@ -8,6 +9,7 @@ using MEC;
 using SER.ContextSystem;
 using SER.ContextSystem.BaseContexts;
 using SER.ContextSystem.Extensions;
+using SER.FlagSystem;
 using SER.Helpers;
 using SER.Helpers.Exceptions;
 using SER.Helpers.Extensions;
@@ -57,7 +59,10 @@ public class Script
     public bool IsRunning => RunningScripts.Contains(this);
 
     public static readonly List<Script> RunningScripts = [];
+    
     private readonly HashSet<Variable> _variables = [];
+    public ReadOnlyCollection<Variable> Variables => new(_variables.ToList());
+    
     private CoroutineHandle _scriptCoroutine;
     private bool? _isEventAllowed;
 
@@ -162,6 +167,12 @@ public class Script
     {
         if (string.IsNullOrWhiteSpace(Content))
         {
+            return null;
+        }
+        
+        if (ScriptFlagHandler.DoFlagsApproveExecution(this).HasErrored(out var error))
+        {
+            Executor.Error(error, this);
             return null;
         }
         
