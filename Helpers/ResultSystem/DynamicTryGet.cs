@@ -5,7 +5,7 @@ namespace SER.Helpers.ResultSystem;
 
 public abstract class DynamicTryGet
 {
-    private bool _isStaticSet = false;
+    private readonly bool _isStaticSet = false;
     public bool IsStatic
     {
         get
@@ -13,7 +13,7 @@ public abstract class DynamicTryGet
             if (!_isStaticSet) throw new AndrzejFuckedUpException("IsStatic cannot be accessed before it is set.");
             return field;
         }
-        set
+        protected init
         {
             _isStaticSet = true;
             field = value;
