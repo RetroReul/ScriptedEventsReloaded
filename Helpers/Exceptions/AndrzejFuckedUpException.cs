@@ -2,13 +2,13 @@
 
 namespace SER.Helpers.Exceptions;
 
-public class AndrzejFuckedUpException : SystemException
+public class AndrzejFuckedUpException : DeveloperFuckedUpException
 {
-    public AndrzejFuckedUpException()
+    public AndrzejFuckedUpException() : base("andrzej")
     {
     }
     
-    public AndrzejFuckedUpException(string msg) : base(msg)
+    public AndrzejFuckedUpException(string msg) : base("andrzej", msg)
     {
     }
 }

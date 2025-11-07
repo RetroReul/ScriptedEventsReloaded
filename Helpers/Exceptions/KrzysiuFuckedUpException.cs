@@ -1,13 +1,13 @@
 ﻿using System;
 
 namespace SER.Helpers.Exceptions;
-public class KrzysiuFuckedUpException : SystemException
+public class KrzysiuFuckedUpException : DeveloperFuckedUpException
 {
-    public KrzysiuFuckedUpException()
+    public KrzysiuFuckedUpException() : base("krzysiu")
     {
     }
 
-    public KrzysiuFuckedUpException(string msg) : base(msg)
+    public KrzysiuFuckedUpException(string msg) : base("krzysiu", msg)
     {
     }
 }
