@@ -85,6 +85,7 @@
       </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Helpers\Exceptions\DeveloperFuckedUpException.cs" />
         <Compile Include="Helpers\Exceptions\KrzysiuFuckedUpException.cs" />
         <Compile Include="MethodSystem\Methods\ItemMethods\FirearmItemInfoMethod.cs" />
         <Compile Include="MethodSystem\Methods\ItemMethods\UsableItemInfoMethod.cs" />
@@ -303,7 +304,6 @@
         <Compile Include="MethodSystem\Methods\TextMethods\ReplaceTextMethod.cs" />
         <Compile Include="MethodSystem\Methods\TimeMethods\ToDurationMethod.cs" />
         <Compile Include="MethodSystem\Methods\TimeMethods\TimeInfoMethod.cs" />
-        <Compile Include="MethodSystem\Methods\WarheadMethods\DetonateWarheadMethod.cs" />
         <Compile Include="MethodSystem\Methods\WaitingMethods\WaitMethod.cs" />
         <Compile Include="MethodSystem\Methods\WaitingMethods\WaitUntilMethod.cs" />
         <Compile Include="Helpers\ResultSystem\Result.cs" />
