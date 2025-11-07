@@ -4,11 +4,11 @@ using SER.Helpers.Exceptions;
 
 namespace SER.Helpers.ResultSystem;
 
-public class TryGet<TValue>(TValue? value, string? errorMsg)
+public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
 {
-    [Pure] public virtual TValue? Value => value;
-    [Pure] public virtual string? ErrorMsg => errorMsg;
-    protected bool WasSuccess => string.IsNullOrEmpty(errorMsg);
+    [Pure] public TValue? Value => value;
+    [Pure] public string? ErrorMsg => errorMsg;
+    private bool WasSuccess => string.IsNullOrEmpty(errorMsg);
 
     [Pure]
     public bool HasErrored(out string error)
