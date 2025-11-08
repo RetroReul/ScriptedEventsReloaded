@@ -6,9 +6,10 @@ namespace SER.Helpers.ResultSystem;
 
 public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
 {
-    [Pure] public TValue? Value => value;
-    [Pure] public string? ErrorMsg => errorMsg;
+    public TValue? Value => value;
+    public string? ErrorMsg => errorMsg;
     private bool WasSuccess => string.IsNullOrEmpty(errorMsg);
+    public Result Result => new(WasSuccess, ErrorMsg ?? "");
 
     [Pure]
     public bool HasErrored(out string error)
