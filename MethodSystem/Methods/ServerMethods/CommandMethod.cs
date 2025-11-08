@@ -5,6 +5,7 @@ using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
 using SER.MethodSystem.MethodDescriptors;
+using Console = GameCore.Console;
 
 namespace SER.MethodSystem.Methods.ServerMethods;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using SER.Helpers.ResultSystem;
+﻿using SER.Helpers.ResultSystem;
 
 namespace SER.ArgumentSystem.Structures;
 

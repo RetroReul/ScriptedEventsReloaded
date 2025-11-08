@@ -1,5 +1,4 @@
-﻿using System;
-using SER.ArgumentSystem.Arguments;
+﻿using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers;
 using SER.Helpers.Exceptions;

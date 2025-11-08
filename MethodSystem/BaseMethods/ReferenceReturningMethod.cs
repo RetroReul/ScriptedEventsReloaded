@@ -1,5 +1,4 @@
-﻿using System;
-using SER.ValueSystem;
+﻿using SER.ValueSystem;
 
 namespace SER.MethodSystem.BaseMethods;
 

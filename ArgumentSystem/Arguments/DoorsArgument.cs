@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using LabApi.Features.Enums;
 using LabApi.Features.Wrappers;
 using MapGeneration;
@@ -14,7 +13,13 @@ namespace SER.ArgumentSystem.Arguments;
 
 public class DoorsArgument(string name) : EnumHandlingArgument(name)
 {
-    public override string InputDescription => $"{nameof(DoorName)} enum, {nameof(FacilityZone)} enum, {nameof(RoomName)} enum, reference to {nameof(Door)}, reference to {nameof(Room)} or * for every door";
+    public override string InputDescription => 
+        $"{nameof(DoorName)} enum, " +
+        $"{nameof(FacilityZone)} enum, " +
+        $"{nameof(RoomName)} enum, " +
+        $"reference to {nameof(Door)}, " +
+        $"reference to {nameof(Room)} " +
+        $"or * for every door";
 
     [UsedImplicitly]
     public DynamicTryGet<Door[]> GetConvertSolution(BaseToken token)

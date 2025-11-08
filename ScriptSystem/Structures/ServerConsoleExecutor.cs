@@ -1,5 +1,4 @@
-﻿using System;
-using Log = SER.Helpers.Log;
+﻿using Log = SER.Helpers.Log;
 using Logger = LabApi.Features.Console.Logger;
 
 namespace SER.ScriptSystem.Structures;

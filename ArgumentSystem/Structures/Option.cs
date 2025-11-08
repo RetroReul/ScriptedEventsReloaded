@@ -1,5 +1,4 @@
-﻿using System;
-using SER.Helpers.Extensions;
+﻿using SER.Helpers.Extensions;
 using SER.Plugin.Commands.HelpSystem;
 
 namespace SER.ArgumentSystem.Structures;

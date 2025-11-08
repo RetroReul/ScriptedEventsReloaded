@@ -16,6 +16,6 @@ public class EnableEventMethod : SynchronousMethod
     
     public override void Execute()
     {
-        EventHandler.EnableEvent(Args.GetText("eventName"));
+        SER.EventSystem.EventHandler.EnableEvent(Args.GetText("eventName"));
     }
 }

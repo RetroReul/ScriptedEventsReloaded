@@ -1,5 +1,4 @@
-﻿using System;
-using LabApi.Features.Wrappers;
+﻿using LabApi.Features.Wrappers;
 using MapGeneration;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;

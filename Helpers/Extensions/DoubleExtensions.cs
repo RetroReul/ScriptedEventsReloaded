@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SER.Helpers.Extensions;
+﻿namespace SER.Helpers.Extensions;
 
 public static class TimeSpanExtensions
 {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using SER.ScriptSystem;
+﻿using SER.ScriptSystem;
 
 namespace SER.TokenSystem.Tokens;
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using SER.ContextSystem.BaseContexts;
 using SER.ContextSystem.Extensions;
 using SER.ContextSystem.Structures;

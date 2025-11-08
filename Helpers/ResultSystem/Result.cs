@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using SER.Helpers.Exceptions;
+﻿using SER.Helpers.Exceptions;
 
 namespace SER.Helpers.ResultSystem;
 

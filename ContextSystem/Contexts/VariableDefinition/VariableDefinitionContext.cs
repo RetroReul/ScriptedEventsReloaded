@@ -1,5 +1,4 @@
-﻿using System;
-using SER.ContextSystem.BaseContexts;
+﻿using SER.ContextSystem.BaseContexts;
 using SER.ContextSystem.Structures;
 using SER.Helpers.Exceptions;
 using SER.Helpers.Extensions;

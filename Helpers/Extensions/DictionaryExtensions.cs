@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SER.Helpers.Extensions;
+﻿namespace SER.Helpers.Extensions;
 
 public static class DictionaryExtensions
 {

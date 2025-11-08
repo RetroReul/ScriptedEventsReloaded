@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SER.Helpers;
+﻿namespace SER.Helpers;
 
 public struct MustSet<T>
 {

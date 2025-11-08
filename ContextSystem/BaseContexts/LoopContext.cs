@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SER.ContextSystem.Structures;
+﻿using SER.ContextSystem.Structures;
 
 namespace SER.ContextSystem.BaseContexts;
 

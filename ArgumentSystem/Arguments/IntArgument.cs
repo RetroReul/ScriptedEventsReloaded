@@ -32,7 +32,7 @@ public class IntArgument : Argument
             if (_minValue.HasValue && _maxValue.HasValue)
             {
                 return $"Value must be at least {_minValue} and most {_maxValue} e.g. " +
-                       $"{Random.Range(_minValue.Value, _maxValue.Value + 1)}";
+                       $"{UnityEngine.Random.Range(_minValue.Value, _maxValue.Value + 1)}";
             }
 
             if (_minValue.HasValue)

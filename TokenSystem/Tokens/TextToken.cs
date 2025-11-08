@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using SER.Helpers;
 using SER.Helpers.Exceptions;
 using SER.Helpers.Extensions;

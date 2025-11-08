@@ -1,5 +1,4 @@
-﻿using System;
-using CommandSystem;
+﻿using CommandSystem;
 
 namespace SER.Plugin.Commands;
 

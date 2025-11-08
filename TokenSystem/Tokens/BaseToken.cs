@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using SER.Helpers.Extensions;
+﻿using SER.Helpers.Extensions;
 using SER.Helpers.ResultSystem;
 using SER.ScriptSystem;
 using SER.TokenSystem.Slices;

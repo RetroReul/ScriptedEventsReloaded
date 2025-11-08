@@ -16,6 +16,6 @@ public class DisableEventMethod : SynchronousMethod
     
     public override void Execute()
     {
-        EventHandler.DisableEvent(Args.GetText("eventName"), Script.Name);
+        SER.EventSystem.EventHandler.DisableEvent(Args.GetText("eventName"), Script.Name);
     }
 }

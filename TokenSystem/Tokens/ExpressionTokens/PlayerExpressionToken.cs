@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using InventorySystem.Items;
+﻿using InventorySystem.Items;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
 using PlayerRoles.PlayableScps.Scp079;

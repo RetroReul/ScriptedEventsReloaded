@@ -1,5 +1,4 @@
-﻿using System;
-using SER.ContextSystem.Structures;
+﻿using SER.ContextSystem.Structures;
 using SER.Helpers.Extensions;
 using SER.Helpers.ResultSystem;
 using SER.ScriptSystem;

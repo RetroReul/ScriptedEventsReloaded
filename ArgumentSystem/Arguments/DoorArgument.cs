@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using LabApi.Features.Enums;
 using LabApi.Features.Wrappers;
 using MapGeneration;
@@ -29,7 +28,7 @@ public class DoorArgument(string name) : EnumHandlingArgument(name)
                     if (door is null)
                     {
                         return $"Door with name '{doorName}' does not exist.";
-                    }
+                    }   
 
                     return door;
                 },

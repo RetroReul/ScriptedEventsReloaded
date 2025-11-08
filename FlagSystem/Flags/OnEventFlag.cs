@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
-using SER.Helpers;
+﻿using JetBrains.Annotations;
 using EventHandler = SER.EventSystem.EventHandler;
 
 namespace SER.FlagSystem.Flags;

@@ -1,5 +1,4 @@
-﻿using System;
-using SER.ContextSystem.Structures;
+﻿using SER.ContextSystem.Structures;
 using SER.TokenSystem.Tokens;
 using SER.TokenSystem.Tokens.VariableTokens;
 using SER.ValueSystem;

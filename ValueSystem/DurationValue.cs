@@ -1,5 +1,4 @@
-﻿using System;
-using StringBuilder = System.Text.StringBuilder;
+﻿using StringBuilder = System.Text.StringBuilder;
 
 namespace SER.ValueSystem;
 

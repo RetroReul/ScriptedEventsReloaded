@@ -1,5 +1,4 @@
-﻿using System;
-using PlayerRoles;
+﻿using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.ArgumentSystem.Structures;

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.ResultSystem;
 using SER.ScriptSystem;

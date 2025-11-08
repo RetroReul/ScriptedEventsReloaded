@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.Helpers.ResultSystem;

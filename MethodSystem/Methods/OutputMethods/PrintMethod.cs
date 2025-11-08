@@ -1,5 +1,4 @@
-﻿using System;
-using LabApi.Features.Console;
+﻿using LabApi.Features.Console;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using SER.Helpers.Exceptions;
 
 namespace SER.Helpers.ResultSystem;

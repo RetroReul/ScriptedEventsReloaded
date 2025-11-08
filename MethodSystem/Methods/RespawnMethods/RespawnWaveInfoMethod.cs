@@ -1,5 +1,4 @@
-﻿using System;
-using LabApi.Features.Wrappers;
+﻿using LabApi.Features.Wrappers;
 using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;

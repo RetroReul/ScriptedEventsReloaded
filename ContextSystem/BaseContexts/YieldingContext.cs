@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SER.ContextSystem.BaseContexts;
+﻿namespace SER.ContextSystem.BaseContexts;
 
 public abstract class YieldingContext : Context
 {

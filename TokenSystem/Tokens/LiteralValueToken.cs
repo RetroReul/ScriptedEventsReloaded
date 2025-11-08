@@ -1,5 +1,4 @@
-﻿using System;
-using SER.Helpers.Exceptions;
+﻿using SER.Helpers.Exceptions;
 using SER.Helpers.Extensions;
 using SER.Helpers.ResultSystem;
 using SER.TokenSystem.Tokens.Interfaces;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SER.ContextSystem.BaseContexts;
+﻿using SER.ContextSystem.BaseContexts;
 using SER.ContextSystem.Extensions;
 using SER.ContextSystem.Structures;
 using SER.Helpers;

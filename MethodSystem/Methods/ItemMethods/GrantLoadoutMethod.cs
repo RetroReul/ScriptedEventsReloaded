@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using InventorySystem.Configs;
+﻿using InventorySystem.Configs;
 using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;

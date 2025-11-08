@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SER.Helpers.Exceptions;
+﻿using SER.Helpers.Exceptions;
 using SER.Helpers.ResultSystem;
 using SER.TokenSystem.Structures;
 using StringBuilder = System.Text.StringBuilder;
