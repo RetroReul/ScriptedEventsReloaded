@@ -181,7 +181,7 @@ public class HelpCommand : ICommand
             """;
     }
 
-    private static string GetKeywordHelpPage()
+    /*private static string GetKeywordHelpPage()
     {
         return
             """
@@ -212,7 +212,7 @@ public class HelpCommand : ICommand
                 .Select(k => $"{k.KeywordName} - {k.Description}")
                 .JoinStrings("\n");
 
-        /*var keywords = KeywordToken.KeywordInfo.Keys.Select(k => $"\n> {k}").JoinStrings();
+        var keywords = KeywordToken.KeywordInfo.Keys.Select(k => $"\n> {k}").JoinStrings();
 
         return
             """
@@ -238,8 +238,8 @@ public class HelpCommand : ICommand
 
             Here is a list of all keywords available in SER:
             (each of them is of course searchable using 'serhelp keywordName')
-            """ + keywords;*/
-    }
+            """ + keywords;
+    }*/
 
     private static string GetFlagHelpPage()
     {
@@ -526,7 +526,7 @@ public class HelpCommand : ICommand
                 break;
             case ReferenceReturningMethod refMethod:
                 sb.AppendLine();
-                sb.AppendLine($"This method returns a reference to {refMethod.ReturnType.Name} object, which can be saved or used directly.\n" +
+                sb.AppendLine($"This method returns a reference to {refMethod.ReturnType.GetAccurateName()} object, which can be saved or used directly.\n" +
                               $"References represent an object which cannot be fully represented in text.\n" +
                               $"If you wish to use that reference further, find methods supporting references of this type.");
                 break;
@@ -561,8 +561,10 @@ public class HelpCommand : ICommand
         sb.AppendLine("This method expects the following arguments:");
         for (var index = 0; index < method.ExpectedArguments.Length; index++)
         {
+            if (index > 0) sb.AppendLine();
+            
             var argument = method.ExpectedArguments[index];
-            var optionalArgPrefix = argument.DefaultValue is null ? " optional" : "";
+            var optionalArgPrefix = argument.DefaultValue is not null ? " optional" : "";
             sb.AppendLine($"({index + 1}){optionalArgPrefix} '{argument.Name}' argument");
 
             if (argument.Description is not null)
@@ -570,7 +572,7 @@ public class HelpCommand : ICommand
                 sb.AppendLine($" - Description: {argument.Description}");
             }
             
-            sb.AppendLine($" - Expected value: {argument.InputDescription}");
+            sb.AppendLine($" - Expected value: {argument.InputDescription.Replace("\n", "\n\t")}");
 
             if (argument.DefaultValue is {} defVal)
             {
@@ -583,8 +585,13 @@ public class HelpCommand : ICommand
                     " - This argument consumes all remaining values; this means that every value provided AFTER " +
                     "this one will ALSO count towards this argument's values.");
             }
+        }
 
+        if (method is ICanError errorMethod)
+        {
             sb.AppendLine();
+            sb.AppendLine("This method defines custom errors:");
+            sb.AppendLine(errorMethod.ErrorReasons.Select(e => $"> {e}").JoinStrings("\n"));
         }
 
         /*if (method.ExpectedArguments.All(arg => arg.AdditionalDescription is null))
