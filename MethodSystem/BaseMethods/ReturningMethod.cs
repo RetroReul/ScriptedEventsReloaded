@@ -13,9 +13,8 @@ public abstract class ReturningMethod<T> : ReturningMethod
 {
     public override Type[] ReturnTypes => [typeof(T)];
 
-    public new T? ReturnValue
+    protected new T? ReturnValue
     {
-        get => base.ReturnValue as T;
-        protected set => base.ReturnValue = value;
+        set => base.ReturnValue = value;
     }
 }
