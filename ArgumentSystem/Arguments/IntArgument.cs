@@ -54,14 +54,14 @@ public class IntArgument : Argument
     {
         if (token is NumberToken number)
         {
-            return VerifyRange(number.Value.ExactValue);
+            return VerifyRange(number.Value.Value);
         }
         return new(() => token.TryGetLiteralValue<NumberValue>().OnSuccess(VerifyRange));
     }
 
     private TryGet<int> VerifyRange(NumberValue value)
     {
-        var result = (int)value.ExactValue;
+        var result = (int)value.Value;
         if (result < _minValue)
             return $"Value {value} is lower than allowed minimum value {_minValue}.";
             

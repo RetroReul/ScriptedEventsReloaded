@@ -49,12 +49,12 @@ public class RepeatLoopContext : StatementContext, IKeywordContext
                         return error;
                     }
 
-                    if (value.ExactValue < 0)
+                    if (value.Value < 0)
                     {
                         return $"Value '{value}' cannot be negative.";
                     }
 
-                    return (uint)value.ExactValue;
+                    return (uint)value.Value;
                 };
                 return TryAddTokenRes.End();
         }

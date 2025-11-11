@@ -7,7 +7,7 @@ public abstract class LiteralValue(object value) : Value
 {
     public abstract string StringRep { get; }
     
-    public object BaseValue => value;
+    public object Value => value;
 
     public override string ToString()
     {
@@ -21,30 +21,32 @@ public abstract class LiteralValue(object value) : Value
             return tValue;
         }
         
-        return $"Value is not of type {typeof(T).FriendlyTypeName()}, but {BaseValue.FriendlyTypeName()}.";
+        return $"Value is not of type {typeof(T).FriendlyTypeName()}, but {Value.FriendlyTypeName()}.";
     }
 
     public override bool Equals(object? obj)
     {
-        var objIsCorrectValue = BaseValue.Equals(obj);
+        var objIsCorrectValue = Value.Equals(obj);
         var objIsCorrectLiteral = obj is LiteralValue other && Equals(other);
         return objIsCorrectValue || objIsCorrectLiteral;
     }
 
     protected bool Equals(LiteralValue other)
     {
-        return BaseValue == other.BaseValue;
+        return Value == other.Value;
     }
 
     public override int GetHashCode()
     {
-        return BaseValue.GetHashCode();
+        return Value.GetHashCode();
     }
+
+    public string Serialize() => Value.ToString();
 }
 
 public abstract class LiteralValue<T>(T value) : LiteralValue(value) 
     where T : notnull
 {
-    public T ExactValue => value;
+    public new T Value => value;
 }
 

@@ -78,7 +78,7 @@ public static class NumericExpressionReslover
                         return mainErr + err;
 
                     var tmp = MakeTempName();
-                    variables[tmp] = resolved.BaseValue;
+                    variables[tmp] = resolved.Value;
                     AppendRaw(tmp);
                     continue;
                 }

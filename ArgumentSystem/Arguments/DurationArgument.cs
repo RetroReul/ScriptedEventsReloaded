@@ -22,9 +22,9 @@ public class DurationArgument(string name) : Argument(name)
 
         if (valueToken.IsConstant)
         {
-            return get().OnSuccess(v => v.ExactValue);
+            return get().OnSuccess(v => v.Value);
         }
         
-        return new(() => get().OnSuccess(v => v.ExactValue));
+        return new(() => get().OnSuccess(v => v.Value));
     }
 }

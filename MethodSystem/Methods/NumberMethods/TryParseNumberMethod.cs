@@ -21,7 +21,7 @@ public class TryParseNumberMethod : ReferenceReturningMethod<ParseResult<NumberV
         var valueToParse = Args.GetAnyValue("value to parse");
         if (valueToParse is NumberValue numVal)
         {
-            ReturnValue = new(numVal.ExactValue);
+            ReturnValue = new(numVal.Value);
             return;
         }
 

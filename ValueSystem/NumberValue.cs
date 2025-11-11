@@ -9,8 +9,8 @@ public class NumberValue(decimal value) : LiteralValue<decimal>(value)
 
     public static implicit operator decimal(NumberValue value)
     {
-        return value.ExactValue;
+        return value.Value;
     }
 
-    public override string StringRep => ExactValue.ToString();
+    public override string StringRep => Value.ToString();
 }

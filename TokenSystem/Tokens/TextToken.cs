@@ -64,6 +64,6 @@ public class TextToken : LiteralValueToken<TextValue>
     public DynamicTryGet<string> GetDynamicResolver()
     {
         if (ContainsExpressions) return new(() => TryGet<string>.Success(ParsedValue()));
-        return DynamicTryGet.Success(Value.ExactValue);
+        return DynamicTryGet.Success(Value.Value);
     }
 }

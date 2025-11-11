@@ -9,8 +9,8 @@ public class BoolValue(bool value) : LiteralValue<bool>(value)
     
     public static implicit operator bool(BoolValue value)
     {
-        return value.ExactValue;
+        return value.Value;
     }
 
-    public override string StringRep => ExactValue.ToString().ToLower();
+    public override string StringRep => Value.ToString().ToLower();
 }
