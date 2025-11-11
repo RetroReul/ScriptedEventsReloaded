@@ -69,7 +69,7 @@ public class Database
         return new Database(path, db);
     }
 
-    public Result Set(string key, Value value, bool save = true)
+    public Result TrySet(string key, Value value, bool save = true)
     {
         object saveVal;
         switch (value)
