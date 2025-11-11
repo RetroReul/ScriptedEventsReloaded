@@ -55,7 +55,12 @@ public class PlayerExpressionToken : ExpressionToken
         RoleSpawnFlags,
         AuxiliaryPower,
         Emotion,
-        Experience
+        Experience,
+        MaxAuxiliaryPower,
+        SizeX,
+        SizeY,
+        SizeZ,
+        AccessTier,
     }
 
     public abstract class Info
@@ -135,6 +140,33 @@ public class PlayerExpressionToken : ExpressionToken
             else return -1;
         }, "Returns player EXP if he is SCP-079, otherwise returns -1"),
         [PlayerProperty.Emotion] = new Info<TextValue>(plr => plr.Emotion.ToString(), "Current emotion (e.g. Neutral, Chad)"),
+        [PlayerProperty.MaxAuxiliaryPower] = new Info<NumberValue>(plr =>
+        {
+            if (plr.RoleBase is Scp079Role scp)
+            {
+                if (scp.SubroutineModule.TryGetSubroutine<Scp079AuxManager>(out Scp079AuxManager man))
+                {
+                    return (decimal)man.MaxAux;
+                }
+                else return -1;
+            }
+            else return -1;
+        }, "Returns the player's Maximum Auxiliary Power if they are SCP-079, otherwise returns -1"),
+        [PlayerProperty.SizeX] = new Info<NumberValue>(plr => (decimal)plr.Scale.x, null),
+        [PlayerProperty.SizeY] = new Info<NumberValue>(plr => (decimal)plr.Scale.y, null),
+        [PlayerProperty.SizeZ] = new Info<NumberValue>(plr => (decimal)plr.Scale.z, null),
+        [PlayerProperty.AccessTier] = new Info<NumberValue>(plr =>
+        {
+            if (plr.RoleBase is Scp079Role scp)
+            {
+                if (scp.SubroutineModule.TryGetSubroutine<Scp079TierManager>(out Scp079TierManager tier))
+                {
+                    return tier.AccessTierLevel;
+                }
+                else return -1;
+            }
+            else return -1;
+        }, "Returns the player's Access Tier Level if they are SCP-079, otherwise returns -1")
     };
 
     protected override IParseResult InternalParse(BaseToken[] tokens)
