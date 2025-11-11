@@ -24,7 +24,7 @@ public class Set079AuxPowerMethod : SynchronousMethod
         {
             if (p.RoleBase is Scp079Role scp)
             {
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079AuxManager>(out Scp079AuxManager aux))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079AuxManager aux))
                 {
                     aux.CurrentAux = value;
                 }

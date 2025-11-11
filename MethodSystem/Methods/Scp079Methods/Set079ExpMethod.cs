@@ -24,7 +24,7 @@ public class Set079ExpMethod : SynchronousMethod
         {
             if (p.RoleBase is Scp079Role scp)
             {
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079TierManager>(out Scp079TierManager tier))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079TierManager tier))
                 {
                     tier.TotalExp = value;
                 }

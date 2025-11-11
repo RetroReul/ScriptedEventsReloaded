@@ -25,7 +25,7 @@ public class Set079AccessTierMethod : SynchronousMethod
             if(p.RoleBase is Scp079Role scp)
             {
                 var levelIndex = value - 1;
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079TierManager>(out Scp079TierManager tier))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079TierManager tier))
                 {
                     tier.TotalExp = levelIndex != 0 ? tier.AbsoluteThresholds[levelIndex - 1] : 0;
                 }

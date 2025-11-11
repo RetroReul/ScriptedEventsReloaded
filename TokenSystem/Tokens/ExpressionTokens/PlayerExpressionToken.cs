@@ -119,7 +119,7 @@ public class PlayerExpressionToken : ExpressionToken
         {
             if (plr.RoleBase is Scp079Role scp)
             {
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079AuxManager>(out Scp079AuxManager man))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079AuxManager man))
                 {
                     return (decimal)man.CurrentAux;
                 }
@@ -131,7 +131,7 @@ public class PlayerExpressionToken : ExpressionToken
         {
             if (plr.RoleBase is Scp079Role scp)
             {
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079TierManager>(out Scp079TierManager tier))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079TierManager tier))
                 {
                     return tier.TotalExp;
                 }
@@ -144,7 +144,7 @@ public class PlayerExpressionToken : ExpressionToken
         {
             if (plr.RoleBase is Scp079Role scp)
             {
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079AuxManager>(out Scp079AuxManager man))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079AuxManager man))
                 {
                     return (decimal)man.MaxAux;
                 }
@@ -159,7 +159,7 @@ public class PlayerExpressionToken : ExpressionToken
         {
             if (plr.RoleBase is Scp079Role scp)
             {
-                if (scp.SubroutineModule.TryGetSubroutine<Scp079TierManager>(out Scp079TierManager tier))
+                if (scp.SubroutineModule.TryGetSubroutine(out Scp079TierManager tier))
                 {
                     return tier.AccessTierLevel;
                 }
