@@ -89,12 +89,22 @@ public class Database
         return true;
     }
 
-    public TryGet<Value> Get(string key)
+    public TryGet<DatabaseValue> HasKey(string key)
     {
         if (!_db.TryGetValue(key, out var val))
         {
             return $"There is no key called '{key}' in the '{_name}' database.";
         }
+
+        return val;
+    }
+
+    public TryGet<Value> Get(string key)
+    {
+        if (HasKey(key).HasErrored(out var err, out var val))
+        {
+            return err;
+        } 
 
         if (val.Value is null)
         {
