@@ -45,7 +45,7 @@ public class IntArgument : Argument
                 return $"Value must be at most {_maxValue} e.g. {_maxValue - 42}";
             }
 
-            throw new AndrzejFuckedUpException();
+            return "Any number e.g. 2";
         }
     }
     
