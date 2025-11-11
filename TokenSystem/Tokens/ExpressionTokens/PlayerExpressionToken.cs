@@ -108,8 +108,8 @@ public class PlayerExpressionToken : ExpressionToken
         [PlayerProperty.IsGodModeEnabled] = new Info<BoolValue>(plr => plr.IsGodModeEnabled, null),
         [PlayerProperty.IsNoclipEnabled] = new Info<BoolValue>(plr => plr.IsNoclipEnabled, null),
         [PlayerProperty.Gravity] = new Info<NumberValue>(plr => -(decimal)plr.Gravity.y, null),
-        [PlayerProperty.RoleChangeReason] = new Info<TextValue>(plr => plr.RoleBase._spawnReason.ToString(), null),
-        [PlayerProperty.RoleSpawnFlags] = new Info<TextValue>(plr => plr.RoleBase._spawnFlags.ToString(), null),
+        [PlayerProperty.RoleChangeReason] = new Info<TextValue>(plr => plr.RoleBase.ServerSpawnReason.ToString(), null),
+        [PlayerProperty.RoleSpawnFlags] = new Info<TextValue>(plr => plr.RoleBase.ServerSpawnFlags.ToString(), null),
         [PlayerProperty.AuxiliaryPower] = new Info<NumberValue>(plr =>
         {
             if (plr.RoleBase is Scp079Role scp)
