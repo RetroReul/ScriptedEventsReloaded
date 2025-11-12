@@ -88,15 +88,17 @@
         <PackageReference Include="Northwood.LabAPI" Version="1.1.4" />
     </ItemGroup>
 
-
+    <!-- embedding dependencies into SER.dll -->
     <Target Name="EmbedSelectedDependencies" AfterTargets="ResolveReferences">
         <ItemGroup>
             <EmbeddedResource Include="@(ReferenceCopyLocalPaths)"
                               Condition="'%(Extension)' == '.dll' and
                                  (
-                                   '%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'AudioPlayerApi' or
                                    '%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'NCalc' or
+                                   
                                    '%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Newtonsoft.Json' or
+                                   
+                                   '%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'AudioPlayerApi' or
                                    '%(Filename)' == 'NVorbis' or
                                    '%(Filename)' == 'SharpCompress'
                                  )" />
