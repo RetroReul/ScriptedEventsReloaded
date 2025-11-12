@@ -17,7 +17,7 @@ public class Database
     
     private static readonly JsonSerializerSettings Settings = new()
     {
-        TypeNameHandling = TypeNameHandling.Arrays
+        TypeNameHandling = TypeNameHandling.Auto
     };
     
     private readonly string _path;
@@ -103,10 +103,10 @@ public class Database
         {
             return err;
         } 
-
+        
         if (val.Value is null)
         {
-            return $"Value of key '{key}' is not set.";
+            return $"Value of key '{key}' cannot be read.";
         }
 
         if (val.Type == typeof(PlayerValue).GetAccurateName())
