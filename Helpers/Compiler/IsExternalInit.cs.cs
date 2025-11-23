@@ -1,4 +1,7 @@
-﻿// I don't know why or how it works, but it works.
+﻿// this gives us the `init` keyword for properties
+// if you remove this, the code wont compile
+// i still have no clue why is this a thing
+
 // ReSharper disable once CheckNamespace
 namespace System.Runtime.CompilerServices
 {

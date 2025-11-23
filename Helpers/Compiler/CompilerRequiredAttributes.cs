@@ -1,7 +1,10 @@
-﻿// ReSharper disable once CheckNamespace
+﻿// this gives us the `required` keyword for fields
+// if you remove this, the code wont compile
+// i still have no clue why is this a thing
+
+// ReSharper disable once CheckNamespace
 namespace System.Runtime.CompilerServices
 {
-    // Required by the compiler for C# 11 'required' keyword
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public sealed class RequiredMemberAttribute : Attribute { }
 
