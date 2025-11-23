@@ -21,7 +21,7 @@ public class AddHumeMethod : SynchronousMethod
         
         players.ForEach(plr =>
         {
-            plr.HumeShield += Math.Min(plr.MaxHumeShield, plr.HumeShield + amount);
+            plr.HumeShield = Math.Min(plr.MaxHumeShield, plr.HumeShield + amount);
         });
     }
 }
