@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using SER.Helpers.Exceptions;
 
 namespace SER.Helpers.ResultSystem;
@@ -11,16 +12,16 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     public Result Result => new(WasSuccess, ErrorMsg ?? "");
 
     [Pure]
-    public bool HasErrored(out string error)
+    public bool HasErrored([NotNullWhen(true)] out string? error)
     {
-        error = ErrorMsg ?? "";
+        error = ErrorMsg;
         return !WasSuccess;
     }
 
     [Pure]
-    public bool HasErrored(out string error, out TValue val)
+    public bool HasErrored([NotNullWhen(true)] out string? error, [NotNullWhen(false)] out TValue? val)
     {
-        error = ErrorMsg ?? "";
+        error = ErrorMsg;
         val = Value!;
         return !WasSuccess;
     }
@@ -32,7 +33,7 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     }
     
     [Pure]
-    public bool WasSuccessful(out TValue val)
+    public bool WasSuccessful([NotNullWhen(true)] out TValue? val)
     {
         val = Value!;
         return WasSuccess;
@@ -79,18 +80,18 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     [Pure]
     public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TTarget> transform)
     {
-        if (HasErrored(out var error, out TValue val))
+        if (HasErrored(out var error, out var val))
         {
             return error;
         }
-
+        
         return transform(val);
     }
     
     [Pure]
     public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TryGet<TTarget>> transform)
     {
-        if (HasErrored(out var error, out TValue val))
+        if (HasErrored(out var error, out var val))
         {
             return error;
         }
