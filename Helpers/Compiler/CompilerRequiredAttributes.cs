@@ -1,6 +1,5 @@
 ﻿// this gives us the `required` keyword for fields
 // if you remove this, the code wont compile
-// i still have no clue why is this a thing
 
 // ReSharper disable once CheckNamespace
 namespace System.Runtime.CompilerServices
