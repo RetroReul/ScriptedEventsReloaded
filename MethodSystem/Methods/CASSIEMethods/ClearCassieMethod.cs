@@ -1,5 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using SER.ArgumentSystem.BaseArguments;
+﻿using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.CASSIEMethods;
@@ -12,6 +11,6 @@ public class ClearCassieMethod : SynchronousMethod
     
     public override void Execute()
     {
-        Cassie.Clear();
+        LabApi.Features.Wrappers.Cassie.Clear();
     }
 }

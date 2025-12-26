@@ -1,5 +1,4 @@
-﻿using Respawning;
-using SER.ArgumentSystem.Arguments;
+﻿using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
@@ -67,7 +66,7 @@ public class CassieMethod : SynchronousMethod
 
         if (string.IsNullOrEmpty(translation))
         {
-            RespawnEffectsController.PlayCassieAnnouncement(
+            LabApi.Features.Wrappers.Cassie.Message(
                 message, 
                 false, 
                 isNoisy
@@ -75,7 +74,7 @@ public class CassieMethod : SynchronousMethod
         }
         else
         {
-            RespawnEffectsController.PlayCassieAnnouncement(
+            LabApi.Features.Wrappers.Cassie.Message(
                 message, 
                 false, 
                 isNoisy, 

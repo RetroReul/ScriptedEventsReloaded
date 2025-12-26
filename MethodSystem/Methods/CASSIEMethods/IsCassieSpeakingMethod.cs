@@ -1,5 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using SER.ArgumentSystem.BaseArguments;
+﻿using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
@@ -13,6 +12,6 @@ public class IsCassieSpeakingMethod : ReturningMethod<BoolValue>
     
     public override void Execute()
     {
-        ReturnValue = Cassie.IsSpeaking;
+        ReturnValue = LabApi.Features.Wrappers.Cassie.IsSpeaking;
     }
 }
