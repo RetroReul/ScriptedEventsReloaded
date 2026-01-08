@@ -1,0 +1,27 @@
+﻿using LabApi.Features.Wrappers;
+using SER.Code.Helpers.Exceptions;
+using SER.Code.Helpers.Extensions;
+
+namespace SER.Code.ValueSystem;
+
+public class PlayerValue : Value
+{
+    public PlayerValue(Player plr)
+    {
+        Players = [plr];
+    }
+
+    public PlayerValue(IEnumerable<Player> players)
+    {
+        Players = players.ToArray();
+    }
+
+    public Player[] Players { get; }
+
+    public override bool EqualCondition(Value other) => other is PlayerValue otherP && Players.SequenceEqual(otherP.Players);
+    
+    public override int HashCode =>
+        Players.Select(plr => plr.UserId).GetEnumerableHashCode().HasErrored(out var error, out var val)
+        ? throw new TosoksFuckedUpException(error)
+        : val;
+}

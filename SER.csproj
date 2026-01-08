@@ -87,6 +87,9 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="Northwood.LabAPI" Version="1.1.4" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Code\" />
+    </ItemGroup>
 
     <!-- embedding dependencies into SER.dll -->
     <Target Name="EmbedSelectedDependencies" AfterTargets="ResolveReferences">
