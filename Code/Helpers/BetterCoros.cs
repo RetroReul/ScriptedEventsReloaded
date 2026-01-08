@@ -23,12 +23,13 @@ public static class BetterCoros
         {
             try
             {
-                if (!routine.MoveNext()) break;
+                if (!routine.MoveNext()) yield break;
             }
             catch (ScriptRuntimeError scrErr)
             {
                 onException?.Invoke(scrErr);
-                scr.Error(scrErr.Message!);
+                scr.Error($"SER was not able to predict this error before running the script: " +
+                          $"{scrErr.Message ?? "ERROR UNSPECIFIED"}");
                 yield break;
             }
             catch (DeveloperFuckedUpException devErr)
