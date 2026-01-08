@@ -1,15 +1,23 @@
-﻿using JetBrains.Annotations;
+﻿using InventorySystem.Items.Pickups;
+using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
+using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
+using SER.MethodSystem.MethodDescriptors;
 
 namespace SER.MethodSystem.Methods.ProjectileMethods;
 
 [UsedImplicitly]
-public class SpawnProjectileMethod : SynchronousMethod
+public class SpawnProjectileMethod : ReferenceReturningMethod<Pickup>, ICanError
 {
     public override string Description => "Spawns a live projectile at a given position.";
+
+    public string[] ErrorReasons =>
+    [
+        "Failed to spawn projectile with provided arguments."
+    ];
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -43,7 +51,7 @@ public class SpawnProjectileMethod : SynchronousMethod
         var owner = Args.GetPlayer("owner");
         var timeUntilDetonation = Args.GetFloat("time until detonation");
 
-        TimedGrenadeProjectile.SpawnActive(
+        var pickupBase = TimedGrenadeProjectile.SpawnActive(
             new(
                 positionX,
                 positionY,
@@ -52,7 +60,14 @@ public class SpawnProjectileMethod : SynchronousMethod
             projectileType,
             owner,
             timeUntilDetonation
-        );
+        )?.Base;
+
+        if (Pickup.Get(pickupBase) is not { } pickup)
+        {
+            throw new ScriptRuntimeError(ErrorReasons[0]);
+        }
+
+        ReturnValue = pickup;
     }
 
     public enum ProjectileType
