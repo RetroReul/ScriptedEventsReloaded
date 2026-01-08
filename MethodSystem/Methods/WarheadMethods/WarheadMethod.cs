@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.Helpers.Exceptions;
 
 namespace SER.MethodSystem.Methods.WarheadMethods;
 
+[UsedImplicitly]
 public class WarheadMethod : SynchronousMethod
 {
     public override string Description => "Manages alpha warhead.";

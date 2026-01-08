@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.HealthMethods;
 
+[UsedImplicitly]
 public class AddHumeMethod : SynchronousMethod
 {
     public override string Description => $"Adds hume shield to players. Do not confuse this method with {nameof(SetHumeShieldMethod)}";

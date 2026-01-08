@@ -1,10 +1,12 @@
-﻿using MEC;
+﻿using JetBrains.Annotations;
+using MEC;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.WaitingMethods;
 
+[UsedImplicitly]
 public class WaitMethod : YieldingMethod
 {
     public override string Description => "Halts execution of the script for a specified amount of time.";

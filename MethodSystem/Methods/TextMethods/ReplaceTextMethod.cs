@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.TextMethods;
 
+[UsedImplicitly]
 public class ReplaceTextMethod : ReturningMethod<TextValue>
 {
     public override string Description => "Replaces given values in a given text.";

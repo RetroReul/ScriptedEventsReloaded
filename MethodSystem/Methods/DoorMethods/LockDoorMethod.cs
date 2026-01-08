@@ -1,10 +1,12 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using JetBrains.Annotations;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.DoorMethods;
 
+[UsedImplicitly]
 public class LockDoorMethod : SynchronousMethod
 {
     public override string Description => "Locks doors.";

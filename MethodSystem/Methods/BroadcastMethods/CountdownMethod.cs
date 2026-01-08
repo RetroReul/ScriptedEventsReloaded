@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using MEC;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -7,6 +8,7 @@ using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.BroadcastMethods;
 
+[UsedImplicitly]
 public class CountdownMethod : SynchronousMethod
 {
     public static readonly Dictionary<Player, CoroutineHandle> Coroutines = new();

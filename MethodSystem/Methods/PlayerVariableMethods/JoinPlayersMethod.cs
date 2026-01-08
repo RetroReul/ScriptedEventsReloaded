@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
@@ -7,6 +8,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PlayerVariableMethods;
 
+[UsedImplicitly]
 public class JoinPlayersMethod : ReturningMethod<PlayerValue>
 {
     public override string Description =>

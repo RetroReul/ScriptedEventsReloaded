@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.MethodSystem.Structures;
@@ -7,6 +8,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.NumberMethods;
 
+[UsedImplicitly]
 public class TryParseNumberMethod : ReferenceReturningMethod<ParseResult<NumberValue>>
 {
     public override string Description => "Tries to parse a given value to a number.";

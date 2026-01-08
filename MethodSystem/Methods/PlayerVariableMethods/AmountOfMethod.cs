@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PlayerVariableMethods;
 
+[UsedImplicitly]
 public class AmountOfMethod : ReturningMethod<NumberValue>
 {
     public override string Description => "Returns the amount of players in a given player variable.";

@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
@@ -6,6 +7,7 @@ using SER.ScriptSystem;
 
 namespace SER.MethodSystem.Methods.ScriptMethods;
 
+[UsedImplicitly]
 public class IsRunningMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if given script is running";

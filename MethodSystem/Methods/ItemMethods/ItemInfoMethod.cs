@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.ArgumentSystem.Structures;
@@ -9,6 +10,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.ItemMethods;
 
+[UsedImplicitly]
 public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
 {
     public override string Description => null!;

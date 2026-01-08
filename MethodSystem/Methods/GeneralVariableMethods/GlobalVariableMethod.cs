@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
@@ -8,6 +9,7 @@ using SER.VariableSystem;
 
 namespace SER.MethodSystem.Methods.GeneralVariableMethods;
 
+[UsedImplicitly]
 public class GlobalVariableMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Makes a provided local variable into a global variable.";

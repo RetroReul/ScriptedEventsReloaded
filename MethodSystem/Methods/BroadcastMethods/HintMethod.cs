@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.BroadcastMethods;
 
+[UsedImplicitly]
 public class HintMethod : SynchronousMethod
 {
     public override string Description => "Sends a hint to players.";

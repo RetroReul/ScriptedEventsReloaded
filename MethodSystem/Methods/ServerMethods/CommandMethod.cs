@@ -1,4 +1,5 @@
-﻿using RemoteAdmin;
+﻿using JetBrains.Annotations;
+using RemoteAdmin;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
@@ -8,6 +9,7 @@ using Console = GameCore.Console;
 
 namespace SER.MethodSystem.Methods.ServerMethods;
 
+[UsedImplicitly]
 public class CommandMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Runs a server command with full permission.";

@@ -1,8 +1,10 @@
-﻿using SER.ArgumentSystem.BaseArguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.CASSIEMethods;
 
+[UsedImplicitly]
 public class ClearCassieMethod : SynchronousMethod
 {
     public override string Description => "Clears all CASSIE announcements, active or queued.";

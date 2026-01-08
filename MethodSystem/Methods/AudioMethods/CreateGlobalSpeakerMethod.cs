@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.AudioMethods;
 
+[UsedImplicitly]
 public class CreateGlobalSpeakerMethod : SynchronousMethod
 {
     public override string Description => "Creates a speaker to play audio through.";

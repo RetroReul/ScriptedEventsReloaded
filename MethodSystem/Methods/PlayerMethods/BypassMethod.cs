@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.PlayerMethods;
 
+[UsedImplicitly]
 public class BypassMethod : SynchronousMethod
 {
     public override string Description => "Grants or removes bypass mode for players.";

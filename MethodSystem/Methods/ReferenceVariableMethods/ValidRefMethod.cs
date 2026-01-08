@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.ReferenceVariableMethods;
 
+[UsedImplicitly]
 public class ValidRefMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Verifies if the reference is valid, by checking if the object exists.";

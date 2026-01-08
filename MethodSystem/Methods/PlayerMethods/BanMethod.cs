@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.PlayerMethods;
 
+[UsedImplicitly]
 public class BanMethod : SynchronousMethod
 {
     public override string Description => "Bans players from the server.";

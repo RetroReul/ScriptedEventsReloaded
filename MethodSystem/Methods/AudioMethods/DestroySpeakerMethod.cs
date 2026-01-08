@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.AudioMethods;
 
+[UsedImplicitly]
 public class DestroySpeakerMethod : SynchronousMethod
 {
     public override string Description => "Destorys a speaker.";

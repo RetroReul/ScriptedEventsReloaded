@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using MapGeneration;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -10,6 +11,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.RoomMethods;
 
+[UsedImplicitly]
 public class GetRoomByNameMethod : ReferenceReturningMethod, IAdditionalDescription
 {
     public override Type ReturnType => typeof(Room);

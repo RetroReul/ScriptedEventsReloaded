@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using MEC;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -9,6 +10,7 @@ using UnityEngine;
 
 namespace SER.MethodSystem.Methods.LightMethods;
 
+[UsedImplicitly]
 public class TransitionLightColorMethod : SynchronousMethod
 {
     public override string Description => "Transitions smoothly the light color for rooms.";

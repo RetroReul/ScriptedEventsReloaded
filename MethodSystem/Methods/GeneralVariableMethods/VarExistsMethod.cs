@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.TokenSystem.Tokens.VariableTokens;
@@ -6,6 +7,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.GeneralVariableMethods;
 
+[UsedImplicitly]
 public class VarExistsMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns a bool value indicating if the provided variable exists.";

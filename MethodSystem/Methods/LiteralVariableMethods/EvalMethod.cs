@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers;
 using SER.Helpers.Exceptions;
@@ -7,6 +8,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.LiteralVariableMethods;
 
+[UsedImplicitly]
 public class EvalMethod : ReturningMethod
 {
     public override string Description => 

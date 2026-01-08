@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.Helpers.Extensions;
@@ -8,6 +9,7 @@ using UnityEngine;
 
 namespace SER.MethodSystem.Methods.AudioMethods;
 
+[UsedImplicitly]
 public class CreatePlayerAttachedSpeakerMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Creates a speaker attached to the player to play audio through.";

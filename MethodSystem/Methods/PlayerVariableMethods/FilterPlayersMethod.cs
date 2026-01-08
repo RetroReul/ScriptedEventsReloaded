@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.TokenSystem.Tokens.ExpressionTokens;
@@ -6,6 +7,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PlayerVariableMethods;
 
+[UsedImplicitly]
 public class FilterPlayersMethod : ReturningMethod<PlayerValue>
 {
     public override string Description => "Returns players which match the value for a given property.";

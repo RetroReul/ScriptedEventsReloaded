@@ -1,10 +1,12 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.BroadcastMethods;
 
+[UsedImplicitly]
 public class BroadcastMethod : SynchronousMethod
 {
     public override string Description => "Sends a broadcast to players.";

@@ -1,4 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using JetBrains.Annotations;
 using LabApi.Features.Enums;
 using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
@@ -11,6 +12,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.DoorMethods;
 
+[UsedImplicitly]
 public class DoorInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod
 {
     public Type ReferenceType => typeof(Door);

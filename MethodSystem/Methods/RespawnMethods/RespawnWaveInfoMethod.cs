@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -10,6 +11,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.RespawnMethods;
 
+[UsedImplicitly]
 public class RespawnWaveInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod
 {
     public Type ReferenceType => typeof(RespawnWave);

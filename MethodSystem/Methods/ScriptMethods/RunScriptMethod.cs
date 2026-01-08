@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.VariableSystem.Bases;
 
 namespace SER.MethodSystem.Methods.ScriptMethods;
 
+[UsedImplicitly]
 public class RunScriptMethod : SynchronousMethod
 {
     public override string Description => "Runs a script.";

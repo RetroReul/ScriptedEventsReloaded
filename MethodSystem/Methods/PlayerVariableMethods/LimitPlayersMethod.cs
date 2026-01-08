@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PlayerVariableMethods;
 
+[UsedImplicitly]
 public class LimitPlayersMethod : ReturningMethod<PlayerValue>
 {
     public override string Description =>

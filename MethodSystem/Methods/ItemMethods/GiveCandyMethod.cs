@@ -1,10 +1,12 @@
 ﻿using InventorySystem.Items.Usables.Scp330;
+using JetBrains.Annotations;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.ItemMethods;
 
+[UsedImplicitly]
 public class GiveCandyMethod : SynchronousMethod
 {
     public override string Description => "Gives candy to players.";

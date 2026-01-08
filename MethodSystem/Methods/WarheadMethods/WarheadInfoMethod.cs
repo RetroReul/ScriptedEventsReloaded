@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
@@ -7,6 +8,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.WarheadMethods;
 
+[UsedImplicitly]
 public class WarheadInfoMethod : ReturningMethod
 {
     public override string Description => "Returns information about Alpha Warhead";

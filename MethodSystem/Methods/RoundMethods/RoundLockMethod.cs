@@ -1,10 +1,12 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.RoundMethods;
 
+[UsedImplicitly]
 public class RoundLockMethod : SynchronousMethod
 {
     public override string Description => "Changes the round lock state.";

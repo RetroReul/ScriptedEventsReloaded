@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.MethodSystem.MethodDescriptors;
 
 namespace SER.MethodSystem.Methods.DatabaseMethods;
 
+[UsedImplicitly]
 public class GetFromDBMethod : ReturningMethod, ICanError
 {
     public override string Description => "Returns the value of a given key in the database.";

@@ -1,4 +1,5 @@
-﻿using MEC;
+﻿using JetBrains.Annotations;
+using MEC;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.VariableSystem.Bases;
 
 namespace SER.MethodSystem.Methods.ScriptMethods;
 
+[UsedImplicitly]
 public class RunScriptAndWaitMethod : YieldingMethod
 {
     public override string Description => "Runs a script and waits until the ran script has finished.";

@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.BroadcastMethods;
 
+[UsedImplicitly]
 public class ClearCountdownMethod : SynchronousMethod
 {
     public override string Description => "Removes an active countdown for players if one is active.";

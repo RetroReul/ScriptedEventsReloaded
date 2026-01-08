@@ -1,4 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using JetBrains.Annotations;
 using MEC;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -7,6 +8,7 @@ using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.RoomMethods;
 
+[UsedImplicitly]
 public class BlackoutMethod : SynchronousMethod
 {
     public override string Description => "Blackouts rooms.";

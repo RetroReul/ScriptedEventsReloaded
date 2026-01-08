@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.CASSIEMethods;
 
+[UsedImplicitly]
 public class CassieMethod : SynchronousMethod
 {
     public override string Description => "Makes a CASSIE announcement.";
@@ -68,7 +70,7 @@ public class CassieMethod : SynchronousMethod
         {
             LabApi.Features.Wrappers.Cassie.Message(
                 message, 
-                false, 
+                true, 
                 isNoisy
             );
         }
@@ -76,7 +78,7 @@ public class CassieMethod : SynchronousMethod
         {
             LabApi.Features.Wrappers.Cassie.Message(
                 message, 
-                false, 
+                true, 
                 isNoisy, 
                 true,
                 translation

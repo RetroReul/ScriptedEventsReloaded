@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.TimeMethods;
 
+[UsedImplicitly]
 public class ToDurationMethod : ReturningMethod<DurationValue>
 {
     public enum DurationUnit

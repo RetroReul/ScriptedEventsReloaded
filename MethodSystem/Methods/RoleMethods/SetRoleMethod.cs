@@ -1,10 +1,12 @@
-﻿using PlayerRoles;
+﻿using JetBrains.Annotations;
+using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.RoleMethods;
 
+[UsedImplicitly]
 public class SetRoleMethod : SynchronousMethod
 {
     public override string Description => "Sets a role for players.";

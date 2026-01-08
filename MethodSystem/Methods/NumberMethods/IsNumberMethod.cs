@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.NumberMethods;
 
+[UsedImplicitly]
 public class IsNumberMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if the provided value is a number.";

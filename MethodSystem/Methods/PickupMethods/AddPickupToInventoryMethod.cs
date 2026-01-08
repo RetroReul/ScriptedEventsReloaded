@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.MethodSystem.MethodDescriptors;
 
 namespace SER.MethodSystem.Methods.PickupMethods;
 
+[UsedImplicitly]
 public class AddPickupToInventoryMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Forces a pickup to be added to the player's inventory.";

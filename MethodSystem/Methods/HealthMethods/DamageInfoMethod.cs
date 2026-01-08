@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using PlayerStatsSystem;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -10,6 +11,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.HealthMethods;
 
+[UsedImplicitly]
 public class DamageInfoMethod : ReturningMethod, IReferenceResolvingMethod, IAdditionalDescription
 {
     public Type ReferenceType => typeof(DamageHandlerBase);

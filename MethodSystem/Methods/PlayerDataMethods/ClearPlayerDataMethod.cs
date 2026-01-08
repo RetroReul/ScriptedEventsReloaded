@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PlayerDataMethods;
 
+[UsedImplicitly]
 public class ClearPlayerDataMethod : SynchronousMethod
 {
     public override string Description => "Clears data associated with specified players";

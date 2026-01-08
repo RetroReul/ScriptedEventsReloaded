@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.FileSystem.Structures;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.DatabaseMethods;
 
+[UsedImplicitly]
 public class DBExistsMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if the provided database exists.";

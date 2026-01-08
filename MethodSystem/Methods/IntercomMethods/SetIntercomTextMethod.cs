@@ -1,4 +1,5 @@
-﻿using SER.MethodSystem.BaseMethods;
+﻿using JetBrains.Annotations;
+using SER.MethodSystem.BaseMethods;
 using SER.ArgumentSystem.BaseArguments;
 using SER.ArgumentSystem.Arguments;
 using PlayerRoles.Voice;
@@ -6,6 +7,7 @@ using SER.MethodSystem.MethodDescriptors;
 
 namespace SER.MethodSystem.Methods.IntercomMethods;
 
+[UsedImplicitly]
 public class SetIntercomTextMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Sets the text on the Intercom.";

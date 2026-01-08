@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.FlagSystem;
 using SER.FlagSystem.Flags;
@@ -11,6 +12,7 @@ using SER.VariableSystem.Bases;
 
 namespace SER.MethodSystem.Methods.ScriptMethods;
 
+[UsedImplicitly]
 public class RunFuncMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Runs a function script with arguments.";

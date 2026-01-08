@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.CollectionVariableMethods;
 
+[UsedImplicitly]
 public class CollectionContainsMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if the value exists in the collection";

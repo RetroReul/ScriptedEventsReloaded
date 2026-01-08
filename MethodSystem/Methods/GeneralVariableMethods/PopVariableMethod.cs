@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.VariableSystem;
 
 namespace SER.MethodSystem.Methods.GeneralVariableMethods;
 
+[UsedImplicitly]
 public class PopVariableMethod : ReturningMethod
 {
     public override string Description => "Erases a given variable, returning its value.";

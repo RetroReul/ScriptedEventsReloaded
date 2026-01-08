@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp079;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -6,6 +7,7 @@ using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.Scp079Methods;
 
+[UsedImplicitly]
 public class Set079AccessTierMethod : SynchronousMethod
 {
     public override string Description => "Sets the Access Tier of the given player(s) if they are SCP-079";

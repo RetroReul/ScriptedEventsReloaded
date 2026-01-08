@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.MethodSystem.MethodDescriptors;
@@ -6,6 +7,7 @@ using SER.TokenSystem.Structures;
 
 namespace SER.MethodSystem.Methods.EventMethods;
 
+[UsedImplicitly]
 public class IsAllowedMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Sets whether or not the event is allowed to run.";

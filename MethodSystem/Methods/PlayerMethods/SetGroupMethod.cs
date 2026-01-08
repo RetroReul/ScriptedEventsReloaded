@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
@@ -5,6 +6,7 @@ using LabApi.Features.Wrappers;
 
 namespace SER.MethodSystem.Methods.PlayerMethods;
 
+[UsedImplicitly]
 public class SetGroupMethod : SynchronousMethod
 {
     public override string Description => "Sets or removes group from specified players";

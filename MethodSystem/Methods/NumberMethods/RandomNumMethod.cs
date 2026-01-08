@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers;
 using SER.MethodSystem.BaseMethods;
@@ -9,6 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace SER.MethodSystem.Methods.NumberMethods;
 
+[UsedImplicitly]
 public class RandomNumMethod : ReturningMethod<NumberValue>, IAdditionalDescription
 {
     public override string Description =>

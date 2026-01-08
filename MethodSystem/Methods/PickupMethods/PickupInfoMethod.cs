@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.ArgumentSystem.Structures;
@@ -8,6 +9,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PickupMethods;
 
+[UsedImplicitly]
 public class PickupInfoMethod : ReturningMethod
 {
     public override string Description => "Returns information about a pickup.";

@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
@@ -8,6 +9,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.ParsingMethods;
 
+[UsedImplicitly]
 public class ParseResultMethod : ReturningMethod, ICanError, IReferenceResolvingMethod
 {
     public override string Description => "Returns information from the parsing result.";

@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using SER.MethodSystem.MethodDescriptors;
 
 namespace SER.MethodSystem.Methods.AudioMethods;
 
+[UsedImplicitly]
 public class LoadAudioMethod : SynchronousMethod, IAdditionalDescription, ICanError
 {
     public override string Description => "Loads an audio file into the audio player.";

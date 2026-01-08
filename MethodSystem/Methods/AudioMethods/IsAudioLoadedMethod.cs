@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.AudioMethods;
 
+[UsedImplicitly]
 public class IsAudioLoadedMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if a given audio clip has been loaded";

@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.PlayerDataMethods;
 
+[UsedImplicitly]
 public class HasPlayerDataMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Checks if a given key has an associated value for a given player.";

@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Exceptions;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.PlayerDataMethods;
 
+[UsedImplicitly]
 public class GetPlayerDataMethod : ReturningMethod
 {
     public override string Description => "Gets player data from the key.";

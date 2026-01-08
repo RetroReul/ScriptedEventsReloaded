@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.LightMethods;
 
+[UsedImplicitly]
 public class SetLightColorMethod : SynchronousMethod
 {
     public override string Description => "Sets the light color for rooms.";

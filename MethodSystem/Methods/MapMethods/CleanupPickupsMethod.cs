@@ -1,10 +1,12 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.MapMethods;
 
+[UsedImplicitly]
 public class CleanupPickupsMethod : SynchronousMethod
 {
     public override string Description => "Cleans pickups (items) from the map.";

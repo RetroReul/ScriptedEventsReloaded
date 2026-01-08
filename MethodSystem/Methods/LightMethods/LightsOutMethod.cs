@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.LightMethods;
 
+[UsedImplicitly]
 public class LightsOutMethod : SynchronousMethod
 {
     public override string Description => "Turns off lights for rooms.";

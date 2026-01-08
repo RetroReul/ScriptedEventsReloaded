@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.EventMethods;
 
+[UsedImplicitly]
 public class DisableEventMethod : SynchronousMethod
 {
     public override string Description => "Disables the provided event from running.";

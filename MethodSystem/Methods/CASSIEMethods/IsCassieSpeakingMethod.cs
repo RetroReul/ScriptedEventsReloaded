@@ -1,9 +1,11 @@
-﻿using SER.ArgumentSystem.BaseArguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.CASSIEMethods;
 
+[UsedImplicitly]
 public class IsCassieSpeakingMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns boolean value indicating if CASSIE is speaking.";

@@ -1,10 +1,12 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.ItemMethods;
 
+[UsedImplicitly]
 public class AdvDestroyItemMethod : SynchronousMethod
 {
     public override string Description => "Destroys items on the ground and in inventories.";

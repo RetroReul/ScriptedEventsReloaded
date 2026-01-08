@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.MethodSystem.MethodDescriptors;
@@ -7,6 +8,7 @@ using SER.VariableSystem.Variables;
 
 namespace SER.MethodSystem.Methods.CollectionVariableMethods;
 
+[UsedImplicitly]
 public class CollectionInsertMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Adds a value to a collection variable";

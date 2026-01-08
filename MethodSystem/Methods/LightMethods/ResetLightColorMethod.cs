@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.Helpers.Extensions;
 using SER.MethodSystem.BaseMethods;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace SER.MethodSystem.Methods.LightMethods;
 
+[UsedImplicitly]
 public class ResetLightColorMethod : SynchronousMethod
 {
     public override string Description => "Resets the light color for rooms.";

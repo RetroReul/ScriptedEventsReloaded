@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -7,6 +8,7 @@ using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.MapMethods;
 
+[UsedImplicitly]
 public class CleanupRagdollsMethod : SynchronousMethod
 {
     public override string Description => "Destroys ragdolls.";

@@ -1,10 +1,12 @@
-﻿using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
+﻿using JetBrains.Annotations;
+using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.PlayerMethods;
 
+[UsedImplicitly]
 public class SetEmoteMethod : SynchronousMethod
 {
     public override string Description => "Sets emotion for specified players";

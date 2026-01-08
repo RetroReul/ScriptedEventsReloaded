@@ -3,20 +3,20 @@ using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
-namespace SER.MethodSystem.Methods.OutputMethods;
+namespace SER.MethodSystem.Methods.ScriptMethods;
 
 [UsedImplicitly]
-public class ErrorMethod : SynchronousMethod
+public class StopScriptMethod : SynchronousMethod
 {
-    public override string Description => "Sends an error message.";
+    public override string Description => "Stops a given script.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new TextArgument("error")
+        new RunningScriptArgument("running script")
     ];
     
     public override void Execute()
     {
-        Script.Executor.Error(Args.GetText("error"), Script);
+        Args.GetRunningScript("running script").Stop();
     }
 }

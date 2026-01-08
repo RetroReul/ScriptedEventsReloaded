@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using Utils;
 
 namespace SER.MethodSystem.Methods.PlayerMethods;
 
+[UsedImplicitly]
 public class ExplodeMethod : SynchronousMethod
 {
     public override string Description => "Explodes players.";

@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.TextMethods;
 
+[UsedImplicitly]
 public class JoinTextMethod : ReturningMethod<TextValue>
 {
     public override string Description => "Joins provided text values.";

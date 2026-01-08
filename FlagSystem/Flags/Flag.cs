@@ -27,7 +27,7 @@ public abstract class Flag
     public virtual void OnParsingComplete()
     {
     }
-
+    
     public abstract void Unbind();
     
     public virtual Result OnScriptRunning(Script scr) => true;

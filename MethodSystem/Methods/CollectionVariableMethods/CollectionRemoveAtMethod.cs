@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 using SER.ValueSystem;
@@ -6,6 +7,7 @@ using SER.VariableSystem.Variables;
 
 namespace SER.MethodSystem.Methods.CollectionVariableMethods;
 
+[UsedImplicitly]
 public class CollectionRemoveAtMethod : SynchronousMethod
 {
     public override string Description => "Removes a value at the provided index from a collection variable";

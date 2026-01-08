@@ -1,4 +1,5 @@
-﻿using PlayerRoles;
+﻿using JetBrains.Annotations;
+using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.ArgumentSystem.Structures;
@@ -9,6 +10,7 @@ using SER.ValueSystem;
 
 namespace SER.MethodSystem.Methods.RoleMethods;
 
+[UsedImplicitly]
 public class RoleInfoMethod : ReturningMethod<TextValue>, IReferenceResolvingMethod
 {
     public Type ReferenceType => typeof(PlayerRoleBase);

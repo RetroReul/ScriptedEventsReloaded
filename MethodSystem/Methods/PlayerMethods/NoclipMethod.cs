@@ -1,10 +1,12 @@
-﻿using PlayerRoles.FirstPersonControl;
+﻿using JetBrains.Annotations;
+using PlayerRoles.FirstPersonControl;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.PlayerMethods;
 
+[UsedImplicitly]
 public class NoclipMethod : SynchronousMethod
 {
     public override string Description => "Enables or disables access to noclip for specified players.";

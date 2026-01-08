@@ -1,10 +1,12 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.FileSystem.Structures;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.DatabaseMethods;
 
+[UsedImplicitly]
 public class CreateDBMethod : SynchronousMethod
 {
     public override string Description => "Creates a new JSON file in the database folder.";

@@ -1,4 +1,5 @@
-﻿using SER.MethodSystem.BaseMethods;
+﻿using JetBrains.Annotations;
+using SER.MethodSystem.BaseMethods;
 using SER.ArgumentSystem.BaseArguments;
 using SER.ArgumentSystem.Arguments;
 using SER.ValueSystem;
@@ -8,6 +9,7 @@ using SER.Helpers.Exceptions;
 
 namespace SER.MethodSystem.Methods.IntercomMethods;
 
+[UsedImplicitly]
 public class IntercomInfoMethod : ReturningMethod
 {
     public override string Description => "Returns info about the Intercom.";

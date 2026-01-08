@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Configs;
+using JetBrains.Annotations;
 using PlayerRoles;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
@@ -6,6 +7,7 @@ using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.ItemMethods;
 
+[UsedImplicitly]
 public class GrantLoadoutMethod : SynchronousMethod
 {
     public override string Description => "Grants players a class loadout.";

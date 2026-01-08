@@ -1,4 +1,5 @@
-﻿using SER.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.FlagSystem.Flags;
 using SER.Helpers.Exceptions;
@@ -7,6 +8,7 @@ using SER.ScriptSystem.Structures;
 
 namespace SER.MethodSystem.Methods.ScriptMethods;
 
+[UsedImplicitly]
 public class TriggerMethod : SynchronousMethod
 {
     public override string Description => "Fires a given trigger, executing scripts which are attached to it.";

@@ -1,10 +1,12 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.ArgumentSystem.Arguments;
 using SER.ArgumentSystem.BaseArguments;
 using SER.MethodSystem.BaseMethods;
 
 namespace SER.MethodSystem.Methods.DoorMethods;
 
+[UsedImplicitly]
 public class SetDoorMaxHealthMethod : SynchronousMethod
 {
     public override string Description => "Sets max health for specified doors if possible";
