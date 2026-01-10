@@ -56,7 +56,7 @@ public class IntArgument : Argument
         {
             return VerifyRange(number.Value.Value);
         }
-        return new(() => token.TryGetLiteralValue<NumberValue>().OnSuccess(VerifyRange));
+        return new(() => token.TryGetLiteralValue<NumberValue>().OnSuccess(VerifyRange, null));
     }
 
     private TryGet<int> VerifyRange(NumberValue value)

@@ -13,20 +13,7 @@ namespace SER.Code.Helpers;
 
 public static class NumericExpressionReslover
 {
-    public static TryGet<object> EvalString(string expression, Script scr)
-    {
-        Result mainErr = $"Expression '{expression}' is invalid.";
-        
-        if (Tokenizer.TokenizeLine(expression, scr, null)
-            .HasErrored(out var err, out var tokens))
-        {
-            return mainErr + err;
-        }
-        
-        return ParseExpression(tokens.ToArray());
-    }
-    
-    public static TryGet<bool> EvalCondition(string expression, Script scr)
+    public static TryGet<CompiledExpression> CompileExpression(string expression, Script scr)
     {
         Result mainErr = $"Condition '{expression}' is invalid.";
         
@@ -36,34 +23,15 @@ public static class NumericExpressionReslover
             return mainErr + err;
         }
         
-        return EvalCondition(tokens.ToArray(), scr);
+        return CompileExpression(tokens.ToArray());
     }
-    
-    public static TryGet<bool> EvalCondition(BaseToken[] tokens, Script scr)
-    {
-        var result = ParseExpression(tokens);
-        if (result.HasErrored(out var err, out var value))
-            return err;
 
-        if (value is bool bool1)
-        {
-            return bool1;
-        }
-
-        if (bool.TryParse(value.ToString(), out var bool2))
-        {
-            return bool2;
-        }
-
-        return "Expression did not evaluate to a true/false value.";
-    }
-    
-    public static TryGet<object> ParseExpression(BaseToken[] tokens)
+    public static TryGet<CompiledExpression> CompileExpression(BaseToken[] tokens)
     {
         var initial = tokens.Select(t => t.RawRep).JoinStrings(" ");
         Result mainErr = $"Expression '{initial}' is invalid.";
 
-        var variables = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+        var variables = new Dictionary<string, DynamicTryGet<object>>(StringComparer.OrdinalIgnoreCase);
         var sb = new StringBuilder();
         int tempId = 0;
 
@@ -74,28 +42,38 @@ public static class NumericExpressionReslover
             {
                 case IValueToken valueToken when valueToken.CanReturn<LiteralValue>(out var get):
                 {
-                    if (get().HasErrored(out var err, out var resolved))
-                        return mainErr + err;
-
                     var tmp = MakeTempName();
-                    variables[tmp] = resolved.Value;
+                    
+                    if (valueToken.IsConstant)
+                    {
+                        variables[tmp] = get().OnSuccess(s => s.Value, mainErr);
+                    }
+                    else
+                    {
+                        variables[tmp] = new(() => get().OnSuccess(s => s.Value, mainErr));
+                    }
+                    
                     AppendRaw(tmp);
                     continue;
                 }
                 case ParenthesesToken parentheses:
                 {
-                    if (parentheses.TryGetTokens().HasErrored(out var tokenizeError, out var tokensInParentheses))
-                    {
-                        return mainErr + tokenizeError;
-                    }
-                
-                    if (ParseExpression(tokensInParentheses).HasErrored(out var conditonError, out var value))
-                    {
-                        return mainErr + conditonError;
-                    }
-                
                     var tmp = MakeTempName();
-                    variables[tmp] = value;
+                    variables[tmp] = new(() =>
+                    {
+                        if (parentheses.TryGetTokens().HasErrored(out var tokenizeError, out var tokensInParentheses))
+                        {
+                            return mainErr + tokenizeError;
+                        }
+                
+                        if (CompileExpression(tokensInParentheses).HasErrored(out var conditonError, out var value))
+                        {
+                            return mainErr + conditonError;
+                        }
+                        
+                        return value.Evaluate();
+                    });
+                    
                     AppendRaw(tmp);
                     continue;
                 }
@@ -104,9 +82,11 @@ public static class NumericExpressionReslover
                     break;
             }
         }
+        
+        var expression = new Expression(sb.ToString(), EvaluateOptions.None);
 
         // Now we have the expression string and a variables dictionary.
-        return Evaluate(sb.ToString(), variables, mainErr);
+        return new CompiledExpression(expression, variables);
 
         string MakeTempName()
         {
@@ -154,5 +134,34 @@ public static class NumericExpressionReslover
         }
     }
 
-    // (Keep the rest of the public API: EvalCondition, EvalString etc. that call GetInternalResult)
+    public readonly struct CompiledExpression(
+        Expression expression, 
+        Dictionary<string, DynamicTryGet<object>> parameters
+    )
+    {
+        public TryGet<object> Evaluate()
+        {
+            Dictionary<string, object> values = [];
+            foreach (var (key, dtg) in parameters)
+            {
+                if (dtg.Invoke().HasErrored(out var err, out var value))
+                {
+                    return err;
+                }
+                
+                values[key] = value;
+            }
+
+            expression.Parameters = values;
+            
+            try
+            {
+                return expression.Evaluate();
+            }
+            catch (Exception ex)
+            {
+                return $"{ex.GetType().AccurateName}: {ex.Message}";
+            }
+        }
+    }
 }

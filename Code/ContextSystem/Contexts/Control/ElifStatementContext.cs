@@ -3,6 +3,7 @@ using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
 using SER.Code.Helpers.Exceptions;
+using SER.Code.Helpers.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
@@ -22,6 +23,8 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
 
     private readonly List<BaseToken> _condition = [];
     
+    private NumericExpressionReslover.CompiledExpression _expression;
+    
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         _condition.Add(token);
@@ -30,6 +33,14 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
 
     public override Result VerifyCurrentState()
     {
+        if (NumericExpressionReslover.CompileExpression(_condition.ToArray())
+            .HasErrored(out var error, out var cond))
+        {
+            return error;
+        }
+        
+        _expression = cond;
+
         return Result.Assert(
             _condition.Count > 0,
             "An elif statement expects to have a condition, but none was provided!");
@@ -37,9 +48,14 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
 
     protected override IEnumerator<float> Execute()
     {
-        if (NumericExpressionReslover.EvalCondition(_condition.ToArray(), Script).HasErrored(out var error, out var result))
+        if (_expression.Evaluate().HasErrored(out var error, out var objResult))
         {
-            throw new ScriptRuntimeError($"'elif' statement condition error: {error}");
+            throw new ScriptRuntimeError(error);
+        }
+
+        if (objResult is not bool result)
+        {
+            throw new ScriptRuntimeError($"An elif statement condition must evaluate to a boolean value, but received {objResult.FriendlyTypeName()}");
         }
         
         if (!result)

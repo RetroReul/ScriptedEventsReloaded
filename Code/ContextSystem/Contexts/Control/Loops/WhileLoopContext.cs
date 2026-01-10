@@ -4,26 +4,26 @@ using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
 using SER.Code.Helpers.Exceptions;
+using SER.Code.Helpers.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public class WhileLoopContext : StatementContext, IKeywordContext, IExtendableStatement
+public class WhileLoopContext : LoopContext, IExtendableStatement
 {
     private readonly Result _rs = "Cannot create 'while' loop.";
     private readonly List<BaseToken> _condition = []; 
+    private NumericExpressionReslover.CompiledExpression _expression;
     private bool _skipChild = false;
     
-    public string KeywordName => "while";
-    public string Description =>
+    public override string KeywordName => "while";
+    public override string Description =>
         "A statement which will execute its body as long as the provided condition is evaluated to true.";
-    public string[] Arguments => ["[condition...]"];
+    public override string[] Arguments => ["[condition...]"];
 
-    public IExtendableStatement.Signal AllowedSignals =>
-        IExtendableStatement.Signal.DidntExecute | IExtendableStatement.Signal.EndedExecution;
-    public Dictionary<IExtendableStatement.Signal, Func<IEnumerator<float>>> RegisteredSignals { get; } = [];
+    public override Dictionary<IExtendableStatement.Signal, Func<IEnumerator<float>>> RegisteredSignals { get; } = [];
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
@@ -33,6 +33,14 @@ public class WhileLoopContext : StatementContext, IKeywordContext, IExtendableSt
 
     public override Result VerifyCurrentState()
     {
+        if (NumericExpressionReslover.CompileExpression(_condition.ToArray())
+            .HasErrored(out var error, out var cond))
+        {
+            return error;
+        }
+        
+        _expression = cond;
+        
         return Result.Assert(
             _condition.Count > 0,
             _rs + "The condition was not provided.");
@@ -40,12 +48,7 @@ public class WhileLoopContext : StatementContext, IKeywordContext, IExtendableSt
 
     protected override IEnumerator<float> Execute()
     {
-        if (NumericExpressionReslover.EvalCondition(_condition.ToArray(), Script).HasErrored(out var error, out var condition))
-        {
-            throw new ScriptRuntimeError(error);
-        }
-        
-        while (condition)
+        while (GetExpressionResult())
         {
             // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
             foreach (var child in Children)
@@ -62,10 +65,6 @@ public class WhileLoopContext : StatementContext, IKeywordContext, IExtendableSt
                 break;
             }
             
-            if (NumericExpressionReslover.EvalCondition(_condition.ToArray(), Script).HasErrored(out var error2, out condition))
-            {
-                throw new ScriptRuntimeError(error2);
-            }
         }
 
         if (RegisteredSignals.TryGetValue(IExtendableStatement.Signal.EndedExecution, out var coroFunc))
@@ -93,5 +92,20 @@ public class WhileLoopContext : StatementContext, IKeywordContext, IExtendableSt
         }
 
         ParentContext?.SendControlMessage(msg);
+    }
+
+    private bool GetExpressionResult()
+    {
+        if (_expression.Evaluate().HasErrored(out var error, out var objResult))
+        {
+            throw new ScriptRuntimeError(error);
+        }
+
+        if (objResult is not bool result)
+        {
+            throw new ScriptRuntimeError($"A while statement condition must evaluate to a boolean value, but received {objResult.FriendlyTypeName()}");
+        }
+
+        return result;
     }
 }

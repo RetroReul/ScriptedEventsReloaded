@@ -20,7 +20,7 @@ public class ReferenceArgument<TValue>(string name) : Argument(name)
             return $"Value '{token.RawRep}' does not represent a valid reference.";
         }
 
-        return new(() => get().OnSuccess(TryParse));
+        return new(() => get().OnSuccess(TryParse, null));
     }
 
     public static TryGet<TValue> TryParse(ReferenceValue value)

@@ -23,9 +23,14 @@ public class EvalMethod : ReturningMethod
     public override void Execute()
     {
         var value = Args.GetText("value");
-        if (NumericExpressionReslover.EvalString(value, Script).HasErrored(out var error, out var result))
+        if (NumericExpressionReslover.CompileExpression(value, Script).HasErrored(out var error, out var expression))
         {
             throw new ScriptRuntimeError(error);
+        }
+
+        if (expression.Evaluate().HasErrored(out var error2, out var result))
+        {
+            throw new ScriptRuntimeError(error2);
         }
         
         ReturnValue = Value.Parse(result);

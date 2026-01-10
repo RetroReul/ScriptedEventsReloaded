@@ -78,10 +78,13 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     }
     
     [Pure]
-    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TTarget> transform)
+    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TTarget> transform, string? mainErr)
     {
         if (HasErrored(out var error, out var val))
         {
+            if (mainErr is not null) 
+                return mainErr + new Result(false, error);
+            
             return error;
         }
         
@@ -89,10 +92,13 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     }
     
     [Pure]
-    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TryGet<TTarget>> transform)
+    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TryGet<TTarget>> transform, string? mainErr)
     {
         if (HasErrored(out var error, out var val))
         {
+            if (mainErr is not null) 
+                return mainErr + new Result(false, error);
+            
             return error;
         }
 

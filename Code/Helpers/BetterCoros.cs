@@ -7,9 +7,14 @@ namespace SER.Code.Helpers;
 
 public static class BetterCoros
 {
-    public static CoroutineHandle Run(this IEnumerator<float> coro, Script scr, Action<Exception>? onException = null)
+    public static CoroutineHandle Run(
+        this IEnumerator<float> coro, 
+        Script scr, 
+        Action<Exception>? onException = null,
+        Action? onFinish = null
+    )
     {
-        return Timing.RunCoroutine(Wrapper(coro, scr, onException));
+        return Timing.RunCoroutine(Wrapper(coro, scr, onException, onFinish));
     }
 
     public static void Kill(this CoroutineHandle coro)
@@ -17,35 +22,48 @@ public static class BetterCoros
         Timing.KillCoroutines(coro);
     }
 
-    private static IEnumerator<float> Wrapper(IEnumerator<float> routine, Script scr, Action<Exception>? onException = null)
+    private static IEnumerator<float> Wrapper(
+        IEnumerator<float> routine, 
+        Script scr, 
+        Action<Exception>? onException = null,
+        Action? onFinish = null
+    )
     {
         while (true)
         {
             try
             {
-                if (!routine.MoveNext()) yield break;
+                if (!routine.MoveNext()) goto End;
             }
-            catch (ScriptRuntimeError scrErr)
+            catch (ScriptCompileError compErr)
             {
-                onException?.Invoke(scrErr);
+                onException?.Invoke(compErr);
+                scr.Error(compErr.Message);
+            }
+            catch (ScriptRuntimeError runErr)
+            {
+                onException?.Invoke(runErr);
                 scr.Error($"SER was not able to predict this error before running the script: " +
-                          $"{scrErr.Message ?? "ERROR UNSPECIFIED"}");
-                yield break;
+                          $"{runErr.Message ?? "ERROR UNSPECIFIED"}");
+                goto End;
             }
             catch (DeveloperFuckedUpException devErr)
             {
                 onException?.Invoke(devErr);
                 scr.Error(devErr.Message + "\n" + devErr.StackTrace);
-                yield break;
+                goto End;
             }
             catch (Exception ex)
             {
                 onException?.Invoke(ex);
                 scr.Error($"Coroutine failed with {ex.GetType().AccurateName}: {ex.Message}\n{ex.StackTrace}");
-                yield break;
+                goto End;
             }
 
             yield return routine.Current;
         }
+
+        End:
+        onFinish?.Invoke();
     }
 }

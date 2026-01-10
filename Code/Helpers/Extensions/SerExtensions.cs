@@ -11,12 +11,12 @@ public static class SerExtensions
 {
     public static TryGet<TOut> SuccessTryCast<TIn, TOut>(this TryGet<TIn> value) where TOut : TIn
     {
-        return value.OnSuccess(v => v.TryCast<TIn, TOut>());
+        return value.OnSuccess(v => v.TryCast<TIn, TOut>(), null);
     }
     
     public static TryGet<TOut> SuccessTryCast<TOut>(this TryGet<Value> value) where TOut : Value
     {
-        return value.OnSuccess(v => v.TryCast<Value, TOut>());
+        return value.OnSuccess(v => v.TryCast<Value, TOut>(), null);
     }
     
     public static TryGet<TOut> TryCast<TIn, TOut>([NotNull] this TIn value, string rawRep = "") where TOut : TIn

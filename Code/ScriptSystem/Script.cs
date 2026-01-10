@@ -48,6 +48,8 @@ public class Script
     
     public Line[] Lines = [];
     public Context[] Contexts = [];
+
+    public Profile? Profile { get; private set; }
     
     public uint CurrentLine { get; set; } = 0;
     
@@ -156,7 +158,13 @@ public class Script
         }
         
         RunningScriptsList.Add(this);
-        _scriptCoroutine = InternalExecute().Run(this, _ => _scriptCoroutine.Kill());
+        //Profile = new Profile(this);
+        _scriptCoroutine = InternalExecute().Run(
+            this, 
+            _ => _scriptCoroutine.Kill()
+            //() => Profile.LogResults()
+        );
+        
         return _isEventAllowed;
     }
 
@@ -177,10 +185,16 @@ public class Script
 
     public Result DefineLines()
     {
+        var prof = Profile is not null 
+            ? new Profile(Profile, nameof(DefineLines))
+            : null;
+        
         if (Tokenizer.GetInfoFromMultipleLines(Content).HasErrored(out var err, out var info))
         {
             return "Defining script lines failed." + err;
         }
+        
+        prof?.Stop();
         
         Log.Debug($"Script {Name} defines {info.Length} lines");
         Lines = info;
@@ -189,6 +203,10 @@ public class Script
     
     public Result SliceLines()
     {
+        var prof = Profile is not null 
+            ? new Profile(Profile, nameof(SliceLines))
+            : null;
+        
         foreach (var line in Lines)
         {
             if (Tokenizer.SliceLine(line).HasErrored(out var error))
@@ -198,12 +216,18 @@ public class Script
             }
         }
         
+        prof?.Stop();
+        
         Log.Debug($"Script {Name} sliced {Lines.Length} lines into {Lines.Sum(l => l.Slices.Length)} slices");
         return true;
     }
 
     public Result TokenizeLines()
     {
+        var prof = Profile is not null 
+            ? new Profile(Profile, nameof(TokenizeLines))
+            : null;
+        
         foreach (var line in Lines)
         {
             if (Tokenizer.TokenizeLine(line, this).HasErrored(out var error))
@@ -211,6 +235,8 @@ public class Script
                 return error;
             }
         }
+        
+        prof?.Stop();
 
         Log.Debug($"Script {Name} tokenized {Lines.Length} lines into {Lines.Sum(l => l.Tokens.Length)} tokens");
         return true;
@@ -218,10 +244,16 @@ public class Script
     
     private Result ContextLines()
     {
+        var prof = Profile is not null 
+            ? new Profile(Profile, nameof(ContextLines))
+            : null;
+        
         if (Contexter.ContextLines(Lines, this).HasErrored(out var err, out var contexts))
         {
             return err;
         }
+        
+        prof?.Stop();
         
         Contexts = contexts;
         return true;

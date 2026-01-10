@@ -54,8 +54,13 @@ public class ParenthesesToken : BaseToken, IValueToken
         {
             return error;
         }
+
+        if (NumericExpressionReslover.CompileExpression(tokens).HasErrored(out var error2, out var expression))
+        {
+            return error2;
+        }
         
-        return NumericExpressionReslover.ParseExpression(tokens);
+        return expression.Evaluate();
     }
 
     public TryGet<Value> Value()
