@@ -1,4 +1,7 @@
-﻿namespace SER.Code.MethodSystem.MethodDescriptors;
+﻿using SER.Code.Helpers.Extensions;
+using SER.Code.MethodSystem.BaseMethods;
+
+namespace SER.Code.MethodSystem.MethodDescriptors;
 
 /// <summary>
 /// A method which takes a reference as an input and returns information about it in a readable format.
@@ -6,4 +9,9 @@
 public interface IReferenceResolvingMethod
 {
     public Type ReferenceType { get; }
+
+    public static class Desc
+    {
+        public static string Get(IReferenceResolvingMethod method) => $"Extracts information from {method.ReferenceType.AccurateName} objects.";
+    }
 }

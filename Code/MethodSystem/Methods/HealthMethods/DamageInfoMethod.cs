@@ -15,9 +15,14 @@ namespace SER.Code.MethodSystem.Methods.HealthMethods;
 public class DamageInfoMethod : ReturningMethod, IReferenceResolvingMethod, IAdditionalDescription
 {
     public Type ReferenceType => typeof(DamageHandlerBase);
+    
     public override Type[] ReturnTypes => [typeof(TextValue), typeof(ReferenceValue)];
 
-    public override string Description => null!;
+    public override string Description => IReferenceResolvingMethod.Desc.Get(this);
+
+    public string AdditionalDescription =>
+        "A lot of options here might not be available depending on which DamageHandler is used in game. " +
+        "It's advised you check every accessed value for 'none' before using it.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -45,8 +50,4 @@ public class DamageInfoMethod : ReturningMethod, IReferenceResolvingMethod, IAdd
             _ => throw new AndrzejFuckedUpException("out of range")
         };
     }
-
-    public string AdditionalDescription =>
-        "A lot of options here might not be available depending on which DamageHandler is used in game. " +
-        "It's advised you check every accessed value for 'none' before using it.";
 }
