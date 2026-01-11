@@ -5,7 +5,7 @@ using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ContextSystem.Contexts;
 
-public class NoOperationContext : StandardContext
+public class NoOperationContext : StandardContext, INotRunningContext
 {
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

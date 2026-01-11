@@ -26,6 +26,6 @@ public class LoopContinueContext : StandardContext, IKeywordContext
 
     protected override void Execute()
     {
-        ParentContext?.SendControlMessage(ParentContextControlMessage.LoopContinue);
+        ParentContext?.SendControlMessage(ParentContextControlMessage.Continue);
     }
 }

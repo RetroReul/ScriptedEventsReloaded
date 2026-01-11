@@ -2,6 +2,6 @@
 
 public enum ParentContextControlMessage
 {
-    LoopContinue,
-    LoopBreak,
+    Continue,
+    Break
 }

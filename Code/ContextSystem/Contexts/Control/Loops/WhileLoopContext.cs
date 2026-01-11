@@ -1,22 +1,21 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
 using SER.Code.Helpers.Exceptions;
 using SER.Code.Helpers.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
+using SER.Code.ValueSystem;
 
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public class WhileLoopContext : LoopContext, IExtendableStatement
+public class WhileLoopContext : LoopSingleIterationVariableContext<NumberValue>, IExtendableStatement
 {
     private readonly Result _rs = "Cannot create 'while' loop.";
     private readonly List<BaseToken> _condition = []; 
     private NumericExpressionReslover.CompiledExpression _expression;
-    private bool _skipChild = false;
     
     public override string KeywordName => "while";
     public override string Description =>
@@ -48,23 +47,18 @@ public class WhileLoopContext : LoopContext, IExtendableStatement
 
     protected override IEnumerator<float> Execute()
     {
+        uint iteration = 0;
         while (GetExpressionResult())
         {
-            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-            foreach (var child in Children)
+            SetVariable(++iteration);
+            var coro = RunChildren();
+            while (coro.MoveNext())
             {
-                var coro = child.ExecuteBaseContext();
-                while (coro.MoveNext())
-                {
-                    yield return coro.Current;
-                }
-
-                if (!_skipChild) continue;
-
-                _skipChild = false;
-                break;
+                yield return coro.Current;
             }
             
+            RemoveVariable();
+            if (ReceivedBreak) break;
         }
 
         if (RegisteredSignals.TryGetValue(IExtendableStatement.Signal.EndedExecution, out var coroFunc))
@@ -72,26 +66,9 @@ public class WhileLoopContext : LoopContext, IExtendableStatement
             var coro = coroFunc();
             while (coro.MoveNext())
             {
-                if (!Script.IsRunning)
-                {
-                    yield break;
-                }
-                
                 yield return coro.Current;
             }
         }
-    }
-
-
-    protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
-    {
-        if (msg == ParentContextControlMessage.LoopContinue)
-        {
-            _skipChild = true;
-            return;
-        }
-
-        ParentContext?.SendControlMessage(msg);
     }
 
     private bool GetExpressionResult()

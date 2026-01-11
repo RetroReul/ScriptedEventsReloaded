@@ -117,11 +117,11 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
                     $"Value returned by the '{method.Name}' method cannot be assigned to the {varToken.RawRep} variable");
             }
         
-            Script.AddVariable(Variable.CreateVariable(varToken.Name, Value.Parse(tValue)));
+            Script.AddVariable(Variable.Create(varToken.Name, Value.Parse(tValue)));
         }
         else if (_parser is not null)
         {
-            Script.AddVariable(Variable.CreateVariable(varToken.Name, Value.Parse(_parser())));
+            Script.AddVariable(Variable.Create(varToken.Name, Value.Parse(_parser())));
         }
         else
         {

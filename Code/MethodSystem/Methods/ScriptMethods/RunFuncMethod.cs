@@ -73,7 +73,7 @@ public class RunFuncMethod : SynchronousMethod, ICanError
                 );
             }
             
-            var variable = Variable.CreateVariable(varToken.Name, value);
+            var variable = Variable.Create(varToken.Name, value);
             if (variable.GetType() != varToken.VariableType)
             {
                 throw new AndrzejFuckedUpException();

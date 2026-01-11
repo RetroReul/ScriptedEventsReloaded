@@ -1,14 +1,15 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Extensions;
+using SER.Code.ContextSystem.CommunicationInterfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
+using SER.Code.ValueSystem;
 
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public class ForeverLoopContext : LoopContext, IKeywordContext
+public class ForeverLoopContext : LoopSingleIterationVariableContext<NumberValue>, IKeywordContext, IAcceptOptionalVariableDefinitions
 {
     private readonly Result _mainErr = "Cannot create 'forever' loop.";
 
@@ -31,22 +32,18 @@ public class ForeverLoopContext : LoopContext, IKeywordContext
 
     protected override IEnumerator<float> Execute()
     {
+        uint iteration = 0;
         while (true)
         {
-            foreach (var coro in Children.Select(child => child.ExecuteBaseContext()))
+            SetVariable(++iteration);
+            var coro = RunChildren();
+            while (coro.MoveNext())
             {
-                if (ExitLoop) yield break;
-                
-                while (coro.MoveNext())
-                {
-                    yield return coro.Current;
-                }
-
-                if (!SkipThisIteration) continue;
-
-                SkipThisIteration = false;
-                break;
+                yield return coro.Current;
             }
+            RemoveVariable();
+            
+            if (ReceivedBreak) break;
         }
     }
 }

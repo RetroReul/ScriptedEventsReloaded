@@ -60,7 +60,7 @@ public static class MethodIndex
             Logger.Error($"Tried to register an already existing method '{method.Name}'!");
             return;
         }
-
+        
         NameToMethodIndex.Add(method.Name, method);
     }
 

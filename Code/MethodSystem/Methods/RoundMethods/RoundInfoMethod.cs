@@ -13,14 +13,16 @@ public class RoundInfoMethod : LiteralValueReturningMethod
 {
     public override string Description => "Returns information about the current round.";
     
-    public override Type[] LiteralReturnTypes => [typeof(BoolValue)];
+    public override Type[] LiteralReturnTypes => [typeof(BoolValue), typeof(DurationValue)];
 
     public override Argument[] ExpectedArguments { get; } =
     [
         new OptionsArgument("mode",
             "hasStarted",
             "isInProgress",
-            "hasEnded")
+            "hasEnded",
+            "duration"
+        )
     ];
 
     public override void Execute()
@@ -30,6 +32,7 @@ public class RoundInfoMethod : LiteralValueReturningMethod
             "hasstarted" => new BoolValue(Round.IsRoundStarted),
             "isinprogress" => new BoolValue(Round.IsRoundInProgress),
             "hasended" => new BoolValue(Round.IsRoundEnded),
+            "duration" => new DurationValue(Round.Duration),
             _ => throw new AndrzejFuckedUpException()
         };
     }

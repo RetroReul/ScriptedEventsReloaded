@@ -1,4 +1,5 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
+using SER.Code.Helpers.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Structures;
@@ -20,6 +21,14 @@ public abstract class VariableToken : BaseToken, IContextableToken
     public TryGet<Variable> TryGetVariable()
     {
         return Script.TryGetVariable<Variable>(this);
+    }
+
+    public Result CanHold<T>() where T : Value
+    {
+        return Result.Assert(
+            ValueType.IsAssignableFrom(typeof(T)),
+            $"Value of variable '{RawRep}' is not able to hold a {typeof(T).AccurateName}."
+        );
     }
     
     public string RawRepr => $"{Prefix}{Name}";

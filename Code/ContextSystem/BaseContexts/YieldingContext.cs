@@ -1,4 +1,5 @@
-﻿using SER.Code.Helpers;
+﻿using SER.Code.ContextSystem.Structures;
+using SER.Code.Helpers;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
@@ -6,6 +7,11 @@ public abstract class YieldingContext : Context
 {
     public IEnumerator<float> Run()
     {
+        if (this is INotRunningContext)
+        {
+            yield break;
+        }
+        
         var prof = Script.Profile is not null 
             ? new Profile(Script.Profile, $"running YieldingContext {Name}")
             : null;

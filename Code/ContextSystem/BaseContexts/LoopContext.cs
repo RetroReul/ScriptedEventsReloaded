@@ -1,4 +1,5 @@
-﻿using SER.Code.ContextSystem.Structures;
+﻿using SER.Code.ContextSystem.Extensions;
+using SER.Code.ContextSystem.Structures;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
@@ -10,23 +11,42 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
     public abstract string KeywordName { get; }
     public abstract string Description { get; }
     public abstract string[] Arguments { get; }
-    
-    public bool SkipThisIteration { get; protected set; }
-    public bool ExitLoop { get; protected set; }
+
+    private bool ReceivedContinue { get; set; }
+    protected bool ReceivedBreak { get; set; }
 
     protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
     {
         switch (msg)
         {
-            case ParentContextControlMessage.LoopContinue:
-                SkipThisIteration = true;
+            case ParentContextControlMessage.Continue:
+                ReceivedContinue = true;
                 return;
-            case ParentContextControlMessage.LoopBreak:
-                ExitLoop = true;
+            case ParentContextControlMessage.Break:
+                ReceivedBreak = true;
                 return;
             default:
                 ParentContext?.SendControlMessage(msg);
                 break;
+        }
+    }
+
+    protected override IEnumerator<float> RunChildren()
+    {
+        foreach (var coro in Children
+                     .TakeWhile(_ => !ReceivedBreak)
+                     .TakeWhile(_ => Script.IsRunning)
+                     .Select(child => child.ExecuteBaseContext()))
+        {
+            while (coro.MoveNext())
+            {
+                yield return coro.Current;
+            }
+
+            if (!ReceivedContinue) continue;
+
+            ReceivedContinue = false;
+            break;
         }
     }
 }

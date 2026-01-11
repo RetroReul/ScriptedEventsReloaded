@@ -11,7 +11,7 @@ public abstract class Variable
 
     public abstract Value BaseValue { get; }
 
-    public static Variable CreateVariable(string name, Value value)
+    public static Variable Create(string name, Value value)
     {
         return value switch
         {

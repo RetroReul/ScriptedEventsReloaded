@@ -26,6 +26,6 @@ public class LoopBreakContext : StandardContext, IKeywordContext
 
     protected override void Execute()
     {
-        ParentContext?.SendControlMessage(ParentContextControlMessage.LoopBreak);
+        ParentContext?.SendControlMessage(ParentContextControlMessage.Break);
     }
 }

@@ -62,37 +62,19 @@ public class IfStatementContext : StatementContext, IExtendableStatement, IKeywo
                 yield break;
             }
             
-            var coro = enumerator();
-            while (coro.MoveNext())
+            var didntExecuteCoro = enumerator();
+            while (didntExecuteCoro.MoveNext())
             {
-                if (!Script.IsRunning)
-                {
-                    yield break;
-                }
-                
-                yield return coro.Current;
+                yield return didntExecuteCoro.Current;
             }
 
             yield break;
         }
         
-        foreach (var child in Children)
+        var coro = RunChildren();
+        while (coro.MoveNext())
         {
-            if (!Script.IsRunning)
-            {
-                yield break;
-            }
-            
-            var coro = child.ExecuteBaseContext();
-            while (coro.MoveNext())
-            {
-                if (!Script.IsRunning)
-                {
-                    yield break;
-                }
-                
-                yield return coro.Current;
-            }
+            yield return coro.Current;
         }
     }
 }
