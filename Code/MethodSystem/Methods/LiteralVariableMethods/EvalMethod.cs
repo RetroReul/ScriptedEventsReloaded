@@ -13,7 +13,8 @@ public class EvalMethod : ReturningMethod
 {
     public override string Description => 
         "Evaluates the provided expression and returns the result. Used for math operations.";
-    public override Type[]? ReturnTypes => null;
+    
+    public override TypeOfValue Returns => new UnknownTypeOfValue();
 
     public override Argument[] ExpectedArguments { get; } =
     [

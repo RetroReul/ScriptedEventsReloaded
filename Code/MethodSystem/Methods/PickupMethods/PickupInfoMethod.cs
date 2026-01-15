@@ -14,14 +14,13 @@ public class PickupInfoMethod : ReturningMethod
 {
     public override string Description => "Returns information about a pickup.";
 
-    public override Type[] ReturnTypes => 
-    [
+    public override TypeOfValue Returns => new([
         typeof(PlayerValue),
         typeof(BoolValue),
         typeof(TextValue),
         typeof(ReferenceValue<Room>),
         typeof(NumberValue)
-    ];
+    ]);
 
     public override Argument[] ExpectedArguments { get; } =
     [

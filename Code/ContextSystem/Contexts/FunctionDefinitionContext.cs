@@ -2,6 +2,7 @@
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.CommunicationInterfaces;
 using SER.Code.ContextSystem.Extensions;
+using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.Exceptions;
 using SER.Code.Helpers.Extensions;
@@ -14,17 +15,35 @@ using SER.Code.VariableSystem.Bases;
 namespace SER.Code.ContextSystem.Contexts;
 
 [UsedImplicitly]
-public class FunctionDefinitionContext : StatementContext, IKeywordContext, INotRunningContext, IAcceptOptionalVariableDefinitions
+public class FunctionDefinitionContext :
+    StatementContext,
+    INotRunningContext, 
+    IAcceptOptionalVariableDefinitions,
+    IMayReturnValueContext
 {
-    public string FunctionName = null!;
-    private bool _break = false;
+    public string FunctionName { get; private set;  } = null!;
+    private bool _end = false;
     private VariableToken[] _expectedVariables = [];
     private readonly List<Variable> _localVariables = [];
     
-    public string KeywordName => "func";
-    public string Description => "Creates a function under a given name.";
-    public string[] Arguments => ["[function name]"];
-    
+    // gets the type of value associated with a token type of a variable prefix
+    // sketchy!!
+    public TypeOfValue? Returns
+    {
+        get
+        {
+            var varTypeToken = VariableToken.VariablePrefixes
+                .FirstOrDefault(pair => pair.prefix == FunctionName.FirstOrDefault())
+                .varTypeToken;
+
+            if (varTypeToken == null) return null;
+
+            return new TypeOfValue(varTypeToken.CreateInstance<VariableToken>().ValueType);
+        }
+    }
+
+    public Value? ReturnedValue { get; private set; }
+
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (token.GetType() != typeof(BaseToken))
@@ -85,13 +104,21 @@ public class FunctionDefinitionContext : StatementContext, IKeywordContext, INot
 
     protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
     {
-        if (msg == ParentContextControlMessage.Break)
+        switch (msg)
         {
-            _break = true;
-            return;
+            case Break:
+                _end = true;
+                return;
+            
+            case Return ret:
+                _end = true;
+                ReturnedValue = ret.ReturnedValue;
+                return;
+            
+            default:
+                SendControlMessage(msg);
+                break;
         }
-        
-        SendControlMessage(msg);
     }
 
     protected override IEnumerator<float> Execute()
@@ -103,7 +130,7 @@ public class FunctionDefinitionContext : StatementContext, IKeywordContext, INot
         {
             while (coro.MoveNext())
             {
-                if (!Script.IsRunning || _break)
+                if (!Script.IsRunning || _end)
                 {
                     goto Exit;
                 }

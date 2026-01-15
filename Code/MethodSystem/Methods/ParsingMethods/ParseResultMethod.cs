@@ -14,7 +14,7 @@ public class ParseResultMethod : ReturningMethod, ICanError, IReferenceResolving
 {
     public override string Description => "Returns information from the parsing result.";
 
-    public override Type[]? ReturnTypes => null;
+    public override TypeOfValue Returns => new UnknownTypeOfValue();
 
     public Type ReferenceType => typeof(ParseResult);
 

@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ContextSystem.BaseContexts;
+using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
@@ -26,6 +27,6 @@ public class LoopBreakContext : StandardContext, IKeywordContext
 
     protected override void Execute()
     {
-        ParentContext?.SendControlMessage(ParentContextControlMessage.Break);
+        ParentContext?.SendControlMessage(new Break());
     }
 }

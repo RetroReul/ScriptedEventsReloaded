@@ -2,6 +2,7 @@
 using System.Text;
 using CommandSystem;
 using SER.Code.ContextSystem.BaseContexts;
+using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.FlagSystem.Flags;
 using SER.Code.Helpers.Exceptions;
@@ -63,7 +64,7 @@ public class HelpCommand : ICommand
             return true;
         }
         
-        var keyword = KeywordToken.KeywordTypes
+        var keyword = KeywordToken.KeywordContextTypes
             .Select(kType => kType.CreateInstance<IKeywordContext>())
             .FirstOrDefault(keyword => keyword.KeywordName == arg);
         
@@ -492,7 +493,7 @@ public class HelpCommand : ICommand
             case LiteralValueReturningMethod ret:
             {
                 string typeReturn;
-                if (ret.LiteralReturnTypes is { } types)
+                if (ret.LiteralReturnTypes.AreKnown(out var types))
                 {
                     typeReturn = types
                         .Select(Value.FriendlyName)
@@ -524,9 +525,9 @@ public class HelpCommand : ICommand
             case ReturningMethod ret:
             {
                 string typeReturn;
-                if (ret.ReturnTypes is { } types)
+                if (ret.Returns.AreKnown(out var returnTypes))
                 {
-                    typeReturn = types
+                    typeReturn = returnTypes
                         .Select(Value.FriendlyName)
                         .JoinStrings(" or ") + " value";
                 }

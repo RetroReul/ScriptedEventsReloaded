@@ -1,5 +1,7 @@
 ﻿using SER.Code.ContextSystem.Extensions;
+using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Code.ValueSystem;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
@@ -12,17 +14,16 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
     public abstract string Description { get; }
     public abstract string[] Arguments { get; }
 
-    private bool ReceivedContinue { get; set; }
-    protected bool ReceivedBreak { get; set; }
-
+    protected bool ReceivedContinue;
+    protected bool ReceivedBreak;
     protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
     {
         switch (msg)
         {
-            case ParentContextControlMessage.Continue:
+            case Continue:
                 ReceivedContinue = true;
                 return;
-            case ParentContextControlMessage.Break:
+            case Break:
                 ReceivedBreak = true;
                 return;
             default:

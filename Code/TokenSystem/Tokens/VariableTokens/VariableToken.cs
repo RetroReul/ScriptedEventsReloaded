@@ -6,29 +6,33 @@ using SER.Code.TokenSystem.Structures;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Bases;
+using SER.Code.VariableSystem.Variables;
 
 namespace SER.Code.TokenSystem.Tokens.VariableTokens;
 
 public abstract class VariableToken : BaseToken, IContextableToken
 {
-    public abstract char Prefix { get; }
     public abstract string Name { get; protected set; }
+    
     public abstract Type VariableType { get; }
+    
     public abstract Type ValueType { get; }
-
+    
     public abstract TryGet<Context> TryGetContext(Script scr);
 
+    public static readonly (char prefix, Type varTypeToken)[] VariablePrefixes =
+    [
+        ('$', typeof(LiteralVariableToken)),
+        ('@', typeof(PlayerVariableToken)),
+        ('*', typeof(ReferenceVariableToken)),
+        ('&', typeof(CollectionVariableToken))
+    ];
+    
+    public char Prefix => VariablePrefixes.First(pair => pair.varTypeToken == GetType()).prefix;
+    
     public TryGet<Variable> TryGetVariable()
     {
         return Script.TryGetVariable<Variable>(this);
-    }
-
-    public Result CanHold<T>() where T : Value
-    {
-        return Result.Assert(
-            ValueType.IsAssignableFrom(typeof(T)),
-            $"Value of variable '{RawRep}' is not able to hold a {typeof(T).AccurateName}."
-        );
     }
     
     public string RawRepr => $"{Prefix}{Name}";
@@ -71,6 +75,7 @@ public abstract class VariableToken<TVariable, TValue> : VariableToken, IValueTo
         return TryGetVariable().OnSuccess(Value (variable) => variable.Value, null);
     }
 
-    public Type[] PossibleValueTypes => [typeof(TValue)];
+    public TypeOfValue PossibleValues => new TypeOfValue<TValue>();
+    
     public bool IsConstant => false;
 }

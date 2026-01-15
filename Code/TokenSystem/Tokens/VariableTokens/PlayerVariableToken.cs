@@ -9,8 +9,6 @@ namespace SER.Code.TokenSystem.Tokens.VariableTokens;
 
 public class PlayerVariableToken : VariableToken<PlayerVariable, PlayerValue>
 {
-    public override char Prefix => '@';
-
     public static string Example => "@players";
 
     public override TryGet<Context> TryGetContext(Script scr)

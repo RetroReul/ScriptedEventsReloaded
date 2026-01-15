@@ -217,5 +217,5 @@ public class PlayerExpressionToken : ExpressionToken
         };
     }
 
-    public override Type[]? PossibleValueTypes => null;
+    public override TypeOfValue PossibleValues => new UnknownTypeOfValue();
 }
