@@ -5,7 +5,6 @@ using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.Exceptions;
 using SER.Code.Helpers.Extensions;
 using SER.Code.Helpers.ResultSystem;
-using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.TokenSystem.Structures;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
@@ -72,20 +71,10 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
             return TryAddTokenRes.End();
         }
 
-        if (token is IContextableToken contextable)
+        if (token is IContextableToken contextable && 
+            contextable.GetContext(Script) is {} mainContext and IMayReturnValueContext returnValueContext)
         {
-            if (methodToken.Method is not ReturningMethod)
-            {
-                return TryAddTokenRes.Error($"Method '{token.RawRep}' does not return a value");
-            }
-            
-            var methodContext = new MethodContext(methodToken)
-            {
-                Script = Script,
-                LineNum = LineNum,
-            };
-            
-            _returnContext = (methodContext, methodContext);
+            _returnContext = (mainContext, returnValueContext);
             return TryAddTokenRes.Continue();
         }
         
@@ -108,22 +97,24 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
     {
         if (_returnContext.HasValue)
         {
-            var coro = _returnContext.Value.main.ExecuteBaseContext();
+            var (main, returner) = _returnContext.Value;
+            
+            var coro = main.ExecuteBaseContext();
             while (coro.MoveNext())
             {
                 yield return coro.Current;
             }
             
             Log.D("checking for returned value");
-            if (_returnContext.Value.returner.ReturnedValue is not { } value)
+            if (returner.ReturnedValue is not { } value)
             {
-                throw new ScriptRuntimeError($"Context {_returnContext.Value.main.Name} has not returned a value!");
+                throw new ScriptRuntimeError($"Context {main.Name} has not returned a value!");
             }
 
             if (value is not TValue tValue)
             {
                 throw new ScriptRuntimeError(
-                    $"Value returned by '{_returnContext.Value.main.Name}' cannot be assigned to the {varToken.RawRep} variable");
+                    $"Value returned by '{main.Name}' cannot be assigned to the {varToken.RawRep} variable");
             }
         
             Script.AddVariable(Variable.Create(varToken.Name, Value.Parse(tValue)));

@@ -1,5 +1,4 @@
 ﻿using SER.Code.ContextSystem.Interfaces;
-using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
 
 namespace SER.Code.ContextSystem.BaseContexts;

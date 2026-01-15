@@ -2,7 +2,6 @@
 using SER.Code.ContextSystem.CommunicationInterfaces;
 using SER.Code.ContextSystem.Contexts.Control;
 using SER.Code.ContextSystem.Interfaces;
-using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
 using SER.Code.Helpers.Extensions;
 using SER.Code.Helpers.ResultSystem;

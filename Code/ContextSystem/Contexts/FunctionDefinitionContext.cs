@@ -19,12 +19,17 @@ public class FunctionDefinitionContext :
     StatementContext,
     INotRunningContext, 
     IAcceptOptionalVariableDefinitions,
-    IMayReturnValueContext
+    IMayReturnValueContext,
+    IKeywordContext
 {
     public string FunctionName { get; private set;  } = null!;
     private bool _end = false;
     private VariableToken[] _expectedVariables = [];
     private readonly List<Variable> _localVariables = [];
+
+    public string KeywordName => "func";
+    public string Description => "Defines a function.";
+    public string[] Arguments => ["[function name]"];
     
     // gets the type of value associated with a token type of a variable prefix
     // sketchy!!
