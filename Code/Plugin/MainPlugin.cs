@@ -59,8 +59,14 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
     public override void Enable()
     {
+        if (Config?.IsEnabled is false)
+        {
+            Logger.Info("Scripted Events Reloaded is disabled via config.");
+            return;
+        }
+        
         Instance = this;
-
+        
         Script.StopAll();
         EventHandler.Initialize();
         MethodIndex.Initialize();
