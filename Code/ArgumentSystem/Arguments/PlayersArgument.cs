@@ -27,7 +27,7 @@ public class PlayersArgument(string name) : Argument(name)
             return $"Value '{token.RawRep}' does not represent a valid player variable.";
         }
         
-        return new(() => get().OnSuccess(v => v.Players));
+        return new(() => get().OnSuccess(v => v.Players, null));
     }
 }
 

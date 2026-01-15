@@ -18,7 +18,7 @@ public class DoorInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMe
     public Type ReferenceType => typeof(Door);
     public override Type[] LiteralReturnTypes => [typeof(TextValue), typeof(BoolValue), typeof(NumberValue)];
 
-    public override string Description => null!;
+    public override string Description => IReferenceResolvingMethod.Desc.Get(this);
 
     public override Argument[] ExpectedArguments { get; } =
     [

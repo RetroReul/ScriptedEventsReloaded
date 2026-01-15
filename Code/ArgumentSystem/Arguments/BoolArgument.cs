@@ -34,7 +34,7 @@ public class BoolArgument(string name) : Argument(name)
         }
 
         return valueToken.IsConstant
-            ? new(get().OnSuccess(v => v.Value))
-            : new(() => get().OnSuccess(v => v.Value));
+            ? new(get().OnSuccess(v => v.Value, error))
+            : new(() => get().OnSuccess(v => v.Value, error));
     }
 }

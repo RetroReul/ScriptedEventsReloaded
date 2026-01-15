@@ -1,6 +1,6 @@
 ﻿namespace SER.Code.Helpers;
 
-public struct MustSet<T>
+public struct Safe<T>
 {
     private readonly bool _set;
 
@@ -12,13 +12,13 @@ public struct MustSet<T>
                 throw new InvalidOperationException($"Attempted to get {typeof(T).Name} before it was set.");
             return field;
         }
-        init
+        private init
         {
             field = value;
             _set = true;
         }
     }
 
-    public static implicit operator T(MustSet<T> wrapper) => wrapper.Value;
-    public static implicit operator MustSet<T>(T value) => new() { Value = value };
+    public static implicit operator T(Safe<T> wrapper) => wrapper.Value;
+    public static implicit operator Safe<T>(T value) => new() { Value = value };
 }

@@ -4,7 +4,7 @@ namespace SER.Code.Helpers.ResultSystem;
 
 public abstract class DynamicTryGet
 {
-    public MustSet<bool> IsStatic { get; protected init; }
+    public Safe<bool> IsStatic { get; protected init; }
     
     public abstract Result Result { get; }
     

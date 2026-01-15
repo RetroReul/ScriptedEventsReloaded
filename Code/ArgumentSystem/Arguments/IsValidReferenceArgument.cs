@@ -19,6 +19,6 @@ public class IsValidReferenceArgument(string name) : Argument(name)
             return $"Value '{token.RawRep}' is not a reference.";
         }
         
-        return new(() => func().OnSuccess(v => v.IsValid));
+        return new(() => func().OnSuccess(v => v.IsValid, null));
     }
 }

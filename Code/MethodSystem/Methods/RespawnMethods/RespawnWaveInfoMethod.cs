@@ -18,7 +18,7 @@ public class RespawnWaveInfoMethod : LiteralValueReturningMethod, IReferenceReso
 
     public override Type[] LiteralReturnTypes => [typeof(NumberValue), typeof(TextValue)];
 
-    public override string Description => null!;
+    public override string Description => IReferenceResolvingMethod.Desc.Get(this);
 
     public override Argument[] ExpectedArguments { get; } =
     [

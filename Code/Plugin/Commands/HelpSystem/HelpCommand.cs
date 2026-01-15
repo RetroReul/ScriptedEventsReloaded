@@ -478,14 +478,8 @@ public class HelpCommand : ICommand
     private static string GetMethodHelp(Method method)
     {
         var sb = new StringBuilder($"=== {method.Name} ===\n");
-        if (method is IReferenceResolvingMethod refRes && method.Description is null)
-        {
-            sb.AppendLine($"> Extracts information from {refRes.ReferenceType.Name} objects.");
-        }
-        else
-        {
-            sb.AppendLine($"> {method.Description}");
-        }
+
+        sb.AppendLine($"> {method.Description}");
         
         if (method is IAdditionalDescription addDesc)
         {

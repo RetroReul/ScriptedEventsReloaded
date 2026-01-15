@@ -15,7 +15,7 @@ public class RoleInfoMethod : ReturningMethod<TextValue>, IReferenceResolvingMet
 {
     public Type ReferenceType => typeof(PlayerRoleBase);
 
-    public override string Description => null!;
+    public override string Description => IReferenceResolvingMethod.Desc.Get(this);
     
     public override Argument[] ExpectedArguments { get; } =
     [

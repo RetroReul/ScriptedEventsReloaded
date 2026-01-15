@@ -15,16 +15,17 @@ public class DurationArgument(string name) : Argument(name)
     [UsedImplicitly]
     public DynamicTryGet<TimeSpan> GetConvertSolution(BaseToken token)
     {
+        Result rs = $"Value '{token.RawRep}' is not a duration.";
         if (token is not IValueToken valueToken || !valueToken.CanReturn<DurationValue>(out var get))
         {
-            return $"Value '{token.RawRep}' is not a duration.";
+            return rs;
         }
 
         if (valueToken.IsConstant)
         {
-            return get().OnSuccess(v => v.Value);
+            return get().OnSuccess(v => v.Value, rs);
         }
         
-        return new(() => get().OnSuccess(v => v.Value));
+        return new(() => get().OnSuccess(v => v.Value, rs));
     }
 }

@@ -13,7 +13,7 @@ namespace SER.Code.MethodSystem.Methods.ItemMethods;
 [UsedImplicitly]
 public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
 {
-    public override string Description => null!;
+    public override string Description => IReferenceResolvingMethod.Desc.Get(this);
 
     public override Type[] ReturnTypes => [typeof(TextValue), typeof(PlayerValue), typeof(BoolValue)];
     public Type ReferenceType => typeof(Item);

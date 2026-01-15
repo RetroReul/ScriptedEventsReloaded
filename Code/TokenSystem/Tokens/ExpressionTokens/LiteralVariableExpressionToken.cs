@@ -7,7 +7,7 @@ namespace SER.Code.TokenSystem.Tokens.ExpressionTokens;
 
 public class LiteralVariableExpressionToken : ExpressionToken
 {
-    private MustSet<LiteralVariableToken> _varToken = null!;
+    private Safe<LiteralVariableToken> _varToken;
     
     protected override IParseResult InternalParse(BaseToken[] tokens)
     {

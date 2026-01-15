@@ -27,9 +27,9 @@ public class TextArgument(string name) : Argument(name)
 
         if (valToken.IsConstant)
         {
-            return get().OnSuccess(v => v.StringRep);
+            return get().OnSuccess(v => v.StringRep, null);
         }
 
-        return new(() => get().OnSuccess(v => v.StringRep));
+        return new(() => get().OnSuccess(v => v.StringRep, null));
     }
 }
