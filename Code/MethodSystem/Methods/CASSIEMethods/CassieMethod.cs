@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods;
@@ -65,24 +66,12 @@ public class CassieMethod : SynchronousMethod
                 }
             }
         }
-
-        if (string.IsNullOrEmpty(translation))
-        {
-            LabApi.Features.Wrappers.Cassie.Message(
-                message, 
-                true, 
-                isNoisy
-            );
-        }
-        else
-        {
-            LabApi.Features.Wrappers.Cassie.Message(
-                message, 
-                true, 
-                isNoisy, 
-                true,
-                translation
-            );
-        }
+        
+        // todo: check if this glitchScale works as intended
+        Announcer.Message(
+            message, 
+            translation,
+            glitchScale: isNoisy ? 1 : 0
+        );
     }
 }
