@@ -1,6 +1,4 @@
-﻿using JetBrains.Annotations;
-
-namespace SER.Code.ContextSystem.Interfaces;
+﻿namespace SER.Code.ContextSystem.Interfaces;
 
 public interface IExtendableStatement
 {

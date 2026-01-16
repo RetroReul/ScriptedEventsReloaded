@@ -610,7 +610,7 @@ public class HelpCommand : ICommand
         var properties = PlayerExpressionToken.PropertyInfoMap;
         foreach (var (property, info) in properties.Select(kvp => (kvp.Key, kvp.Value)))
         {
-            sb.Append($"{property.ToString().LowerFirst()} -> {info.ReturnType.Name}");
+            sb.Append($"{property.ToString().LowerFirst()} -> {info.ReturnType}");
             sb.Append(info.Description is not null ? $" | {info.Description}\n" : "\n");
         }
 

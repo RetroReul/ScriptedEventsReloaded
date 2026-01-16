@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using SER.Code.Helpers.Extensions;
+﻿using SER.Code.Helpers.Extensions;
 using SER.Code.MethodSystem.Methods.ScriptMethods;
 using SER.Code.ScriptSystem.Structures;
 
