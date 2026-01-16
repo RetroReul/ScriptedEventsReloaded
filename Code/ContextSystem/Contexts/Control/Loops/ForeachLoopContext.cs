@@ -96,7 +96,7 @@ public class ForeachLoopContext : LoopContext, IAcceptOptionalVariableDefinition
         
         _itemIterationVariableToken = itemToken;
         
-        if (variableTokens.LastOrDefault() is not {} indexToken) return true;
+        if (variableTokens.LastOrDefault() is not {} indexToken || indexToken == itemToken) return true;
 
         if (!indexToken.ValueType.IsAssignableFrom(typeof(NumberValue)))
         {
