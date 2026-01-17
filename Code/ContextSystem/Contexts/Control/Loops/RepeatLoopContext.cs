@@ -16,8 +16,8 @@ namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 public class RepeatLoopContext : LoopContextWithSingleIterationVariable<NumberValue>, IKeywordContext, IAcceptOptionalVariableDefinitions
 {
     private readonly Result _rs = "Cannot create 'repeat' loop.";
-    private Func<TryGet<uint>>? _repeatCountExpression = null;
-    private uint? _repeatCount = null;
+    private Func<TryGet<ulong>>? _repeatCountExpression = null;
+    private ulong? _repeatCount = null;
 
     public override Dictionary<IExtendableStatement.Signal, Func<IEnumerator<float>>> RegisteredSignals { get; } = [];
     
@@ -94,7 +94,7 @@ public class RepeatLoopContext : LoopContextWithSingleIterationVariable<NumberVa
             _repeatCount = val;
         }
 
-        for (var i = 0; i < _repeatCount.Value; i++)
+        for (ulong i = 0; i < _repeatCount.Value; i++)
         {
             SetVariable(i+1);
             var coro = RunChildren();

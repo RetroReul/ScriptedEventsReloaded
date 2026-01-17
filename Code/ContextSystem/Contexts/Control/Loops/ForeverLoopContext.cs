@@ -34,7 +34,7 @@ public class ForeverLoopContext : LoopContextWithSingleIterationVariable<NumberV
 
     protected override IEnumerator<float> Execute()
     {
-        uint iteration = 0;
+        ulong iteration = 0;
         while (true)
         {
             SetVariable(++iteration);

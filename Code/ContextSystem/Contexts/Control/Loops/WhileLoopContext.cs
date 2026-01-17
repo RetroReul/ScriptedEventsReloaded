@@ -50,7 +50,7 @@ public class WhileLoopContext : LoopContextWithSingleIterationVariable<NumberVal
 
     protected override IEnumerator<float> Execute()
     {
-        uint iteration = 0;
+        ulong iteration = 0;
         while (GetExpressionResult())
         {
             SetVariable(++iteration);
