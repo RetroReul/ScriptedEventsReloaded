@@ -29,7 +29,7 @@ public class DeletePickupMethod : SynchronousMethod, ICanError
         var obj = Args.GetReference<Pickup>("pickup/projectile reference");
         
         if (!NetworkServer.spawned.ContainsValue(obj.NetworkIdentity))
-            throw new ScriptRuntimeError(ErrorReasons[0]);
+            throw new ScriptRuntimeError(this, ErrorReasons[0]);
         
         obj.Destroy();
     }
