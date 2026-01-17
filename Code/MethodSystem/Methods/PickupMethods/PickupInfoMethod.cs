@@ -1,16 +1,17 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
 using SER.Code.Helpers.Exceptions;
 using SER.Code.MethodSystem.BaseMethods;
+using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
 [UsedImplicitly]
-public class PickupInfoMethod : ReturningMethod
+public class PickupInfoMethod : ReturningMethod, IReferenceResolvingMethod
 {
     public override string Description => "Returns information about a pickup.";
 
@@ -21,6 +22,8 @@ public class PickupInfoMethod : ReturningMethod
         typeof(ReferenceValue<Room>),
         typeof(NumberValue)
     ]);
+
+    public Type ReferenceType => typeof(Pickup);
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -35,7 +38,8 @@ public class PickupInfoMethod : ReturningMethod
             Option.Reference<Room>("room"),
             "positionX",
             "positionY",
-            "positionZ"
+            "positionZ",
+            "weight"
         )
     ];
 
@@ -57,6 +61,7 @@ public class PickupInfoMethod : ReturningMethod
             "positionx" => new NumberValue((decimal)pickup.Position.x),
             "positiony" => new NumberValue((decimal)pickup.Position.y),
             "positionz" => new NumberValue((decimal)pickup.Position.z),
+            "weight" => new NumberValue((decimal)pickup.Weight),
             _ => throw new AndrzejFuckedUpException("out of range")
         };
     }

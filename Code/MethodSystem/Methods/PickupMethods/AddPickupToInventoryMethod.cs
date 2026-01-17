@@ -25,9 +25,8 @@ public class AddPickupToInventoryMethod : SynchronousMethod, IAdditionalDescript
         var player = Args.GetPlayer("player");
         var pickup = Args.GetReference<Pickup>("pickup");
 
-        if (!player.IsInventoryFull)
-        {
-            player.AddItem(pickup);
-        }
+        if (player.IsInventoryFull) return;
+        
+        player.AddItem(pickup);
     }
 }
