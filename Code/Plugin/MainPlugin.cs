@@ -35,15 +35,16 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
     public record Contributor(string Name, Contribution Contribution, string? Id = null);
 
     [Flags]
-    public enum Contribution : byte
+    public enum Contribution : ushort
     {
-        LeadDeveloper = 1 << 7,
-        Developer = 1 << 6,
-        QualityAssurance = 1 << 5,
-        Sponsor = 1 << 4,
-        Betatester = 1 << 3,
-        EarlyAdopter = 1 << 2,
-        TechSupport = 1 << 1
+        LeadDeveloper = 1 << 8,
+        Developer = 1 << 7,
+        QualityAssurance = 1 << 6,
+        Sponsor = 1 << 5,
+        Betatester = 1 << 4,
+        EarlyAdopter = 1 << 3,
+        TechSupport = 1 << 2,
+        LegacyDeveloper = 1 << 1
     }
 
     public static Contributor[] Contributors =>
@@ -55,7 +56,8 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         new("Jraylor", Contribution.Sponsor),
         new("Luke", Contribution.Sponsor | Contribution.Betatester),
         new("Raging Tornado", Contribution.Betatester),
-        new("Saskyc", Contribution.TechSupport)
+        new("Saskyc", Contribution.TechSupport),
+        new("Thunder", Contribution.LegacyDeveloper, "76561198199188486@steam")
     ];
 
     public override void Enable()
