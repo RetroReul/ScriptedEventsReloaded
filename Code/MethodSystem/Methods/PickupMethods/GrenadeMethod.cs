@@ -1,0 +1,40 @@
+﻿using InventorySystem;
+using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
+using SER.Code.ArgumentSystem.Arguments;
+using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.Helpers.Exceptions;
+using SER.Code.MethodSystem.BaseMethods;
+using SER.Code.MethodSystem.MethodDescriptors;
+using Object = UnityEngine.Object;
+using ThrowableItem = InventorySystem.Items.ThrowableProjectiles.ThrowableItem;
+
+namespace SER.Code.MethodSystem.Methods.PickupMethods;
+
+[UsedImplicitly]
+public class GrenadeMethod : ReferenceReturningMethod<Projectile>, IAdditionalDescription
+{
+    public override string Description => "Creates a new grenade projectile to later spawn.";
+
+    public string AdditionalDescription => "To spawn SCP-018, SCP-2176 or the grenades' unactivated versions, use the Pickup method.";
+
+    public override Argument[] ExpectedArguments { get; } =
+    [
+        new OptionsArgument("grenade type",
+            "GrenadeHE",
+            "GrenadeFlash"),
+    ];
+
+    public override void Execute()
+    {
+        if (!Enum.TryParse(Args.GetOption("grenade type"), true, out ItemType itemType) ||
+            !InventoryItemLoader.TryGetItem<ThrowableItem>(itemType, out var throwable))
+            throw new TosoksFuckedUpException("Either Northwood fucked up or you're a wizard. Congratulations!");
+        
+        var item = Object.Instantiate(throwable.Projectile) ?? throw new TosoksFuckedUpException("Somehow the prefab failed to copy??? I don't even know who to blame tbh");
+        item.Info = new(itemType, throwable.Weight);
+        item.PreviousOwner = new(Server.Host?.ReferenceHub);
+        
+        ReturnValue = Projectile.Get(item);
+    }
+}
