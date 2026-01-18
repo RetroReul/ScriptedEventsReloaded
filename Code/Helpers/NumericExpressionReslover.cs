@@ -82,6 +82,12 @@ public static class NumericExpressionReslover
                     AppendRaw("==");
                     break;
                 }
+                // great addition XD
+                case { RawRep: "isnt" }:
+                {
+                    AppendRaw("!=");
+                    break;
+                }
                 case { RawRep: "and" }:
                 {
                     AppendRaw("&&");
