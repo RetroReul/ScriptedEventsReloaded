@@ -77,20 +77,36 @@ public static class NumericExpressionReslover
                     AppendRaw(tmp);
                     continue;
                 }
+                case { RawRep: "is" }:
+                {
+                    AppendRaw("==");
+                    break;
+                }
+                case { RawRep: "and" }:
+                {
+                    AppendRaw("&&");
+                    break;
+                }
+                case { RawRep: "or" }:
+                {
+                    AppendRaw("||");
+                    break;
+                }
                 default:
+                {
                     AppendRaw(token.RawRep);
                     break;
+                }
             }
         }
-
-        var rawRep = sb.ToString();
-        var expression = new Expression(rawRep, EvaluateOptions.None);
+        
+        var expression = new Expression(sb.ToString(), EvaluateOptions.None);
 
         // Now we have the expression string and a variables dictionary.
         return new CompiledExpression(
             expression, 
             variables, 
-            rawRep
+            initial
         );
 
         string MakeTempName()
