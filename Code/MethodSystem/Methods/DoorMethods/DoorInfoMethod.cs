@@ -17,7 +17,7 @@ public class DoorInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMe
 {
     public Type ReferenceType => typeof(Door);
     
-    public override TypeOfValue LiteralReturnTypes => new([
+    public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(TextValue), 
         typeof(BoolValue), 
         typeof(NumberValue)

@@ -25,7 +25,7 @@ public class IntercomInfoMethod : ReturningMethod
         )
     ];
 
-    public override TypeOfValue Returns => new([
+    public override TypeOfValue Returns => new TypesOfValue([
         typeof(TextValue),
         typeof(PlayerValue),
         typeof(DurationValue)

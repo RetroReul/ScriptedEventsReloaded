@@ -16,7 +16,7 @@ public class DamageInfoMethod : ReturningMethod, IReferenceResolvingMethod, IAdd
 {
     public Type ReferenceType => typeof(DamageHandlerBase);
     
-    public override TypeOfValue Returns => new([
+    public override TypeOfValue Returns => new TypesOfValue([
         typeof(TextValue), 
         typeof(ReferenceValue)
     ]);

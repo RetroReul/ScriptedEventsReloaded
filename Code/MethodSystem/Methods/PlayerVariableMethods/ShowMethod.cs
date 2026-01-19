@@ -37,7 +37,7 @@ public class ShowMethod : ReturningMethod<TextValue>, ICanError
 
         if (!PlayerExpressionToken.PropertyInfoMap.TryGetValue(property, out var propInfo) ||
             propInfo is not { ReturnType: var type, Handler: var handler } ||
-            !typeof(LiteralValue).IsAssignableFrom(type)) 
+            !typeof(LiteralValue).IsAssignableFrom(type.Type)) 
         {
             throw new ScriptRuntimeError(this, ErrorReasons[0]);
         }

@@ -16,7 +16,7 @@ public class RespawnWaveInfoMethod : LiteralValueReturningMethod, IReferenceReso
 {
     public Type ReferenceType => typeof(RespawnWave);
 
-    public override TypeOfValue LiteralReturnTypes => new([
+    public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(NumberValue), 
         typeof(TextValue)
     ]);

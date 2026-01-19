@@ -10,7 +10,7 @@ internal class FirearmItemInfoMethod : ReturningMethod
 {
     public override string Description => "Returns info about provided firearm";
 
-    public override TypeOfValue Returns => new([
+    public override TypeOfValue Returns => new TypesOfValue([
         typeof(BoolValue),
         typeof(NumberValue)
     ]);

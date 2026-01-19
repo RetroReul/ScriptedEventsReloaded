@@ -10,7 +10,7 @@ internal class UsableItemInfoMethod : ReturningMethod
 {
     public override string Description => "Returns information about provided usable item, like Painkillers, Medkit, etc.";
 
-    public override TypeOfValue Returns => new([
+    public override TypeOfValue Returns => new TypesOfValue([
         typeof(NumberValue),
         typeof(BoolValue)
     ]);

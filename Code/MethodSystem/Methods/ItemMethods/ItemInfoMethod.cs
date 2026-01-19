@@ -17,7 +17,7 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
     
     public Type ReferenceType => typeof(Item);
 
-    public override TypeOfValue Returns => new([
+    public override TypeOfValue Returns => new TypesOfValue([
         typeof(TextValue),
         typeof(PlayerValue),
         typeof(BoolValue)

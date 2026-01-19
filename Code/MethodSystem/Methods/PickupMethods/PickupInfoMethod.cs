@@ -15,7 +15,7 @@ public class PickupInfoMethod : ReturningMethod, IReferenceResolvingMethod
 {
     public override string Description => "Returns information about a pickup.";
 
-    public override TypeOfValue Returns => new([
+    public override TypeOfValue Returns => new TypesOfValue([
         typeof(PlayerValue),
         typeof(BoolValue),
         typeof(TextValue),

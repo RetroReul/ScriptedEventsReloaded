@@ -1,36 +1,41 @@
 ﻿namespace SER.Code.ValueSystem;
 
-public class TypeOfValue
+public abstract class TypeOfValue
 {
-    public TypeOfValue(Type[] required)
+    protected TypeOfValue(Type[] required)
     {
         Required = required;
     }
     
-    public TypeOfValue(Type required)
+    protected TypeOfValue(Type? required)
     {
-        Required = [required];
-    }
-
-    protected TypeOfValue()
-    {
-        Required = null;
+        if (required is null) Required = null;
+        else Required = [required];
     }
     
     public Type[]? Required { get; }
     
     public bool AreKnown(out Type[] known) => (known = Required!) is not null;
-    
-    public bool DefinitelyAllows<T>() where T : Value => DefinitelyAllows(typeof(T));
-    
-    public bool DefinitelyAllows(Type checkT)
-    {
-        if (Required is null) return false;
-        return Required.All(requiredT => requiredT.IsAssignableFrom(checkT));
-    }
+
+    public abstract override string ToString();
 }
 
-public class TypeOfValue<T>() : TypeOfValue(typeof(T))
-    where T : Value;
+public class TypesOfValue(Type[] types) : TypeOfValue(types)
+{
+    private readonly Type[] _types = types;
+    public override string ToString() => $"{string.Join(" or ", _types.Select(Value.FriendlyName))} value";
+}
 
-public class UnknownTypeOfValue : TypeOfValue;
+public class UnknownTypeOfValue() : TypeOfValue((Type?)null)
+{
+    public override string ToString() => "unknown value";
+}
+
+public class SingleTypeOfValue(Type type) : TypeOfValue(type)
+{
+    public readonly Type Type = type;
+    public override string ToString() => $"{Value.FriendlyName(Type)} value";
+}
+
+public class TypeOfValue<T>() : SingleTypeOfValue(typeof(T))
+    where T : Value;

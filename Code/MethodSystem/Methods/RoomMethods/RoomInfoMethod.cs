@@ -16,7 +16,7 @@ public class RoomInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMe
 {
     public Type ReferenceType => typeof(Room);
     
-    public override TypeOfValue LiteralReturnTypes => new([
+    public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(TextValue), 
         typeof(NumberValue)
     ]);

@@ -43,7 +43,7 @@ public class FunctionDefinitionContext :
 
             if (varTypeToken == null) return null;
 
-            return new TypeOfValue(varTypeToken.CreateInstance<VariableToken>().ValueType);
+            return new SingleTypeOfValue(varTypeToken.CreateInstance<VariableToken>().ValueType);
         }
     }
 
