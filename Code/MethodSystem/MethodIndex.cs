@@ -99,7 +99,7 @@ public static class MethodIndex
         
         var closestMethod = NameToMethodIndex.Keys
             .OrderBy(x => LevenshteinDistance(x, name))
-            .First();
+            .FirstOrDefault();
         
         return $"There is no method with name '{name}'. Did you mean '{closestMethod ?? "<error>"}'?";
     }
