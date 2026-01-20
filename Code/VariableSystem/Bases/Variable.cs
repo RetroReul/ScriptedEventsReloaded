@@ -9,6 +9,8 @@ public abstract class Variable
 {
     public abstract string Name { get; }
 
+    public abstract char Prefix { get; }
+    
     public abstract Value BaseValue { get; }
 
     public static Variable Create(string name, Value value)
@@ -23,6 +25,8 @@ public abstract class Variable
                 $"CreateVariable called on invalid value type {value.GetType().AccurateName}")
         };
     }
+    
+    public override string ToString() => $"{Prefix}{Name}";
 }
 
 public abstract class Variable<TValue> : Variable
