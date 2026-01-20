@@ -100,7 +100,7 @@ public static class Contexter
             extendable.RegisteredSignals[treeExtenderInfo.Extends] = treeExtenderContext.Run;
             statementStack.Pop();
             statementStack.Push(treeExtenderContext);
-            return context.VerifyCurrentState().HasErrored(out error) ? error : true;
+            return context.VerifyCurrentState().HasErrored(out error) ? rs + error : true;
         }
 
         if (context.VerifyCurrentState().HasErrored(out error)) 
