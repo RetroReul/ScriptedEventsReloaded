@@ -49,15 +49,46 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
     public static Contributor[] Contributors =>
     [
-        new(Instance.Author, Contribution.LeadDeveloper, "76561198361176072@steam"),
-        new("Whitty985playz", Contribution.QualityAssurance | Contribution.EarlyAdopter),
-        new("Tosoks67", Contribution.Developer | Contribution.Betatester, "76561199175834203@steam"),
-        new("Krzysiu Wojownik", Contribution.QualityAssurance | Contribution.Developer),
-        new("Jraylor", Contribution.Sponsor),
-        new("Luke", Contribution.Sponsor | Contribution.Betatester),
-        new("Raging Tornado", Contribution.Betatester),
-        new("Saskyc", Contribution.TechSupport),
-        new("Thunder", Contribution.LegacyDeveloper, "76561198199188486@steam")
+        new(
+            Instance.Author, 
+            Contribution.LeadDeveloper, 
+            "76561198361176072@steam"
+        ),
+        new(
+            "Whitty985playz", 
+            Contribution.QualityAssurance | Contribution.EarlyAdopter, 
+            "76561198859902154@steam"
+        ),
+        new(
+            "Tosoks67", 
+            Contribution.Developer | Contribution.Betatester, 
+            "76561199175834203@steam"
+        ),
+        new(
+            "Krzysiu Wojownik", 
+            Contribution.QualityAssurance | Contribution.Developer
+        ),
+        new(
+            "Jraylor", 
+            Contribution.Sponsor
+        ),
+        new(
+            "Luke", 
+            Contribution.Sponsor | Contribution.Betatester
+        ),
+        new(
+            "Raging Tornado", 
+            Contribution.Betatester
+        ),
+        new(
+            "Saskyc", 
+            Contribution.TechSupport
+        ),
+        new(
+            "Thunder", 
+            Contribution.LegacyDeveloper, 
+            "76561198199188486@steam"
+        )
     ];
 
     public override void Enable()
