@@ -14,12 +14,12 @@ public class LogVarMethod : ReturningMethod<TextValue>
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new VariableArgument<LiteralVariable>("variable")
+        new VariableArgument("variable")
     ];
     
     public override void Execute()
     {
-        var variable = Args.GetVariable<LiteralVariable>("variable");
-        ReturnValue = $"{variable} = {variable.Value}";
+        var variable = Args.GetVariable("variable");
+        ReturnValue = $"{variable} = {(variable is LiteralVariable lv ? lv.Value : variable.BaseValue)}";
     }
 }
