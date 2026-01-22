@@ -1,10 +1,13 @@
-﻿namespace SER.Code.Examples;
+﻿using JetBrains.Annotations;
 
-public class ChaosCoinScript : IExample
+namespace SER.Code.Examples;
+
+[UsedImplicitly]
+public class ChaosCoinScript : Example
 {
-    public string Name => "chaosCoin";
+    public override string Name => "chaosCoin";
 
-    public string Content =>
+    public override string Content =>
         """
         !-- OnEvent FlippingCoin
 
@@ -16,7 +19,7 @@ public class ChaosCoinScript : IExample
         # "coin locked" is a property of this player, storing whether a coin can be used.
         # this is because some effects of the coin take time, and we DO NOT want to
         # have the coin be used again WHILE a different effect is still ongoing
-        if {PlayerDataExists @evPlayer "coin locked"}
+        if {HasPlayerData @evPlayer "coin locked"}
             if {GetPlayerData @evPlayer "coin locked"}
                 Hint @evPlayer 5s "{$hintInfo}You can't use the coin for now!<br><size=20>Come back when the current effect has finished."
                 IsAllowed false

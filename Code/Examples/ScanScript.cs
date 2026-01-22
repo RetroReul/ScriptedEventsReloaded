@@ -1,10 +1,10 @@
 ﻿namespace SER.Code.Examples;
 
-public class ScanScript : IExample
+public class ScanScript : Example
 {
-    public string Name => "scan";
+    public override string Name => "scan";
 
-    public string Content =>
+    public override string Content =>
         """
         # scan beginning announcement
         Cassie jingle "a facility scan is commencing" "A facility scan is commencing..."

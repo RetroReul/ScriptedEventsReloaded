@@ -31,6 +31,11 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
+        if (NumericExpressionReslover.IsValidForExpression(token).HasErrored(out var error))
+        {
+            return TryAddTokenRes.Error(error);
+        }
+        
         _condition.Add(token);
         return TryAddTokenRes.Continue();
     }
