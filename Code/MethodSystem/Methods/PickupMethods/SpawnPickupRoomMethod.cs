@@ -35,7 +35,7 @@ public class SpawnPickupRoomMethod : SynchronousMethod, ICanError
     public override void Execute()
     {
         var obj = Args.GetReference<Pickup>("pickup/projectile reference");
-        var room = Args.GetRoom("room to teleport to");
+        var room = Args.GetRoom("room to spawn pickup in");
         var pos = room.Transform.TransformPoint(new(
             Args.GetFloat("relative x"),
             Args.GetFloat("relative y"),
