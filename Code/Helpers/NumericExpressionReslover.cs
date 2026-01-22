@@ -13,6 +13,17 @@ namespace SER.Code.Helpers;
 
 public static class NumericExpressionReslover
 {
+    public static Result IsValidForExpression(BaseToken token)
+    {
+        if (ParseToken(token, new(), new(), "Expression is invalid.", 0)
+            .HasErrored(out var err))
+        {
+            return err;
+        }
+        
+        return true;
+    }
+    
     public static TryGet<CompiledExpression> CompileExpression(string expression, Script scr)
     {
         Result mainErr = $"Condition '{expression}' is invalid.";
@@ -33,76 +44,16 @@ public static class NumericExpressionReslover
 
         var variables = new Dictionary<string, DynamicTryGet<object>>(StringComparer.OrdinalIgnoreCase);
         var sb = new StringBuilder();
-        int tempId = 0;
+        uint tempId = 0;
 
         foreach (var token in tokens)
         {
+            tempId++;
             Log.D($"parsing token {token.RawRep} ({token.GetType().AccurateName})");
-            switch (token)
+            
+            if (ParseToken(token, variables, sb, mainErr, tempId).HasErrored(out var err))
             {
-                case IValueToken valueToken when valueToken.CanReturn<LiteralValue>(out var get):
-                {
-                    var tmp = MakeTempName();
-                    
-                    if (valueToken.IsConstant)
-                    {
-                        variables[tmp] = get().OnSuccess(s => s.Value, mainErr);
-                    }
-                    else
-                    {
-                        variables[tmp] = new(() => get().OnSuccess(s => s.Value, mainErr));
-                    }
-                    
-                    AppendRaw(tmp);
-                    continue;
-                }
-                case ParenthesesToken parentheses:
-                {
-                    var tmp = MakeTempName();
-                    variables[tmp] = new(() =>
-                    {
-                        if (parentheses.TryGetTokens().HasErrored(out var tokenizeError, out var tokensInParentheses))
-                        {
-                            return mainErr + tokenizeError;
-                        }
-                
-                        if (CompileExpression(tokensInParentheses).HasErrored(out var conditonError, out var value))
-                        {
-                            return mainErr + conditonError;
-                        }
-                        
-                        return value.Evaluate();
-                    });
-                    
-                    AppendRaw(tmp);
-                    continue;
-                }
-                case { RawRep: "is" }:
-                {
-                    AppendRaw("==");
-                    break;
-                }
-                // great addition XD
-                case { RawRep: "isnt" or "isn't" or "isnot" }:
-                {
-                    AppendRaw("!=");
-                    break;
-                }
-                case { RawRep: "and" }:
-                {
-                    AppendRaw("&&");
-                    break;
-                }
-                case { RawRep: "or" }:
-                {
-                    AppendRaw("||");
-                    break;
-                }
-                default:
-                {
-                    AppendRaw(token.RawRep);
-                    break;
-                }
+                return err;
             }
         }
         
@@ -114,17 +65,6 @@ public static class NumericExpressionReslover
             variables, 
             initial
         );
-
-        string MakeTempName()
-        {
-            return "value" + (tempId++).ToString(CultureInfo.InvariantCulture);
-        }
-
-        void AppendRaw(string s)
-        {
-            if (sb.Length > 0) sb.Append(' ');
-            sb.Append(s);
-        }
     }
 
     public readonly struct CompiledExpression(
@@ -156,6 +96,98 @@ public static class NumericExpressionReslover
             {
                 return $"Expression '{rawRepresentation}' is invalid.";
             }
+        }
+    }
+
+    private static Result ParseToken(
+        BaseToken token,
+        Dictionary<string, DynamicTryGet<object>> variables,
+        StringBuilder sb, 
+        Result mainErr,
+        uint tempId
+    )
+    {
+        switch (token)
+        {
+            case IValueToken valueToken when valueToken.CanReturn<LiteralValue>(out var get):
+            {
+                var tmp = MakeTempName();
+                
+                if (valueToken.IsConstant)
+                {
+                    variables[tmp] = get().OnSuccess(s => s.Value, mainErr);
+                }
+                else
+                {
+                    variables[tmp] = new(() => get().OnSuccess(s => s.Value, mainErr));
+                }
+                
+                AppendRaw(tmp);
+                return true;
+            }
+            case ParenthesesToken parentheses:
+            {
+                var tmp = MakeTempName();
+                variables[tmp] = new(() =>
+                {
+                    if (parentheses.TryGetTokens().HasErrored(out var tokenizeError, out var tokensInParentheses))
+                    {
+                        return mainErr + tokenizeError;
+                    }
+            
+                    if (CompileExpression(tokensInParentheses).HasErrored(out var conditonError, out var value))
+                    {
+                        return mainErr + conditonError;
+                    }
+                    
+                    return value.Evaluate();
+                });
+                
+                AppendRaw(tmp);
+                return true;
+            }
+            case { RawRep: "not" }:
+            case SymbolToken:
+            {
+                AppendRaw(token.RawRep);
+                return true;
+            }
+            case { RawRep: "is" }:
+            {
+                AppendRaw("==");
+                return true;
+            }
+            // great addition XD
+            case { RawRep: "isnt" or "isn't" or "isnot" }:
+            {
+                AppendRaw("!=");
+                return true;
+            }
+            case { RawRep: "and" }:
+            {
+                AppendRaw("&&");
+                return true;
+            }
+            case { RawRep: "or" }:
+            {
+                AppendRaw("||");
+                return true;
+            }
+            default:
+            {
+                return mainErr + $"{token} cannot be used in an expression. Maybe you made a typo?";
+            }
+        }
+        
+        string MakeTempName()
+        {
+            return "value" + tempId.ToString(CultureInfo.InvariantCulture);
+        }
+
+        void AppendRaw(string s)
+        {
+            if (sb.Length > 0) sb.Append(' ');
+            sb.Append(s);
         }
     }
 }

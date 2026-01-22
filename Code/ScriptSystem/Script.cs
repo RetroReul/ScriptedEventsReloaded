@@ -124,6 +124,13 @@ public class Script
         Executor = executor ?? ScriptExecutor.Get()
     };
 
+    public static Script CreateAnonymous(string name, string content) => new()
+    {
+        Name = ScriptName.InitUnchecked(name),
+        Content = content,
+        Executor = ScriptExecutor.Get()
+    };
+
     public static int StopAll()
     {
         var count = RunningScripts.Count;
@@ -285,15 +292,23 @@ public class Script
         Contexts = contexts;
         return true;
     }
+    
+    public Result Compile()
+    {
+        if (DefineLines().HasErrored(out var err) ||
+               SliceLines().HasErrored(out err) ||
+               TokenizeLines().HasErrored(out err) ||
+               ContextLines().HasErrored(out err))
+        {
+            return err;
+        }
+
+        return true;
+    }
 
     private IEnumerator<float> InternalExecute()
     {
-        if (
-            DefineLines().HasErrored(out var err) || 
-            SliceLines().HasErrored(out err) ||
-            TokenizeLines().HasErrored(out err) || 
-            ContextLines().HasErrored(out err)
-        )
+        if (Compile().HasErrored(out var err))
         {
             throw new ScriptCompileError(err);
         }

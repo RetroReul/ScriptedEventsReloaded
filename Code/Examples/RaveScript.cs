@@ -1,10 +1,10 @@
 ﻿namespace SER.Code.Examples;
 
-public class RaveScript : IExample
+public class RaveScript : Example
 {
-    public string Name => "rave";
+    public override string Name => "rave";
 
-    public string Content =>
+    public override string Content =>
         """
         # confirm that @sender variable was created
         if {VarExists @sender} == false

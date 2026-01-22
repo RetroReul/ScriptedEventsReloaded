@@ -95,8 +95,8 @@ public static class FileSystem
     public static void GenerateExamples()
     {
         var examples = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => typeof(IExample).IsAssignableFrom(t) && !t.IsAbstract)
-            .Select(t => t.CreateInstance<IExample>());
+            .Where(t => typeof(Example).IsAssignableFrom(t) && !t.IsAbstract)
+            .Select(t => t.CreateInstance<Example>());
 
         var exampleDir = Directory.CreateDirectory(Path.Combine(MainDirPath, "Example Scripts"));
         foreach (var example in examples)

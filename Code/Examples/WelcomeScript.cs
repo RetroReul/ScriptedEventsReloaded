@@ -1,10 +1,10 @@
 ﻿namespace SER.Code.Examples;
 
-public class WelcomeScript : IExample
+public class WelcomeScript : Example
 {
-    public string Name => "welcome";
+    public override string Name => "welcome";
 
-    public string Content =>
+    public override string Content =>
         """
         # this script is connected to the 'Joined' event, which means that this script will run when a player joins
         # this event provides us with the @evPlayer variable with the player who just joined

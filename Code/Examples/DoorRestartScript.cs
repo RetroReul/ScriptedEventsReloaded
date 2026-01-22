@@ -1,10 +1,10 @@
 ﻿namespace SER.Code.Examples;
 
-public class DoorRestartScript : IExample
+public class DoorRestartScript : Example
 {
-    public string Name => "doorRestart";
+    public override string Name => "doorRestart";
 
-    public string Content =>
+    public override string Content =>
         """
         # initial cassie announcement
         Cassie jingle "ATTENTIONALLPERSONNEL . DOOR CONTROL CONSOLE MALFUNCTION DETECTED . INITIALIZING REACTIVATION SEQUENCE . ATTEMPTING FULL SYSTEM REACTIVATION IN . 3 . 2 . 1" "Attention all personnel. Door control console malfunction detected.<split>Initializing reactivation sequence. Attempting full system reactivation in..."
