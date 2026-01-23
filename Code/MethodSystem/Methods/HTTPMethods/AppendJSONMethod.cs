@@ -35,6 +35,12 @@ public class AppendJSONMethod : ReferenceReturningMethod<JObject>, ICanError
         var jsonToAddValueTo = Args.GetReference<JObject>("JSON to add value to");
         var key = Args.GetText("key");
         var value = Args.GetValue<LiteralValue>("value");
+        
+        if (value is TextValue textValue)
+        {
+            jsonToAddValueTo[key] = textValue.ParsedValue(Script);
+            return;
+        }
 
         try
         {
