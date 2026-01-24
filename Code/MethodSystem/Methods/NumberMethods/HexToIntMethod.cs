@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Exiled.Permissions.Commands.Permissions;
 using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;

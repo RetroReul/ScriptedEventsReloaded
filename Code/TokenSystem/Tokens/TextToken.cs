@@ -1,12 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using SER.Code.Helpers;
-using SER.Code.Helpers.Exceptions;
-using SER.Code.Helpers.Extensions;
-using SER.Code.Helpers.ResultSystem;
+﻿using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Slices;
 using SER.Code.TokenSystem.Structures;
-using SER.Code.TokenSystem.Tokens.ExpressionTokens;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.TokenSystem.Tokens;
