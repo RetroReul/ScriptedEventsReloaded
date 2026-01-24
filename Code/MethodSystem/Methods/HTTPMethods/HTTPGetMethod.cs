@@ -38,12 +38,11 @@ public class HTTPGetMethod : YieldingReferenceReturningMethod<JObject>, ICanErro
         using UnityWebRequest webRequest = UnityWebRequest.Get(address);
 
         yield return Timing.WaitUntilDone(webRequest.SendWebRequest());
-
-        if (webRequest.result != UnityWebRequest.Result.Success)
+        
+        if (webRequest.error is { } error)
         {
-            throw new ScriptRuntimeError(
-                this, 
-                $"Address {address} has returned {webRequest.result} ({webRequest.responseCode}): {webRequest.error}"
+            throw new ScriptRuntimeError(this, 
+                $"Address {address} has returned an error: {error}"
             );
         }
 

@@ -50,13 +50,12 @@ public class HTTPPostMethod : SynchronousMethod, ICanError
         request.SetRequestHeader("Content-Type", "application/json");
 
         yield return Timing.WaitUntilDone(request.SendWebRequest());
-
-        Log.Signal($"{request.error} error");
-        if (request.result != UnityWebRequest.Result.Success)
+        
+        if (request.error is { } error)
         {
             throw new ScriptRuntimeError(
-                caller, 
-                $"Address {url} has returned {request.result} ({request.responseCode}): {request.error}"
+                caller,
+                $"Address {url} has returned an error: {error}"
             );
         }
     }
