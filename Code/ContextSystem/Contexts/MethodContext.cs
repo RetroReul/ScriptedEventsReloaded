@@ -37,15 +37,19 @@ public class MethodContext(MethodToken methodToken) : YieldingContext, IMayRetur
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         Log.Debug($"'{Method.Name}' method is now receiving token '{token.RawRep}' ({token.GetType().AccurateName})");
+
+        if (Dispatcher.TryGetValueInfo(token, _providedArguments)
+            .HasErrored(out var error, out var possibleArgumentInfo))
+        {
+            return TryAddTokenRes.Error($"Value '{token.RawRep}' is not a valid argument: {error}");
+        }
         
-        if (Dispatcher.TryGetValueInfo(token, _providedArguments).HasErrored(out var error, out var skeleton))
-            return TryAddTokenRes.Error(
-                $"Value '{token.RawRep}' is not a valid argument: " +
-                $"{error}");
+        if (!possibleArgumentInfo.HasValue) return TryAddTokenRes.Continue();
+        var argInfo = possibleArgumentInfo.Value;
         
-        Log.Debug($"skeleton {skeleton.Name} {skeleton.ArgumentType} registered");
+        Log.Debug($"skeleton {argInfo.Name} {argInfo.ArgumentType} registered");
         
-        Method.Args.Add(skeleton);
+        Method.Args.Add(argInfo);
         _providedArguments++;
         return TryAddTokenRes.Continue();
     }

@@ -50,23 +50,33 @@ public class MethodArgumentDispatcher(Method method)
         throw new AndrzejFuckedUpException($"No suitable GetConvertSolution method found for {argType.GetAccurateName()}.");
     }
 
-    public TryGet<ArgumentValueInfo> TryGetValueInfo(BaseToken token, int index)
+    public TryGet<ArgumentValueInfo?> TryGetValueInfo(BaseToken token, int index)
     {
         Result rs = $"Argument {index + 1} '{token.RawRep}' for method {method.Name} is invalid.";
 
         Argument arg;
         if (index >= method.ExpectedArguments.Length)
         {
-            if (method.ExpectedArguments.LastOrDefault()?.ConsumesRemainingValues != true)
+            if (method.ExpectedArguments.LastOrDefault() is not { ConsumesRemainingValues: true } lastArg)
             {
                 return rs + $"Method does not expect more than {method.ExpectedArguments.Length} arguments.";
             }
             
-            arg = method.ExpectedArguments.Last();
+            arg = lastArg;
         }
         else
         {
             arg = method.ExpectedArguments[index];
+        }
+
+        if (token.RawRep == "_")
+        {
+            if (arg.IsRequired)
+            {
+                return rs + "This argument is required, you cannot skip providing it by using the floor character.";
+            }
+
+            return TryGet<ArgumentValueInfo?>.Success(null);
         }
         
         arg.Script = method.Script;
