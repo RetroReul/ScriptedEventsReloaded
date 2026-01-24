@@ -21,7 +21,7 @@ public class CollectionSlice : Slice
     [
         new('{', '}', CollectionBrackets.Curly),
         new('(', ')', CollectionBrackets.Round),
-        new('"', '"', CollectionBrackets.Quotes),
+        new('"', '"', CollectionBrackets.Quotes)
     ];
 
     public static readonly HashSet<char> CollectionStarters = CollectionSliceInfos
