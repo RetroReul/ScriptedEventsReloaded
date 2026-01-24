@@ -96,6 +96,7 @@ public class BaseToken
                    $"but a '{typeof(T).Name}' value was expected.";
         }
         
+        // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (this is ParenthesesToken parenthesesToken)
         {
             if (parenthesesToken.ParseExpression().HasErrored(out var err, out var result))
