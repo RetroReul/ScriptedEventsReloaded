@@ -15,7 +15,7 @@ public class HexToIntMethod : ReturningMethod<NumberValue>, ICanError, IAddition
 {
     public override string Description => "Parses a hexadecimal number back to a number value";
 
-    public string AdditionalDescription => "Do not include the '#' symbol at the start of the text.";
+    public string AdditionalDescription => "The hex number can start (but doesn't have to) with 0x or #";
 
     public string[] ErrorReasons =>
     [
@@ -29,8 +29,16 @@ public class HexToIntMethod : ReturningMethod<NumberValue>, ICanError, IAddition
 
     public override void Execute()
     {
+        var hex = Args.GetText("hex number");
+        
+        if (hex.StartsWith("0x"))
+            hex = hex.Substring(2);
+        
+        if (hex.StartsWith("#"))
+            hex = hex.Substring(1);
+        
         ReturnValue = int.TryParse(
-            Args.GetText("hex number"), 
+            hex, 
             NumberStyles.HexNumber, 
             NumberFormatInfo.InvariantInfo, 
             out var result) 
