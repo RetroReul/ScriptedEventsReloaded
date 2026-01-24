@@ -37,7 +37,7 @@
             <HintPath>$(SL_DEV_REFERENCES)\0Harmony.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp">
-            <HintPath>$(SL_DEV_REFERENCES)\Assembly-CSharp-Publicized.dll</HintPath>
+            <HintPath>$(SL_DEV_REFERENCES)\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass">
             <HintPath>$(SL_DEV_REFERENCES)\Assembly-CSharp-firstpass.dll</HintPath>
