@@ -18,12 +18,9 @@ public class HTTPGetMethod : YieldingReferenceReturningMethod<JObject>, ICanErro
     public override string Description =>
         "Sends a GET request to a provided URL and returns the response as a JSON object.";
 
-    public string[] ErrorReasons =>
-    [
-        "Fetched value from the URL is not a valid JSON object.",
-        nameof(UnityWebRequest.Result.ConnectionError),
-        nameof(UnityWebRequest.Result.DataProcessingError),
-        nameof(UnityWebRequest.Result.ProtocolError)
+    public string[] ErrorReasons => [
+        ..HTTPPostMethod.HttpErrorReasons, 
+        "Provided response was not a valid JSON object."
     ];
 
     public override Argument[] ExpectedArguments { get; } =
@@ -38,12 +35,11 @@ public class HTTPGetMethod : YieldingReferenceReturningMethod<JObject>, ICanErro
         using UnityWebRequest webRequest = UnityWebRequest.Get(address);
 
         yield return Timing.WaitUntilDone(webRequest.SendWebRequest());
-
-        if (webRequest.result != UnityWebRequest.Result.Success)
+        
+        if (webRequest.error is { } error)
         {
-            throw new ScriptRuntimeError(
-                this, 
-                $"Address {address} has returned {webRequest.result} ({webRequest.responseCode}): {webRequest.error}"
+            throw new ScriptRuntimeError(this, 
+                $"Address {address} has returned an error: {error}"
             );
         }
 

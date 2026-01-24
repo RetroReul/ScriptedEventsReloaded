@@ -14,7 +14,6 @@ using SER.Code.Plugin;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.ValueSystem;
 using MethodToken = SER.Code.TokenSystem.Tokens.MethodToken;
-using ReturningMethod = SER.Code.MethodSystem.BaseMethods.Synchronous.ReturningMethod;
 
 namespace SER.Code.ContextSystem.Contexts;
 
@@ -53,9 +52,12 @@ public class MethodContext(MethodToken methodToken) : YieldingContext, IMayRetur
 
     public override Result VerifyCurrentState()
     {
-        return Result.Assert(_providedArguments >= Method.ExpectedArguments.Count(arg => arg.DefaultValue is null),
+        return Result.Assert(_providedArguments >= Method.ExpectedArguments.Count(arg => arg.IsRequired),
             $"Method '{Method.Name}' is missing required arguments: " +
-            $"{", ".Join(Method.ExpectedArguments.Skip(_providedArguments).Select(arg => arg.Name))}");
+            $"{", ".Join(Method.ExpectedArguments
+                .Skip(_providedArguments)
+                .Where(arg => arg.IsRequired)
+                .Select(arg => arg.Name))}");
     }
 
     protected override IEnumerator<float> Execute()

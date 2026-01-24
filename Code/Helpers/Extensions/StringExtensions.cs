@@ -13,7 +13,7 @@ public static class StringExtensions
     [Pure]
     public static string LowerFirst(this string str)
     {
-        return str.Substring(0, 1).ToLower() + str.Substring(1);
+        return str[0].ToString().ToLower() + str[1..];
     }
 
     // python ahh

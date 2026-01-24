@@ -1,10 +1,8 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
-using SER.Code.Helpers.Exceptions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
-using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.VariableSystem;
 
 namespace SER.Code.MethodSystem.Methods.GeneralVariableMethods;
@@ -21,17 +19,12 @@ public class GlobalVariableMethod : SynchronousMethod, ICanError
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new TokenArgument<VariableToken>("variable to make global")
+        new VariableArgument("variable to make global")
     ];
 
     public override void Execute()
     {
-        var variableToken = Args.GetToken<VariableToken>("variable to make global");
-        if (variableToken.TryGetVariable().HasErrored(out var error, out var variable))
-        {
-            throw new ScriptRuntimeError(this, error);
-        }
-
+        var variable = Args.GetVariable("variable to make global");
         VariableIndex.GlobalVariables.RemoveAll(existingVar => existingVar.Name == variable.Name);
         VariableIndex.GlobalVariables.Add(variable);
     }
