@@ -1,5 +1,8 @@
-﻿namespace SER.Code.Examples;
+﻿using JetBrains.Annotations;
 
+namespace SER.Code.Examples;
+
+[UsedImplicitly]
 public class ScanScript : Example
 {
     public override string Name => "scan";
