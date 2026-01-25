@@ -14,7 +14,7 @@ namespace SER.Code.MethodSystem.Methods.RoomMethods;
 [UsedImplicitly]
 public class RoomInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod
 {
-    public Type ReferenceType => typeof(Room);
+    public Type ResolvesReference => typeof(Room);
     
     public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(TextValue), 

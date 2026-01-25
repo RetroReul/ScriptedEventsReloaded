@@ -7,10 +7,10 @@ namespace SER.Code.MethodSystem.MethodDescriptors;
 /// </summary>
 public interface IReferenceResolvingMethod
 {
-    public Type ReferenceType { get; }
+    public Type ResolvesReference { get; }
 
     public static class Desc
     {
-        public static string Get(IReferenceResolvingMethod method) => $"Extracts information from {method.ReferenceType.AccurateName} objects.";
+        public static string Get(IReferenceResolvingMethod method) => $"Extracts information from {method.ResolvesReference.AccurateName} objects.";
     }
 }

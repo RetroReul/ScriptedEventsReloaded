@@ -17,7 +17,7 @@ public class JSONInfoMethod : ReturningMethod, IReferenceResolvingMethod, ICanEr
     
     public override TypeOfValue Returns { get; } = new UnknownTypeOfValue();
     
-    public Type ReferenceType { get; } = typeof(JObject);
+    public Type ResolvesReference { get; } = typeof(JObject);
 
     public string[] ErrorReasons { get; } =
     [

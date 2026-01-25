@@ -9,7 +9,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.NumberMethods;
 
 [UsedImplicitly]
-public class TryParseNumberMethod : ReferenceReturningMethod<ParseResult<NumberValue>>
+public class TryParseNumberMethod : ReferenceReturningMethod<Result<NumberValue>>
 {
     public override string Description => "Tries to parse a given value to a number.";
 

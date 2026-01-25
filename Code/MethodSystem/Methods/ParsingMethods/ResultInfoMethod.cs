@@ -10,35 +10,37 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.ParsingMethods;
 
 [UsedImplicitly]
-public class ParseResultMethod : ReturningMethod, ICanError, IReferenceResolvingMethod
+public class ResultInfoMethod : ReturningMethod, ICanError, IReferenceResolvingMethod
 {
     public override string Description => "Returns information from the parsing result.";
 
     public override TypeOfValue Returns => new UnknownTypeOfValue();
 
-    public Type ReferenceType => typeof(ParseResult);
+    public Type ResolvesReference => typeof(Result);
 
     public string[] ErrorReasons =>
     [
-        "Tried to access the value when the parsing was not successful"
+        "Tried to access the value when the result was not successful"
     ];
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new ReferenceArgument<ParseResult>("parsing result"),
+        new ReferenceArgument<Result>("parsing result"),
         new OptionsArgument("info", 
             new("success", "Returns true if the parsing was successful"), 
+            new("failed", "Returns true if the parsing has failed"), 
             new("value", "The value that got parsed")
         )
     ];
 
     public override void Execute()
     {
-        var parseResult = Args.GetReference<ParseResult>("parsing result");
+        var parseResult = Args.GetReference<Result>("parsing result");
         ReturnValue = Args.GetOption("info") switch
         {
             "success" => new BoolValue(parseResult.Success),
             "value" => parseResult.Value ?? throw new ScriptRuntimeError(this, ErrorReasons[0]),
+            "failed" => new BoolValue(!parseResult.Success),
             _ => throw new AndrzejFuckedUpException()
         };
     }

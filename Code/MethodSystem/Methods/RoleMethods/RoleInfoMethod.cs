@@ -13,7 +13,7 @@ namespace SER.Code.MethodSystem.Methods.RoleMethods;
 [UsedImplicitly]
 public class RoleInfoMethod : ReturningMethod<TextValue>, IReferenceResolvingMethod
 {
-    public Type ReferenceType => typeof(PlayerRoleBase);
+    public Type ResolvesReference => typeof(PlayerRoleBase);
 
     public override string Description => IReferenceResolvingMethod.Desc.Get(this);
     

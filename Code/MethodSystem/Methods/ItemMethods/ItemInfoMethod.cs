@@ -15,7 +15,7 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
 {
     public override string Description => IReferenceResolvingMethod.Desc.Get(this);
     
-    public Type ReferenceType => typeof(Item);
+    public Type ResolvesReference => typeof(Item);
 
     public override TypeOfValue Returns => new TypesOfValue([
         typeof(TextValue),

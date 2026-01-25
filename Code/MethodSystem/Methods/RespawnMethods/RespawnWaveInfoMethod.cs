@@ -17,7 +17,7 @@ namespace SER.Code.MethodSystem.Methods.RespawnMethods;
 [UsedImplicitly]
 public class RespawnWaveInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod
 {
-    public Type ReferenceType => typeof(TimeBasedWave);
+    public Type ResolvesReference => typeof(TimeBasedWave);
 
     public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(NumberValue), 
@@ -35,7 +35,7 @@ public class RespawnWaveInfoMethod : LiteralValueReturningMethod, IReferenceReso
             "maxWaveSize",
             "respawnTokens",
             "influence",
-            "timeleft"
+            "timeLeft"
         )
     ];
 

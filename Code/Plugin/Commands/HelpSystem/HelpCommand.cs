@@ -334,7 +334,7 @@ public class HelpCommand : ICommand
     {
         var referenceResolvingMethods = MethodIndex.GetMethods()
             .Where(m => m is IReferenceResolvingMethod)
-            .Select(m => (m.Name, ((IReferenceResolvingMethod)m).ReferenceType));
+            .Select(m => (m.Name, ReferenceType: ((IReferenceResolvingMethod)m).ResolvesReference));
         
         var sb = new StringBuilder();
         foreach (var method in referenceResolvingMethods)
@@ -445,7 +445,7 @@ public class HelpCommand : ICommand
 
                 var descDistanceString = new string(' ', descDistance - name.Length);
                 var desc = method.Description 
-                           ?? $"Extracts information from {((IReferenceResolvingMethod)method).ReferenceType.Name} objects.";
+                           ?? $"Extracts information from {((IReferenceResolvingMethod)method).ResolvesReference.Name} objects.";
                 
                 sb.AppendLine($"> {name}{descDistanceString}~ {desc}");
             }

@@ -23,7 +23,7 @@ public class PickupInfoMethod : ReturningMethod, IReferenceResolvingMethod
         typeof(NumberValue)
     ]);
 
-    public Type ReferenceType => typeof(Pickup);
+    public Type ResolvesReference => typeof(Pickup);
 
     public override Argument[] ExpectedArguments { get; } =
     [

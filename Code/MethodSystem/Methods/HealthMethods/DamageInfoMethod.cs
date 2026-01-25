@@ -14,7 +14,7 @@ namespace SER.Code.MethodSystem.Methods.HealthMethods;
 [UsedImplicitly]
 public class DamageInfoMethod : ReturningMethod, IReferenceResolvingMethod, IAdditionalDescription
 {
-    public Type ReferenceType => typeof(DamageHandlerBase);
+    public Type ResolvesReference => typeof(DamageHandlerBase);
     
     public override TypeOfValue Returns => new TypesOfValue([
         typeof(TextValue), 

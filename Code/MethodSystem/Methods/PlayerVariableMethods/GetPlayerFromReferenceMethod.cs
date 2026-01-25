@@ -11,7 +11,7 @@ namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 [UsedImplicitly]
 public class GetPlayerFromReferenceMethod : ReturningMethod<PlayerValue>, IReferenceResolvingMethod
 {
-    public Type ReferenceType => typeof(Player);
+    public Type ResolvesReference => typeof(Player);
 
     public override string Description => 
         "Returns a player variable with a single player from a reference.";
