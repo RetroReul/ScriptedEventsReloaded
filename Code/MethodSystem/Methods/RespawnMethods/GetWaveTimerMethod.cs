@@ -24,7 +24,6 @@ public class GetWaveTimerMethod : ReferenceReturningMethod<Result<DurationValue>
         )
     ];
     
-    
     public override void Execute()
     {
         float duration = Args.GetOption("wave type") switch
