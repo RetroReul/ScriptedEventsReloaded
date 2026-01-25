@@ -8,7 +8,7 @@ using SER.Code.MethodSystem.Methods.DiscordMethods.Structures;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class CreateDiscordEmbedAuthor : ReferenceReturningMethod<DEmbedAuthor>
+public class CreateDiscordEmbedAuthorMethod : ReferenceReturningMethod<DEmbedAuthor>
 {
     public override string Description => "Creates an author object that can be used in discord embeds.";
 
