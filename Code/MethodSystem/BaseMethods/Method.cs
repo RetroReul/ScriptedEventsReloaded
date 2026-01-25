@@ -26,7 +26,7 @@ public abstract class Method
         Subgroup = type.Namespace?
             .Split('.')
             .LastOrDefault()?
-            .WithCurrent(name => name.Substring(0, name.Length - "Methods".Length)) 
+            .WithCurrent(name => name[..^"Methods".Length]) 
                    ?? "Unknown";
         
         var name = type.Name;
@@ -35,7 +35,7 @@ public abstract class Method
             throw new AndrzejFuckedUpException($"Method class name '{name}' must end with 'Method'.");
         }
         
-        Name = name.Substring(0, name.Length - "Method".Length);
+        Name = name[..^"Method".Length];
         Args = new(this);
     }
 
