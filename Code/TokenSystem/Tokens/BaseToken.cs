@@ -59,7 +59,7 @@ public class BaseToken
         {
             if (func().WasSuccessful(out var result))
             {
-                return result.ToString();
+                return result.StringRep;
             }
         }
 
