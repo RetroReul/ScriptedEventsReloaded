@@ -59,7 +59,7 @@ public abstract class VariableToken<TVariable, TValue> : VariableToken, IValueTo
             return new Ignore();
         }
 
-        Name = RawRep.Substring(1);
+        Name = RawRep[1..];
         if (Name.Any(c => !char.IsLetter(c) && !char.IsDigit(c) && c != '_'))
         {
             return new Ignore();

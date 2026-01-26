@@ -27,7 +27,7 @@ public class ColorArgument(string name) : Argument(name)
         var initValue = value;
         if (value.StartsWith("#"))
         {
-            value = value.Substring(1);
+            value = value[1..];
         }
         
         switch (value.Length)

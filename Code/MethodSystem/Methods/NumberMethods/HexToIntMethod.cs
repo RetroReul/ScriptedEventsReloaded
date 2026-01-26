@@ -31,10 +31,10 @@ public class HexToIntMethod : ReturningMethod<NumberValue>, ICanError, IAddition
         var hex = Args.GetText("hex number");
         
         if (hex.StartsWith("0x"))
-            hex = hex.Substring(2);
+            hex = hex[2..];
         
         if (hex.StartsWith("#"))
-            hex = hex.Substring(1);
+            hex = hex[1..];
         
         ReturnValue = int.TryParse(
             hex, 

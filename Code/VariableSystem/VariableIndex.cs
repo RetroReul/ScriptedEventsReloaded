@@ -56,7 +56,7 @@ public static class VariableIndex
                     }
                     else if (name.EndsWith("s"))
                     {
-                        name = name.Substring(0, name.Length - 1);
+                        name = name[..^1];
                     }
 
                     name = name.LowerFirst() + "Players";

@@ -248,7 +248,7 @@ public static class EventHandler
 
             string GetName()
             {
-                return $"ev{name.First().ToString().ToUpper()}{name.Substring(1)}";
+                return $"ev{name.First().ToString().ToUpper()}{name[1..]}";
             }
         }
 
@@ -299,7 +299,7 @@ public static class EventHandler
 
             string GetName()
             {
-                return $"ev{name.First().ToString().ToUpper()}{name.Substring(1)}";
+                return $"ev{name.First().ToString().ToUpper()}{name[1..]}";
             }
         }
 

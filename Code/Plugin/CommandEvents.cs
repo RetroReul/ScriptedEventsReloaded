@@ -42,7 +42,7 @@ public static class CommandEvents
             return;
         }
         
-        var methodName = ev.CommandName.Substring(1);
+        var methodName = ev.CommandName[1..];
         
         if (!methodName.Any())
         {

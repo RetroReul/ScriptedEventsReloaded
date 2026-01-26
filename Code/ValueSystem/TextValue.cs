@@ -34,7 +34,7 @@ public class TextValue(string rawValue) : LiteralValue<string>(rawValue)
     
     public static string ParseValue(string text, Script script) => ExpressionRegex.Replace(text, match =>
     {
-        if (match.Value.StartsWith("~")) return match.Value.Substring(1);
+        if (match.Value.StartsWith("~")) return match.Value[1..];
         
         if (Tokenizer.SliceLine(match.Value).HasErrored(out var error, out var slices))
         {

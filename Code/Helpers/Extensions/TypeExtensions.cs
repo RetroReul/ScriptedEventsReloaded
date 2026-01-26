@@ -19,7 +19,7 @@ public static class TypeExtensions
         string name = type.Name;
         int index = name.IndexOf('`');
         if (index > 0)
-            name = name.Substring(0, index);
+            name = name[..index];
 
         sb.Append(name);
         sb.Append('<');

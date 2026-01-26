@@ -207,7 +207,7 @@ public class CustomCommandFlag : Flag
         {
             var slice = slices[index];
             var argVariable = requestingCommand.Usage[index];
-            var name = argVariable[0].ToString().ToLower() + argVariable.Substring(1);
+            var name = argVariable[0].ToString().ToLower() + argVariable[1..];
 
             if (Tokenizer.GetTokenFromSlice(slice, null!, 0)
                 .WasSuccessful(out var token))

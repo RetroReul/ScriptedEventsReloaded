@@ -62,7 +62,7 @@ public readonly struct Result(bool wasSuccess, string errorMsg)
         
         if (char.IsLower(value.First()))
         {
-            value = value.First().ToString().ToUpper() + value.Substring(1);
+            value = value.First().ToString().ToUpper() + value[1..];
         }
 
         if (!char.IsPunctuation(value.Last()))

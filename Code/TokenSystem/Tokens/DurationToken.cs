@@ -32,7 +32,7 @@ public class DurationToken : LiteralValueToken<DurationValue>
             return new Error("Duration cannot be negative.");
         }
 
-        var unit = value.Substring(unitIndex);
+        var unit = value[unitIndex..];
         TimeSpan? timeSpan = unit switch
         {
             "s" => TimeSpan.FromSeconds(valueAsDouble),
