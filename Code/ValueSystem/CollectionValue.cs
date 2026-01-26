@@ -14,7 +14,7 @@ public class CollectionValue(IEnumerable value) : Value
             if (field is not null) return field;
 
             List<Value> list = [];
-            list.AddRange(from object item in value select Parse(item));
+            list.AddRange(from object item in value select Parse(item, null));
 
             var types = list.Select(i => i.GetType()).Distinct().ToArray();
             if (types.Length > 1)

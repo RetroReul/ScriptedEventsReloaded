@@ -46,6 +46,7 @@ public class ShowMethod : ReturningMethod<TextValue>, ICanError
             .Select(handler)
             .OfType<LiteralValue>()
             .Select(lv => lv.StringRep)
-            .JoinStrings(", ");
+            .JoinStrings(", ")
+            .ToStaticTextValue();
     }
 }

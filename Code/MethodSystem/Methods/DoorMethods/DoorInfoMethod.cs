@@ -48,15 +48,15 @@ public class DoorInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMe
         
         ReturnValue = info switch
         {
-            "name" => new TextValue(door.DoorName.ToString()),
-            "unityname" => new TextValue(door.Base.name),
+            "name" => new StaticTextValue(door.DoorName.ToString()),
+            "unityname" => new StaticTextValue(door.Base.name),
             "isopen" => new BoolValue(door.IsOpened),
             "isclosed" => new BoolValue(!door.IsOpened),
             "islocked" => new BoolValue(door.IsLocked),
             "isunlocked" => new BoolValue(!door.IsLocked),
             "remaininghealth" => new NumberValue(door is BreakableDoor bDoor ? (decimal)bDoor.Health : -1),
             "maxhealth" => new NumberValue(door is BreakableDoor bDoor ? (decimal)bDoor.MaxHealth : -1),
-            "permissions" => new TextValue(door.Permissions.ToString()),
+            "permissions" => new StaticTextValue(door.Permissions.ToString()),
             _ => throw new AndrzejFuckedUpException()
         };
     }

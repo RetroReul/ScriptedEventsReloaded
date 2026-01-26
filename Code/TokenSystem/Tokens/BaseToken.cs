@@ -13,7 +13,7 @@ public class BaseToken
 {
     public string RawRep { get; private set; } = null!;
     protected Slice Slice { get; private set; } = null!;
-    protected Script Script { get; private set; } = null!;
+    public Script Script { get; private set; } = null!;
     protected uint? LineNum { get; private set; } = null;
     
     public IParseResult TryInit(Slice slice, Script script, uint? lineNum)
@@ -104,7 +104,7 @@ public class BaseToken
                 return mainErr + err;
             }
             
-            if (Value.Parse(result) is T correctValue)
+            if (Value.Parse(result, Script) is T correctValue)
             {
                 return correctValue;           
             }

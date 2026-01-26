@@ -38,7 +38,7 @@ public class AppendJSONMethod : ReferenceReturningMethod<JObject>, ICanError
         
         if (value is TextValue textValue)
         {
-            jsonToAddValueTo[key] = textValue.ParsedValue(Script);
+            jsonToAddValueTo[key] = textValue.Value;
             return;
         }
 

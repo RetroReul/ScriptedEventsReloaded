@@ -34,9 +34,9 @@ public class ServerInfoMethod : ReturningMethod
     {
         ReturnValue = Args.GetOption("info") switch
         {
-            "ip" => new TextValue(Server.IpAddress),
+            "ip" => new StaticTextValue(Server.IpAddress),
             "port" => new NumberValue(Server.Port),
-            "name" => new TextValue(Server.ServerListName),
+            "name" => new StaticTextValue(Server.ServerListName),
             "maxplayers" => new NumberValue(Server.MaxPlayers),
             "tps" => new NumberValue((decimal)Server.Tps),
             "isverified" => new BoolValue(CustomNetworkManager.IsVerified),

@@ -32,6 +32,6 @@ public class CollectionFetchMethod : ReturningMethod
             throw new ScriptRuntimeError(this, error);
         }
 
-        ReturnValue = Value.Parse(value);
+        ReturnValue = Value.Parse(value, Script);
     }
 }

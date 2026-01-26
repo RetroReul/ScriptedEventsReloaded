@@ -11,18 +11,18 @@ using SER.Code.TokenSystem.Tokens.ExpressionTokens;
 
 namespace SER.Code.ValueSystem;
 
-public class TextValue(string rawValue) : LiteralValue<string>(rawValue)
+public abstract class TextValue : LiteralValue<string>
 {
-    private readonly string _rawValue = rawValue;
     private static readonly Regex ExpressionRegex = new(@"~?\{.*?\}", RegexOptions.Compiled);
 
-    public string ParsedValue(Script script) => ContainsExpressions ? ParseValue(_rawValue, script) : _rawValue;
-
-    public bool ContainsExpressions => ExpressionRegex.IsMatch(_rawValue);
-
-    public static implicit operator TextValue(string value)
+    /// <summary>
+    /// text needs to be dynamically parsed when the value is requested, so script needs to be provided
+    /// </summary>
+    /// <param name="text">the text itself</param>
+    /// <param name="script">script context used to parse formatting, use null when formatting is not applicable</param>
+    protected TextValue(string text, Script? script) : 
+        base(script is null ? text.Replace("<br>", "\n") : () => ParseValue(text.Replace("<br>", "\n"), script))
     {
-        return new(value);
     }
     
     public static implicit operator string(TextValue value)
@@ -62,4 +62,14 @@ public class TextValue(string rawValue) : LiteralValue<string>(rawValue)
             
         return value.StringRep;
     });
+}
+
+public class DynamicTextValue(string text, Script script) : TextValue(text, script);
+
+public class StaticTextValue(string text) : TextValue(text, null)
+{
+    public static implicit operator StaticTextValue(string text)
+    {
+        return new(text);
+    }
 }

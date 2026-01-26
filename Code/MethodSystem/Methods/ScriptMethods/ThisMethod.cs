@@ -39,11 +39,11 @@ public class ThisMethod : ReturningMethod
         {
             "flags" => new CollectionValue(ScriptFlagHandler.GetScriptFlags(Script.Name)
                 .Select(f => f.GetType().Name.Replace("Flag", ""))),
-            "caller" => new TextValue(Script.Caller?.Name ?? "none"),
-            "context" => new TextValue(Script.Context.ToString()),
+            "caller" => new StaticTextValue(Script.Caller?.Name ?? "none"),
+            "context" => new StaticTextValue(Script.Context.ToString()),
             "duration" => new DurationValue(Script.TimeRunning),
-            "name" => new TextValue(Script.Name),
-            "path" => new TextValue(FileSystem.FileSystem.GetScriptPath(Script)),
+            "name" => new StaticTextValue(Script.Name),
+            "path" => new StaticTextValue(FileSystem.FileSystem.GetScriptPath(Script)),
             "variables" => new CollectionValue(Script.Variables.Select(v => v.Prefix + v.Name)),
             _ => throw new TosoksFuckedUpException("out of order")
         };

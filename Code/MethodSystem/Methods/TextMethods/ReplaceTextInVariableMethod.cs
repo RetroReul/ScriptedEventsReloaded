@@ -4,6 +4,7 @@ using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Helpers.Exceptions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
+using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Variables;
 
@@ -32,13 +33,14 @@ public class ReplaceTextInVariableMethod : SynchronousMethod, ICanError
         var text = Args.GetText("text to replace");
         var replacement = Args.GetText("replacement text");
 
-        if ((LiteralValue)variable is not TextValue textValue)
+        if (variable.Value is not TextValue textValue)
             throw new ScriptRuntimeError(this, ErrorReasons[0]);
         
         Script.AddVariable(
             new LiteralVariable(
                 variable.Name,
-                new TextValue(textValue.Value.Replace(text, replacement))));
-
+                new DynamicTextValue(textValue.Value.Replace(text, replacement), Script)
+            )
+        );
     }
 }

@@ -47,8 +47,8 @@ public class DamageInfoMethod : ReturningMethod, IReferenceResolvingMethod, IAdd
         
         ReturnValue = Args.GetOption("property") switch
         {
-            "damage" => new TextValue(standard?.Damage.ToString() ?? "none"),
-            "hitbox" => new TextValue(standard?.Hitbox.ToString() ?? "none"),
+            "damage" => new StaticTextValue(standard?.Damage.ToString() ?? "none"),
+            "hitbox" => new StaticTextValue(standard?.Hitbox.ToString() ?? "none"),
             "firearmused" => new ReferenceValue(firearm?.Firearm),
             "attacker" => new ReferenceValue(attacker?.Attacker),
             _ => throw new AndrzejFuckedUpException("out of range")

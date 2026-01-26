@@ -32,9 +32,9 @@ public class RoleInfoMethod : ReturningMethod<TextValue>, IReferenceResolvingMet
         var role = Args.GetReference<PlayerRoleBase>("playerRole");
         ReturnValue = Args.GetOption("property") switch
         {
-            "type" => new TextValue(role.RoleTypeId.ToString()),
-            "team" => new TextValue(role.Team.ToString()),
-            "name" => new TextValue(role.RoleName),
+            "type" => new StaticTextValue(role.RoleTypeId.ToString()),
+            "team" => new StaticTextValue(role.Team.ToString()),
+            "name" => new StaticTextValue(role.RoleName),
             _ => throw new AndrzejFuckedUpException("out of range")
         };
     }

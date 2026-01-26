@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.Helpers.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Variables;
@@ -20,6 +21,7 @@ public class LogVarMethod : ReturningMethod<TextValue>
     public override void Execute()
     {
         var variable = Args.GetVariable("variable");
-        ReturnValue = $"{variable} = {(variable is LiteralVariable lv ? lv.Value : variable.BaseValue)}";
+        ReturnValue = $"{variable} = {(variable is LiteralVariable lv ? lv.Value : variable.BaseValue)}"
+            .ToStaticTextValue();
     }
 }

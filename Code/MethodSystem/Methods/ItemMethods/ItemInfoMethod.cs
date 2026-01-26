@@ -39,8 +39,8 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
         var item = Args.GetReference<Item>("reference");
         ReturnValue = Args.GetOption("property") switch
         {
-            "type" => new TextValue(item.Type.ToString()),
-            "category" => new TextValue(item.Category.ToString()),
+            "type" => new StaticTextValue(item.Type.ToString()),
+            "category" => new StaticTextValue(item.Category.ToString()),
             "owner" => new PlayerValue(item.CurrentOwner is not null ? [item.CurrentOwner] : []),
             "isequipped" => new BoolValue(item.IsEquipped),
             _ => throw new AndrzejFuckedUpException()

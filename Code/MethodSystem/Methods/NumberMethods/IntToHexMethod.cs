@@ -18,6 +18,6 @@ public class IntToHexMethod : ReturningMethod<TextValue>
 
     public override void Execute()
     {
-        ReturnValue = Args.GetInt("integer to parse").ToString("X");
+        ReturnValue = new StaticTextValue(Args.GetInt("integer to parse").ToString("X"));
     }
 }

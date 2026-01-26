@@ -24,6 +24,6 @@ public class ReplaceTextMethod : ReturningMethod<TextValue>
         var text = Args.GetText("text to replace");
         var replacement = Args.GetText("replacement text");
         
-        ReturnValue = new TextValue(value.Replace(text, replacement));
+        ReturnValue = new DynamicTextValue(value.Replace(text, replacement), Script);
     }
 }

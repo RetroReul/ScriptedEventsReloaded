@@ -38,7 +38,7 @@ public class TimeInfoMethod : LiteralValueReturningMethod
             "minute" => new NumberValue(DateTime.Now.Minute),
             "hour" => new NumberValue(DateTime.Now.Hour),
             "year" => new NumberValue(DateTime.Now.Year),
-            "dayofweek" => new TextValue(DateTime.Now.DayOfWeek.ToString()),
+            "dayofweek" => new StaticTextValue(DateTime.Now.DayOfWeek.ToString()),
             "dayofweeknumber" => (uint)DateTime.Now.DayOfWeek == 0
                 ? new NumberValue(7)
                 : new NumberValue((uint)DateTime.Now.DayOfWeek),

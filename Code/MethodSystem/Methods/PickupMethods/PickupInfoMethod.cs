@@ -51,12 +51,12 @@ public class PickupInfoMethod : ReturningMethod, IReferenceResolvingMethod
         {
             "isdestroyed" => new BoolValue(pickup.IsDestroyed),
             "hasspawned" => new BoolValue(pickup.IsSpawned),
-            "itemtype" => new TextValue(pickup.Type.ToString()),
+            "itemtype" => new StaticTextValue(pickup.Type.ToString()),
             "lastowner" => new PlayerValue(pickup.LastOwner is not null
                 ? [pickup.LastOwner]
                 : Array.Empty<Player>()),
             "isinuse" => new BoolValue(pickup.IsInUse),
-            "itemcategory" => new TextValue(pickup.Category.ToString()),
+            "itemcategory" => new StaticTextValue(pickup.Category.ToString()),
             "room" => new ReferenceValue(pickup.Room),
             "positionx" => new NumberValue((decimal)pickup.Position.x),
             "positiony" => new NumberValue((decimal)pickup.Position.y),

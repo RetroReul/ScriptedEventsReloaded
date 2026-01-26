@@ -41,9 +41,9 @@ public class RoomInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMe
         var room = Args.GetReference<Room>("room");
         ReturnValue = Args.GetOption("property") switch
         {
-            "shape" => new TextValue(room.Shape.ToString()),
-            "name" => new TextValue(room.Name.ToString()),
-            "zone" => new TextValue(room.Zone.ToString()),
+            "shape" => new StaticTextValue(room.Shape.ToString()),
+            "name" => new StaticTextValue(room.Name.ToString()),
+            "zone" => new StaticTextValue(room.Zone.ToString()),
             "xpos" => new NumberValue((decimal)room.Position.x),
             "ypos" => new NumberValue((decimal)room.Position.y),
             "zpos" => new NumberValue((decimal)room.Position.z),

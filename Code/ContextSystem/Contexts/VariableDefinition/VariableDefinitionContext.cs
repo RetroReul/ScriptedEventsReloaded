@@ -132,7 +132,7 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
         }
         else if (_parser is not null)
         {
-            Script.AddVariable(Variable.Create(varToken.Name, Value.Parse(_parser())));
+            Script.AddVariable(Variable.Create(varToken.Name, Value.Parse(_parser(), Script)));
         }
         else
         {

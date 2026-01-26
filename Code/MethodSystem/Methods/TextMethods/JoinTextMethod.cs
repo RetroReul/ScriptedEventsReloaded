@@ -22,6 +22,6 @@ public class JoinTextMethod : ReturningMethod<TextValue>
     public override void Execute()
     {
         var texts = Args.GetRemainingArguments<string, TextArgument>("text to join");
-        ReturnValue = new TextValue(string.Join("", texts));
+        ReturnValue = new DynamicTextValue(string.Join("", texts), Script);
     }
 }

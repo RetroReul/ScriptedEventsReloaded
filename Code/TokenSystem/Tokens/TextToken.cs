@@ -15,14 +15,14 @@ public class TextToken : LiteralValueToken<TextValue>
             return new Ignore();
         }
         
-        Value = Slice.Value;
+        Value = new DynamicTextValue(Slice.Value, scr);
         return new Success();
     }
-
+    
     public DynamicTryGet<string> GetDynamicResolver()
     {
-        if (Value.ContainsExpressions) 
-            return new(() => TryGet<string>.Success(Value.ParsedValue(Script)));
+        if (Value is DynamicTextValue) 
+            return new(() => TryGet<string>.Success(Value));
         
         return DynamicTryGet.Success(Value.Value);
     }

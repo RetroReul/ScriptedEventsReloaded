@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using LabApi.Features.Wrappers;
 using PlayerRoles;
 using Respawning;
 using Respawning.Waves;
@@ -45,7 +44,7 @@ public class RespawnWaveInfoMethod : LiteralValueReturningMethod, IReferenceReso
 
         ReturnValue = Args.GetOption("property") switch
         {
-            "faction" => new TextValue(wave.TargetFaction.ToString()),
+            "faction" => new StaticTextValue(wave.TargetFaction.ToString()),
             "maxwavesize" => new NumberValue(wave.MaxWaveSize),
             "respawntokens" => new NumberValue(wave is ILimitedWave limitedWave ? limitedWave.RespawnTokens : 0),
             "influence" => new NumberValue((decimal)FactionInfluenceManager.Get(wave.TargetFaction)),

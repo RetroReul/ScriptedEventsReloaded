@@ -20,6 +20,8 @@ public class FormatToReadableJSONMethod : ReturningMethod<TextValue>
     
     public override void Execute()
     {
-        ReturnValue = Args.GetReference<JObject>("JSON object").ToString(Newtonsoft.Json.Formatting.Indented);
+        ReturnValue = new StaticTextValue(
+            Args.GetReference<JObject>("JSON object").ToString(Newtonsoft.Json.Formatting.Indented)
+        );
     }
 }

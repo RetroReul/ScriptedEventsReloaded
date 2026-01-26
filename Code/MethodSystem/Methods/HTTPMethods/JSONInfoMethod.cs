@@ -58,10 +58,10 @@ public class JSONInfoMethod : ReturningMethod, IReferenceResolvingMethod, ICanEr
 
         if (currentToken is JValue { Value: {} val })
         {
-            ReturnValue = Value.Parse(val);
+            ReturnValue = Value.Parse(val, null);
             return;
         }
         
-        ReturnValue = Value.Parse(currentToken);
+        ReturnValue = Value.Parse(currentToken, null);
     }
 }

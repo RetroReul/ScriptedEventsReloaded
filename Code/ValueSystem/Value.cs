@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using LabApi.Features.Wrappers;
 using SER.Code.Helpers.Exceptions;
+using SER.Code.ScriptSystem;
 
 namespace SER.Code.ValueSystem;
 
@@ -10,7 +11,7 @@ public abstract class Value
     
     public abstract int HashCode { get; }
 
-    public static Value Parse(object obj)
+    public static Value Parse(object obj, Script? script)
     {
         if (obj is null) throw new AndrzejFuckedUpException();
         if (obj is Value v) return v;
@@ -29,7 +30,8 @@ public abstract class Value
             float n                 => new NumberValue((decimal)n),
             double n                => new NumberValue((decimal)n),
             decimal n               => new NumberValue(n),
-            string s                => new TextValue(s),
+            string s when script is not null => new DynamicTextValue(s, script),
+            string s                => new StaticTextValue(s),
             TimeSpan t              => new DurationValue(t),
             Player p                => new PlayerValue(p),
             IEnumerable<Player> ps  => new PlayerValue(ps),

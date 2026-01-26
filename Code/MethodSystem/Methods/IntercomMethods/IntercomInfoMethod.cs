@@ -36,11 +36,11 @@ public class IntercomInfoMethod : ReturningMethod
     {
         ReturnValue = (Args.GetOption("mode")) switch
         {
-            "state" => new TextValue(Intercom.State.ToString()),
+            "state" => new StaticTextValue(Intercom.State.ToString()),
             "speaker" => new PlayerValue(Player.ReadyList.ToList().Where(plr => plr.ReferenceHub == Intercom._singleton._curSpeaker)),
             "cooldown" => new DurationValue(TimeSpan.FromSeconds(Intercom.State == IntercomState.Cooldown ? Intercom._singleton.RemainingTime : 0)),
             "speechtimeleft" => new DurationValue(TimeSpan.FromSeconds(Intercom.State == IntercomState.InUse ? Intercom._singleton.RemainingTime : 0)),
-            "textoverride" => new TextValue(IntercomDisplay._singleton._overrideText),
+            "textoverride" => new StaticTextValue(IntercomDisplay._singleton._overrideText),
             _ => throw new TosoksFuckedUpException("out of range")
         };
     }

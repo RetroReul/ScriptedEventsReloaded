@@ -1,5 +1,7 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.Helpers.ResultSystem;
+using SER.Code.ScriptSystem;
+using SER.Code.ValueSystem;
 
 namespace SER.Code.Helpers.Extensions;
 
@@ -53,5 +55,17 @@ public static class StringExtensions
         }
 
         return res;
+    }
+    
+    [Pure]
+    public static StaticTextValue ToStaticTextValue(this string text)
+    {
+        return new StaticTextValue(text);
+    }
+
+    [Pure]
+    public static DynamicTextValue ToDynamicTextValue(this string text, Script script)
+    {
+        return new DynamicTextValue(text, script);
     }
 }

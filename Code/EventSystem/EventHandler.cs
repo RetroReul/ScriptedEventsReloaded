@@ -224,7 +224,7 @@ public static class EventHandler
             switch (value)
             {
                 case Enum enumValue:
-                    variables.Add(new LiteralVariable<TextValue>(GetName(), enumValue.ToString()));
+                    variables.Add(new LiteralVariable<TextValue>(GetName(), new StaticTextValue(enumValue.ToString())));
                     continue;
                 case Player player:
                     variables.Add(new PlayerVariable(GetName(), new(player)));
@@ -241,7 +241,7 @@ public static class EventHandler
                     continue;
                 default:
                 {
-                    variables.Add(Variable.Create(GetName(), Value.Parse(value)));
+                    variables.Add(Variable.Create(GetName(), Value.Parse(value, null)));
                     continue;
                 }
             }

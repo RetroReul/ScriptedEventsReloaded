@@ -219,7 +219,7 @@ public class CustomCommandFlag : Flag
                 }
             }
             
-            script.AddVariable(new LiteralVariable<TextValue>(name, slice.Value));
+            script.AddVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
         }
 
         script.Run(RunContext.Command);

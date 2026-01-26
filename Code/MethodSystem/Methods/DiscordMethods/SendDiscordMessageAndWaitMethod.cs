@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Helpers.Exceptions;
-using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.BaseMethods.Yielding;
 using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.MethodSystem.Methods.HTTPMethods;
@@ -57,8 +56,9 @@ public class SendDiscordMessageAndWaitMethod : YieldingReturningMethod<TextValue
 
         try
         {
-            ReturnValue = JObject.Parse(request.downloadHandler.text)["id"]?.Value<string>()
-                          ?? throw new Exception();
+            ReturnValue = new StaticTextValue(
+                JObject.Parse(request.downloadHandler.text)["id"]?.Value<string>() ?? throw new Exception()
+            );
         }
         catch
         {

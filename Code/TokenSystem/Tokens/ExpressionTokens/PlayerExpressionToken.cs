@@ -84,18 +84,18 @@ public class PlayerExpressionToken : ExpressionToken
 
     public static readonly Dictionary<PlayerProperty, Info> PropertyInfoMap = new()
     {
-        [PlayerProperty.Name] = new Info<TextValue>(plr => plr.Nickname, null),
-        [PlayerProperty.DisplayName] = new Info<TextValue>(plr => plr.DisplayName, null),
-        [PlayerProperty.Role] = new Info<TextValue>(plr => plr.Role.ToString(), $"Player role type ({nameof(RoleTypeId)} enum value)"),
+        [PlayerProperty.Name] = new Info<StaticTextValue>(plr => plr.Nickname, null),
+        [PlayerProperty.DisplayName] = new Info<StaticTextValue>(plr => plr.DisplayName, null),
+        [PlayerProperty.Role] = new Info<StaticTextValue>(plr => plr.Role.ToString(), $"Player role type ({nameof(RoleTypeId)} enum value)"),
         [PlayerProperty.RoleRef] = new Info<ReferenceValue>(plr => new(plr.RoleBase), $"Reference to {nameof(PlayerRoleBase)}"),
-        [PlayerProperty.Team] = new Info<TextValue>(plr => plr.Team.ToString(), $"Player team ({nameof(Team)} enum value)"),
+        [PlayerProperty.Team] = new Info<StaticTextValue>(plr => plr.Team.ToString(), $"Player team ({nameof(Team)} enum value)"),
         [PlayerProperty.Inventory] = new Info<CollectionValue>(plr => new(plr.Inventory.UserInventory.Items.Values.Select(Item.Get).RemoveNulls()), $"A collection of references to {nameof(Item)} objects"),
         [PlayerProperty.ItemCount] = new Info<NumberValue>(plr => (decimal)plr.Inventory.UserInventory.Items.Count, null),
         [PlayerProperty.HeldItemRef] = new Info<ReferenceValue>(plr => new(plr.CurrentItem), "A reference to the item the player is holding"),
         [PlayerProperty.IsAlive] = new Info<BoolValue>(plr => plr.IsAlive, null),
-        [PlayerProperty.UserId] = new Info<TextValue>(plr => plr.UserId, "The ID of the account (like SteamID64)"),
+        [PlayerProperty.UserId] = new Info<StaticTextValue>(plr => plr.UserId, "The ID of the account (like SteamID64)"),
         [PlayerProperty.PlayerId] = new Info<NumberValue>(plr => plr.PlayerId, "The ID that the server assigned for this round"),
-        [PlayerProperty.CustomInfo] = new Info<TextValue>(plr => plr.CustomInfo, "Custom info set by the server"),
+        [PlayerProperty.CustomInfo] = new Info<StaticTextValue>(plr => plr.CustomInfo, "Custom info set by the server"),
         [PlayerProperty.RoomRef] = new Info<ReferenceValue>(plr => new(plr.Room), "A reference to the room the player is in"),
         [PlayerProperty.Health] = new Info<NumberValue>(plr => (decimal)plr.Health, null),
         [PlayerProperty.MaxHealth] = new Info<NumberValue>(plr => (decimal)plr.MaxHealth, null),
@@ -104,7 +104,7 @@ public class PlayerExpressionToken : ExpressionToken
         [PlayerProperty.HumeShield] = new Info<NumberValue>(plr => (decimal)plr.HumeShield, null),
         [PlayerProperty.MaxHumeShield] = new Info<NumberValue>(plr => (decimal)plr.MaxHumeShield, null),
         [PlayerProperty.HumeShieldRegenRate] = new Info<NumberValue>(plr => (decimal)plr.HumeShieldRegenRate, null),
-        [PlayerProperty.GroupName] = new Info<TextValue>(plr => plr.GroupName, "The name of the group (like admin or vip)"),
+        [PlayerProperty.GroupName] = new Info<StaticTextValue>(plr => plr.GroupName, "The name of the group (like admin or vip)"),
         [PlayerProperty.PositionX] = new Info<NumberValue>(plr => (decimal)plr.Position.x, null),
         [PlayerProperty.PositionY] = new Info<NumberValue>(plr => (decimal)plr.Position.y, null),
         [PlayerProperty.PositionZ] = new Info<NumberValue>(plr => (decimal)plr.Position.z, null),
@@ -117,8 +117,8 @@ public class PlayerExpressionToken : ExpressionToken
         [PlayerProperty.IsGodModeEnabled] = new Info<BoolValue>(plr => plr.IsGodModeEnabled, null),
         [PlayerProperty.IsNoclipEnabled] = new Info<BoolValue>(plr => plr.IsNoclipEnabled, null),
         [PlayerProperty.Gravity] = new Info<NumberValue>(plr => -(decimal)plr.Gravity.y, null),
-        [PlayerProperty.RoleChangeReason] = new Info<TextValue>(plr => plr.RoleBase.ServerSpawnReason.ToString(), null),
-        [PlayerProperty.RoleSpawnFlags] = new Info<TextValue>(plr => plr.RoleBase.ServerSpawnFlags.ToString(), null),
+        [PlayerProperty.RoleChangeReason] = new Info<StaticTextValue>(plr => plr.RoleBase.ServerSpawnReason.ToString(), null),
+        [PlayerProperty.RoleSpawnFlags] = new Info<StaticTextValue>(plr => plr.RoleBase.ServerSpawnFlags.ToString(), null),
         [PlayerProperty.AuxiliaryPower] = new Info<NumberValue>(plr =>
         {
             if (plr.RoleBase is Scp079Role scp)
@@ -143,7 +143,7 @@ public class PlayerExpressionToken : ExpressionToken
 
             return -1;
         }, "Returns player EXP if he is SCP-079, otherwise returns -1"),
-        [PlayerProperty.Emotion] = new Info<TextValue>(plr => plr.Emotion.ToString(), "Current emotion (e.g. Neutral, Chad)"),
+        [PlayerProperty.Emotion] = new Info<StaticTextValue>(plr => plr.Emotion.ToString(), "Current emotion (e.g. Neutral, Chad)"),
         [PlayerProperty.MaxAuxiliaryPower] = new Info<NumberValue>(plr =>
         {
             if (plr.RoleBase is Scp079Role scp)
