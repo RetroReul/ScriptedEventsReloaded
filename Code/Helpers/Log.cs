@@ -1,4 +1,6 @@
-﻿using LabApi.Features.Console;
+﻿using System.Diagnostics;
+using System.Text;
+using LabApi.Features.Console;
 using SER.Code.ScriptSystem;
 
 namespace SER.Code.Helpers;
@@ -44,4 +46,18 @@ public static class Log
             Logger.Raw(msg, ConsoleColor.Cyan);
         #endif
     }
+    
+    public static string GetStackTrace()
+    {
+        StackTrace stackTrace = new StackTrace(true);
+
+        StringBuilder sb = new("");
+        foreach (var stackFrame in stackTrace.GetFrames()!.Take(10))
+        {
+            sb.AppendLine($"-> {stackFrame.GetMethod().Name}");
+        }
+        
+        return sb.ToString();
+    }
 }
+

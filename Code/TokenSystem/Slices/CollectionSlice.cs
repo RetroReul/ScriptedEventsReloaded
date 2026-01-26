@@ -51,6 +51,13 @@ public class CollectionSlice : Slice
         if (c == '`')
         {
             _ignoreNext = true;
+            
+            // this is such a fucking hack
+            if (Type is not CollectionBrackets.Quotes)
+            {
+                _value.Append(c);
+            }
+            
             return true;
         }
         
