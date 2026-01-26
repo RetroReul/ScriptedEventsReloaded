@@ -97,7 +97,7 @@ public class DiscordEmbedMethod : ReferenceReturningMethod<DiscordEmbedMethod.DE
         if (Args.GetText("clickable url") is { } url) embed["url"] = url;
 
         var fields = Args.GetRemainingArguments<EmbedFieldMethod.DEmbedField, ReferenceArgument<EmbedFieldMethod.DEmbedField>>("fields");
-        Log.Signal(fields.Length);
+
         if (fields is { Length: > 0 })
         {
             embed["fields"] = JArray.FromObject(fields);
