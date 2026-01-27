@@ -1,4 +1,7 @@
-﻿namespace SER.Code.Helpers.Extensions;
+﻿using Mirror;
+using UnityEngine;
+
+namespace SER.Code.Helpers.Extensions;
 
 public static class ObjectExtensions
 {
@@ -20,4 +23,12 @@ public static class ObjectExtensions
     }
 
     public static T WithCurrent<T>(this T obj, Func<T, T> func) => func(obj);
+
+    extension(GameObject obj)
+    {
+        public NetworkIdentity NetworkIdentity =>
+            obj.TryGetComponent(out NetworkIdentity networkIdentity)
+                ? networkIdentity
+                : throw new Exception("HOW THE FUCK");
+    }
 }

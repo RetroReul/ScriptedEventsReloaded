@@ -1,0 +1,31 @@
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
+using SER.Code.ArgumentSystem.Arguments;
+using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.MethodSystem.MethodDescriptors;
+using UnityEngine;
+
+namespace SER.Code.MethodSystem.Methods.AdminToysMethods;
+
+[UsedImplicitly]
+public class TeleportToyPlayerMethod : SynchronousMethod, IAdditionalDescription
+{
+    public override string Description => "Teleports an Admin Toy to a given player";
+
+    public string AdditionalDescription => TeleportToyPosMethod.Singleton.AdditionalDescription;
+    
+    public override Argument[] ExpectedArguments { get; } =
+    [
+        new ReferenceArgument<AdminToy>("toy reference"),
+        new PlayerArgument("player to teleport toy to"),
+    ];
+
+    public override void Execute()
+    {
+        var toy = Args.GetReference<AdminToy>("toy reference");
+        var plr = Args.GetPlayer("player to teleport toy to");
+        
+        TeleportToyPosMethod.TeleportOrSpawn(toy, plr.Position);
+    }
+}
