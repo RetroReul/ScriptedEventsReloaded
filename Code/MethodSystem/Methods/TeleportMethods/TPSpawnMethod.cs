@@ -1,4 +1,5 @@
-﻿using PlayerRoles;
+﻿using JetBrains.Annotations;
+using PlayerRoles;
 using PlayerRoles.FirstPersonControl.Spawnpoints;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
@@ -7,6 +8,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.TeleportMethods;
 
 // ReSharper disable once InconsistentNaming
+[UsedImplicitly]
 public class TPSpawnMethod : SynchronousMethod
 {
     public override string Description => "Teleports players to where a specified role would spawn.";

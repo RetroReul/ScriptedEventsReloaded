@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
@@ -7,7 +8,7 @@ using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.PlayerDataMethods;
 
-// ReSharper disable once ClassNeverInstantiated.Global
+[UsedImplicitly]
 public class SetPlayerDataMethod : SynchronousMethod, IAdditionalDescription
 {
     public static readonly Dictionary<Player, Dictionary<string, Value>> PlayerData = [];
