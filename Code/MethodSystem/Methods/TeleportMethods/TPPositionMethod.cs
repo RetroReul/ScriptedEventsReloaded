@@ -1,4 +1,5 @@
-﻿using SER.Code.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine;
 namespace SER.Code.MethodSystem.Methods.TeleportMethods;
 
 // ReSharper disable once InconsistentNaming
+[UsedImplicitly]
 public class TPPositionMethod : SynchronousMethod
 {
     public override string Description => "Teleports players to an XYZ position.";

@@ -1,4 +1,5 @@
-﻿using PlayerStatsSystem;
+﻿using JetBrains.Annotations;
+using PlayerStatsSystem;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
@@ -6,6 +7,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.HealthMethods;
 
 // ReSharper disable once InconsistentNaming
+[UsedImplicitly]
 public class SetAHPMethod : SynchronousMethod
 {
     public override string Description => "Sets the amount of AHP for players.";

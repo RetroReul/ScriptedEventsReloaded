@@ -1,4 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
@@ -6,7 +7,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
-internal class BreakDoorMethod : SynchronousMethod
+[UsedImplicitly]
+public class BreakDoorMethod : SynchronousMethod
 {
     public override string Description => "Breaks specified doors if possible (for example, you can't destroy Gate B, but you can destroy normal HCZ doors)";
 
