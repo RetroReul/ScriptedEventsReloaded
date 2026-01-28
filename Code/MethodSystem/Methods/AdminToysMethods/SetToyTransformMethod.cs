@@ -2,7 +2,6 @@
 using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
-using SER.Code.ArgumentSystem.Structures;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using UnityEngine;
 
