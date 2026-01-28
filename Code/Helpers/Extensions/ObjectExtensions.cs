@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using SER.Code.Helpers.Exceptions;
 using UnityEngine;
 
 namespace SER.Code.Helpers.Extensions;
@@ -29,6 +30,7 @@ public static class ObjectExtensions
         public NetworkIdentity NetworkIdentity =>
             obj.TryGetComponent(out NetworkIdentity networkIdentity)
                 ? networkIdentity
-                : throw new Exception("HOW THE FUCK");
+                : throw new NotOurFaultException("Either you hacked the game or " +
+                                                     "northwood fucked up real hard.");
     }
 }

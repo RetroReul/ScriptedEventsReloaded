@@ -57,7 +57,8 @@ public class SendDiscordMessageAndWaitMethod : YieldingReturningMethod<TextValue
         try
         {
             ReturnValue = new StaticTextValue(
-                JObject.Parse(request.downloadHandler.text)["id"]?.Value<string>() ?? throw new Exception()
+                JObject.Parse(request.downloadHandler.text)["id"]?.Value<string>() ??
+                throw new NotOurFaultException("Excuse me? WHERE'S THE ID")
             );
         }
         catch

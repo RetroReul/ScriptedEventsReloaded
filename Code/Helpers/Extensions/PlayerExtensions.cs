@@ -1,6 +1,7 @@
 ﻿using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp096;
 using PlayerRoles.PlayableScps.Scp173;
+using SER.Code.Helpers.Exceptions;
 using UnityEngine;
 
 namespace SER.Code.Helpers.Extensions;
@@ -16,7 +17,8 @@ public static class PlayerExtensions
     {
         public Scp173ObserversTracker ObserversTracker =>
             !peanut.SubroutineModule.TryGetSubroutine(out Scp173ObserversTracker observersTracker)
-                ? throw new Exception("I fucking hate Northwood so much.")
+                ? throw new NotOurFaultException("Guess what? THAT PEANUT DOESN'T HAVE EVERY CORE MODULE " +
+                                                 "(NW's fault obviously)")
                 : observersTracker;
 
         public Player[] ObservingPlayers => peanut.ObserversTracker.Observers
@@ -29,7 +31,8 @@ public static class PlayerExtensions
     {
         public Scp096TargetsTracker TargetsTracker =>
             !shyGuy.SubroutineModule.TryGetSubroutine(out Scp096TargetsTracker targetsTracker)
-                ? throw new Exception("My hatred towards Northwood's code grows stronger with each day.")
+                ? throw new NotOurFaultException("Apparently the 096 is missing some CORE features " +
+                                                 "(NW's fault obviously)")
                 : targetsTracker;
         
         public Player[] Targets => shyGuy.TargetsTracker.Targets
