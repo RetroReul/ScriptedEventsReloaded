@@ -3,9 +3,9 @@ using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
-using SER.Code.Helpers.Exceptions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
+using SER.Code.TokenSystem.Tokens.ExpressionTokens;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.ItemMethods;
@@ -17,11 +17,7 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
     
     public Type ResolvesReference => typeof(Item);
 
-    public override TypeOfValue Returns => new TypesOfValue([
-        typeof(TextValue),
-        typeof(PlayerValue),
-        typeof(BoolValue)
-    ]);
+    public override TypeOfValue Returns => ReferenceVariableExpressionToken.GetTypesOfValue(ResolvesReference);
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -37,13 +33,10 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
     public override void Execute()
     {
         var item = Args.GetReference<Item>("reference");
-        ReturnValue = Args.GetOption("property") switch
-        {
-            "type" => new StaticTextValue(item.Type.ToString()),
-            "category" => new StaticTextValue(item.Category.ToString()),
-            "owner" => new PlayerValue(item.CurrentOwner is not null ? [item.CurrentOwner] : []),
-            "isequipped" => new BoolValue(item.IsEquipped),
-            _ => throw new AndrzejFuckedUpException()
-        };
+        ReturnValue = ReferenceVariableExpressionToken
+            .PropertyInfoMap
+            [typeof(Item)]
+            [Args.GetOption("property")]
+            .Handler(item);
     }
 }

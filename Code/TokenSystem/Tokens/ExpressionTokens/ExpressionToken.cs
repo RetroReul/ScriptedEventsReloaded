@@ -17,7 +17,8 @@ public abstract class ExpressionToken : BaseToken, IValueToken
             return new Ignore();
         }
 
-        if (Tokenizer.TokenizeLine(collection.Value, scr, null).HasErrored(out var error, out var tokensEnum))
+        if (Tokenizer.TokenizeLine(collection.Value, scr, null)
+            .HasErrored(out var error, out var tokensEnum))
         {
             return new Error(error);
         }

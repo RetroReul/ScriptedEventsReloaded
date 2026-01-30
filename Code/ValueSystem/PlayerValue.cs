@@ -6,9 +6,11 @@ namespace SER.Code.ValueSystem;
 
 public class PlayerValue : Value
 {
-    public PlayerValue(Player plr)
+    public PlayerValue(Player? plr)
     {
-        Players = [plr];
+        Players = plr is not null
+            ? [plr]
+            : [];
     }
 
     public PlayerValue(IEnumerable<Player> players)

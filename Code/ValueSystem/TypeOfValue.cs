@@ -20,9 +20,19 @@ public abstract class TypeOfValue
     public abstract override string ToString();
 }
 
-public class TypesOfValue(Type[] types) : TypeOfValue(types)
+public class TypesOfValue : TypeOfValue
 {
-    private readonly Type[] _types = types;
+    public TypesOfValue(SingleTypeOfValue[] types) : base(types.Select(t => t.Type).ToArray())
+    {
+        _types = types.Select(t => t.Type).ToArray();
+    }
+
+    public TypesOfValue(Type[] types) : base(types)
+    {
+        _types = types;
+    }
+
+    private readonly Type[] _types;
     public override string ToString() => $"{string.Join(" or ", _types.Select(Value.FriendlyName))} value";
 }
 
