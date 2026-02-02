@@ -1,5 +1,6 @@
 ﻿using CommandSystem;
 using JetBrains.Annotations;
+using LabApi.Features.Permissions;
 using RemoteAdmin;
 using SER.Code.Helpers.Exceptions;
 using SER.Code.Helpers.Extensions;
@@ -72,6 +73,13 @@ public class CustomCommandFlag : Flag
             "description",
             "The description of the command.",
             AddDescription,
+            false
+        ),
+        new(
+            "neededRank",
+            "The required remote admin rank in order to have access to this command. " +
+            "You can provide multiple ranks, and if the player has any of the listed ranks, they will be able to use the command.",
+            AddNeededRank,
             false
         )
     ];
@@ -160,6 +168,7 @@ public class CustomCommandFlag : Flag
         public string Description { get; set; } = "";
         public ConsoleType ConsoleTypes { get; set; } = ConsoleType.Server;
         public string[] Usage { get; set; } = [];
+        public string[] NeededRanks { get; set; } = [];
         public string GetHelp(ArraySegment<string> arguments)
         {
             return $"Description: {Description}\n" +
@@ -173,6 +182,15 @@ public class CustomCommandFlag : Flag
 
     public static Result RunAttachedScript(CustomCommand requestingCommand, ScriptExecutor sender, string[] args)
     {
+        if (requestingCommand.NeededRanks.Any() && sender is IPlayerExecutor { Player: { } player })
+        {
+            if (player.UserGroup is not { } group || requestingCommand.NeededRanks.All(rank => group.Name != rank))
+            {
+                return "This command is reserved for players with a rank: " +
+                       $"{requestingCommand.NeededRanks.JoinStrings(", ")}";
+            }
+        }
+        
         if (!ScriptCommands.TryGetValue(requestingCommand, out var flag))
         {
             return "The script that was supposed to handle this command was not found.";
@@ -262,6 +280,12 @@ public class CustomCommandFlag : Flag
     private Result AddDescription(string[] args)
     {
         Command.Description = args.JoinStrings(" ");
+        return true;
+    }
+    
+    private Result AddNeededRank(string[] args)
+    {
+        Command.NeededRanks = args;
         return true;
     }
 }
