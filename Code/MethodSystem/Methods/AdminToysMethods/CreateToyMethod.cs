@@ -2,6 +2,7 @@
 using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.ArgumentSystem.Structures;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
@@ -26,15 +27,14 @@ public class CreateToyMethod : ReferenceReturningMethod<AdminToy>, IAdditionalDe
     public override Argument[] ExpectedArguments { get; } =
     [
         new OptionsArgument("toy type",
-            new("primitiveObject", $"Returns a {typeof(PrimitiveObjectToy).AccurateName} reference."),
-            new("lightSource", $"Returns a {typeof(LightSourceToy).AccurateName} reference."),
-            new("shootingTarget", $"Returns a {typeof(ShootingTargetToy).AccurateName} reference."), 
-            new("speaker", $"Returns a {typeof(SpeakerToy).AccurateName} reference."),
-            new("interactable", $"Returns a {typeof(InteractableToy).AccurateName} reference."),
-            new("camera", $"Returns a {typeof(CameraToy).AccurateName} reference."),
-            new("capybara", $"Returns a {typeof(CapybaraToy).AccurateName} reference."), 
-            new("text", $"Returns a {typeof(TextToy).AccurateName} reference."),
-            new("waypoint", $"Returns a {typeof(WaypointToy).AccurateName} reference.")
+            Option.Reference<PrimitiveObjectToy>("primitiveObject"),
+            Option.Reference<LightSourceToy>("lightSource"),
+            Option.Reference<ShootingTargetToy>("shootingTarget"), 
+            Option.Reference<InteractableToy>("interactable"),
+            Option.Reference<CameraToy>("camera"),
+            Option.Reference<CapybaraToy>("capybara"), 
+            Option.Reference<TextToy>("text"),
+            Option.Reference<WaypointToy>("waypoint")
         )
     ];
 
@@ -42,15 +42,14 @@ public class CreateToyMethod : ReferenceReturningMethod<AdminToy>, IAdditionalDe
     {
         ReturnValue = Args.GetOption("toy type") switch
         {
-            "primitiveobject" => PrimitiveObjectToy.Create(),
-            "lightsource"     => LightSourceToy.Create(),
-            "shootingtarget"  => ShootingTargetToy.Create(),
-            "speaker"         => SpeakerToy.Create(),
-            "interactable"    => InteractableToy.Create(),
-            "camera"          => CameraToy.Create(),
-            "capybara"        => CapybaraToy.Create(),
-            "text"            => TextToy.Create(),
-            "waypoint"        => WaypointToy.Create(),
+            "primitiveobject" => PrimitiveObjectToy.Create(networkSpawn: false),
+            "lightsource"     => LightSourceToy.Create(networkSpawn: false),
+            "shootingtarget"  => ShootingTargetToy.Create(networkSpawn: false),
+            "interactable"    => InteractableToy.Create(networkSpawn: false),
+            "camera"          => CameraToy.Create(networkSpawn: false),
+            "capybara"        => CapybaraToy.Create(networkSpawn: false),
+            "text"            => TextToy.Create(networkSpawn: false),
+            "waypoint"        => WaypointToy.Create(networkSpawn: false),
             _                 => throw new TosoksFuckedUpException("out of order")
         };
     }
