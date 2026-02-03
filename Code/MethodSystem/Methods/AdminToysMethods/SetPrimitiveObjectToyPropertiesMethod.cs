@@ -11,7 +11,7 @@ namespace SER.Code.MethodSystem.Methods.AdminToysMethods;
 [UsedImplicitly]
 public class SetPrimitiveObjectToyPropertiesMethod : SynchronousMethod
 {
-    public override string Description => "Sets properties of a primitive object toy.";
+    public override string Description => "Sets properties specific to a primitive object toy.";
 
     public override Argument[] ExpectedArguments { get; } =
     [

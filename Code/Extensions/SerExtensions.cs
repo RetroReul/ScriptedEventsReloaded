@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using SER.Code.Exceptions;
+﻿using SER.Code.Exceptions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
@@ -9,23 +8,26 @@ namespace SER.Code.Extensions;
 
 public static class SerExtensions
 {
-    public static TryGet<TOut> SuccessTryCast<TIn, TOut>(this TryGet<TIn> value) where TOut : TIn
+    public static TryGet<TOut> SuccessTryCast<TIn, TOut>(this TryGet<TIn> value)
+        where TIn : notnull
+        where TOut : TIn
     {
-        return value.OnSuccess(v => v.TryCast<TIn, TOut>(), null);
+        return value.OnSuccess(v => v.TryCast<TOut>(), null);
     }
     
     public static TryGet<TOut> SuccessTryCast<TOut>(this TryGet<Value> value) where TOut : Value
     {
-        return value.OnSuccess(v => v.TryCast<Value, TOut>(), null);
+        return value.OnSuccess(v => v.TryCast<TOut>(), null);
     }
     
-    public static TryGet<TOut> TryCast<TIn, TOut>([NotNull] this TIn value, string rawRep = "") where TOut : TIn
+    public static TryGet<TOut> TryCast<TOut>(this object value, string rawRep = "")
     {
-        if (value is null) throw new AndrzejFuckedUpException();
-        
-        if (value is TOut outValue)
+        switch (value)
         {
-            return outValue;
+            case null:
+                throw new AndrzejFuckedUpException();
+            case TOut outValue:
+                return outValue;
         }
 
         string valueRep = "";

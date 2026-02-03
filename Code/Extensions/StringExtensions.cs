@@ -30,6 +30,12 @@ public static class StringExtensions
     {
         return new Result(false, error);
     }
+    
+    [Pure]
+    public static TryGet<string> AsSuccess(this string value)
+    {
+        return TryGet<string>.Success(value);
+    }
 
     [Pure]
     public static string Spaceify(this string str, bool lowerCase = false)

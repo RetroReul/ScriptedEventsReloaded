@@ -18,7 +18,7 @@ public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
     public override string InputDescription => $"{typeof(TEnum).GetAccurateName()} enum value.";
 
     [UsedImplicitly]
-    public DynamicTryGet<object> GetConvertSolution(BaseToken token)
+    public DynamicTryGet<TEnum> GetConvertSolution(BaseToken token)
     {
         if (InternalConvert(token).WasSuccessful(out var value))
         {

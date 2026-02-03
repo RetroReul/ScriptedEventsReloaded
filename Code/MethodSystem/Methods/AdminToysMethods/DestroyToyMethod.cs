@@ -24,6 +24,7 @@ public class DestroyToyMethod : SynchronousMethod, ICanError
     [
         new ReferenceArgument<AdminToy>("toy reference")
     ];
+    
     public override void Execute()
     {
         var toy = Args.GetReference<AdminToy>("toy reference");

@@ -22,11 +22,9 @@ public class ToFlagsMethod : ReferenceReturningMethod<ToFlagsMethod.Flags>
             }
             catch
             {
-                return $"Expected a '{EnumType.AccurateName}' enum type, got '{typeof(T).AccurateName}' type instead.";
+                return $"Expected a '{typeof(T).AccurateName}' enum type, got '{EnumType}' type instead.";
             }
         }
-
-        public static string ErrorReason(Type enumType) => $"Expected a '{enumType.AccurateName}' enum type.";
     };
 
     public override string Description => "Parses wanted values into a requested enum flag.";

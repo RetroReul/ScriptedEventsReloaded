@@ -8,7 +8,7 @@ using SER.Code.ValueSystem;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
-public class TextArgument(string name) : Argument(name)
+public class TextArgument(string name, bool needsQuotes = true) : Argument(name)
 {
     public override string InputDescription => "Any text e.g. \"Hello, World!\"";
 
@@ -22,6 +22,11 @@ public class TextArgument(string name) : Argument(name)
         
         if (token is not IValueToken valToken || !valToken.CanReturn<LiteralValue>(out var get))
         {
+            if (!needsQuotes)
+            {
+                return token.GetBestTextRepresentation(null).AsSuccess();
+            }
+            
             return DynamicTryGet.Error($"Value '{token.RawRep}' cannot represent text.");
         }
 

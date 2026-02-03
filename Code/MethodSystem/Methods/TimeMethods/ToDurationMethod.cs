@@ -3,29 +3,24 @@ using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Exceptions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.TimeMethods;
 
 [UsedImplicitly]
-public class ToDurationMethod : ReturningMethod<DurationValue>
+public class ToDurationMethod : ReturningMethod<DurationValue>, IAdditionalDescription
 {
-    public enum DurationUnit
-    {
-        Milliseconds,
-        Seconds,
-        Minutes,
-        Hours,
-    }
-    
-    public override string Description => "Creates a duration value from a number and a unit. Used when a number is not known ahead of time.";
+    public override string Description => "Creates a duration value from a number and a unit.";
+
+    public string AdditionalDescription => "Used when a number is not known ahead of time.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
         new FloatArgument("length", 0),
         new EnumArgument<DurationUnit>("unit")
     ];
-    
+
     public override void Execute()
     {
         var length = Args.GetFloat("length");
@@ -38,5 +33,13 @@ public class ToDurationMethod : ReturningMethod<DurationValue>
             DurationUnit.Hours => TimeSpan.FromHours(length),
             _ => throw new AndrzejFuckedUpException()
         };
+    }
+
+    public enum DurationUnit
+    {
+        Milliseconds,
+        Seconds,
+        Minutes,
+        Hours,
     }
 }

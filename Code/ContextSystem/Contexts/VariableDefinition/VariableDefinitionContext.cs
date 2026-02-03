@@ -121,7 +121,7 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
                 throw new ScriptRuntimeError(this, $"{main} has not returned a value! {returner.MissingValueHint}");
             }
 
-            if (value.TryCast<Value, TValue>().HasErrored(out var error, out var tValue))
+            if (value.TryCast<TValue>().HasErrored(out var error, out var tValue))
             {
                 throw new ScriptRuntimeError(this, 
                     $"Value returned by {main} cannot be assigned to the '{varToken.RawRep}' variable: {error}"

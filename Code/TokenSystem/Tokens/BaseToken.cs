@@ -149,7 +149,7 @@ public class BaseToken
             return $"Value '{rawRep}' cannot represent a single {typeof(T).FriendlyTypeName()}";
         }
         
-        if (tokens.First().TryCast<BaseToken, T>(rawRep).HasErrored(out error, out var tToken))
+        if (tokens.First().TryCast<T>(rawRep).HasErrored(out error, out var tToken))
         {
             return error;
         }

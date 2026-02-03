@@ -23,6 +23,21 @@ public class ProvidedArguments(Method method)
 {
     private Dictionary<(string name, Type type), List<DynamicTryGet>> ArgumentValues { get; } = [];
 
+    public T? GetNullableFlags<T>(string argName) where T : struct, Enum
+    {
+        return GetValueNullableStruct<T, FlagsArgument<T>>(argName);
+    }
+    
+    public T GetFlags<T>(string argName) where T : struct, Enum
+    {
+        return GetValue<T, FlagsArgument<T>>(argName);
+    }
+    
+    public Type GetEnumType(string argName)
+    {
+        return GetValue<Type, EnumTypeArgument>(argName);
+    }
+    
     public T GetVariable<T>(string argName) where T : Variable
     {
         return GetValue<T, VariableArgument<T>>(argName);
@@ -102,7 +117,12 @@ public class ProvidedArguments(Method method)
     {
         return GetValue<Script, RunningScriptArgument>(argName);
     }
-    
+
+    public Color? GetNullableColor(string argName)
+    {
+        return GetValueNullableStruct<Color, ColorArgument>(argName);
+    }
+
     public Color GetColor(string argName)
     {
         return GetValue<Color, ColorArgument>(argName);
@@ -174,13 +194,14 @@ public class ProvidedArguments(Method method)
         return GetValue<int, IntArgument>(argName);
     }
 
+    public TEnum? GetNullableEnum<TEnum>(string argName) where TEnum : struct, Enum
+    {
+        return GetValueNullableStruct<TEnum, EnumArgument<TEnum>>(argName);
+    }
+    
     public TEnum GetEnum<TEnum>(string argName) where TEnum : struct, Enum
     {
-        var obj = GetValue<object, EnumArgument<TEnum>>(argName);
-        if (obj is not TEnum value)
-            throw new AndrzejFuckedUpException($"Enum got {obj.GetType().AccurateName}, not {typeof(TEnum).AccurateName}");
-
-        return value;
+        return GetValue<TEnum, EnumArgument<TEnum>>(argName);
     }
     
     /// <remarks>
