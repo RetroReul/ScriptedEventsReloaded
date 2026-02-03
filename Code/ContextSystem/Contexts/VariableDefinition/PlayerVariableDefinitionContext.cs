@@ -3,6 +3,7 @@ using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Variables;
+using Log = SER.Code.Helpers.Log;
 
 namespace SER.Code.ContextSystem.Contexts.VariableDefinition;
 
@@ -13,6 +14,12 @@ public class PlayerVariableDefinitionContext(VariableToken<PlayerVariable, Playe
     {
         if (token is ParenthesesToken { RawContent: "" })
         {
+            Log.Warn(
+                token.Script, 
+                $"Using () to create an empty player variable will be removed in future versions of SER. " +
+                $"Please use the @empty variable to create an empty variable instead."
+            );
+            
             return (TryAddTokenRes.End(), () => new([]));
         }
 

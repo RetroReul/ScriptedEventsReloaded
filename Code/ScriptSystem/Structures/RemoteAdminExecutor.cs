@@ -1,10 +1,13 @@
-﻿using RemoteAdmin;
+﻿using LabApi.Features.Wrappers;
+using RemoteAdmin;
 
 namespace SER.Code.ScriptSystem.Structures;
 
-public class RemoteAdminExecutor : ScriptExecutor
+public class RemoteAdminExecutor : ScriptExecutor, IPlayerExecutor
 {
     public required PlayerCommandSender Sender { get; init; }
+
+    public Player? Player => Player.Get(Sender);
 
     public override void Reply(string content, Script scr)
     {

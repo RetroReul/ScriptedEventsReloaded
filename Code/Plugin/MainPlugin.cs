@@ -5,8 +5,8 @@ using LabApi.Features.Console;
 using LabApi.Features.Wrappers;
 using MEC;
 using SER.Code.FlagSystem.Flags;
-using SER.Code.Helpers;
 using SER.Code.Helpers.Extensions;
+using SER.Code.Helpers.FrameworkExtensions;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
 using SER.Code.ScriptSystem;
@@ -23,7 +23,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
     public override string Description => "The scripting language for SCP:SL.";
     public override string Author => "Elektryk_Andrzej";
     public override Version RequiredApiVersion => LabApiProperties.CurrentVersion;
-    public override Version Version => new(0, 13, 0);
+    public override Version Version => new(0, 13, 1);
 
     public static string GitHubLink => "https://github.com/ScriptedEvents/ScriptedEventsReloaded";
     public static string DocsLink => "https://scriptedeventsreloaded.gitbook.io/docs/tutorial";

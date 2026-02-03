@@ -1,8 +1,12 @@
-﻿namespace SER.Code.ScriptSystem.Structures;
+﻿using LabApi.Features.Wrappers;
 
-public class PlayerConsoleExecutor : ScriptExecutor
+namespace SER.Code.ScriptSystem.Structures;
+
+public class PlayerConsoleExecutor : ScriptExecutor, IPlayerExecutor
 {
     public required ReferenceHub Sender { get; init; }
+
+    public Player Player => Player.Get(Sender);
 
     public override void Reply(string content, Script scr)
     {

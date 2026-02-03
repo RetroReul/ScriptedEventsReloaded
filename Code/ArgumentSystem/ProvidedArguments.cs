@@ -118,6 +118,11 @@ public class ProvidedArguments(Method method)
         return GetValue<bool, BoolArgument>(argName);
     }
 
+    public bool? GetNullableBool(string argName)
+    {
+        return GetValueNullableStruct<bool, BoolArgument>(argName);
+    }
+
     public Func<bool> GetBoolFunc(string argName)
     {
         var evaluator = GetEvaluators<bool, BoolArgument>(argName).First();
@@ -195,20 +200,46 @@ public class ProvidedArguments(Method method)
     /// Retrieves a list of remaining arguments based on the specified argument name.
     /// The method resolves provided arguments into a typed list of values.
     /// </summary>
-    public TValue[] GetRemainingArguments<TValue, TArg>(string argName) where TArg : Argument
+    public TValue[] GetRemainingArguments<TValue, TArg>(string argName) 
+        where TArg : Argument
     {
         return GetEvaluators<TValue, TArg>(argName).Select(dtg => dtg.Invoke().Value!).ToArray();
     }
 
-    public TValue GetValue<TValue, TArg>(string argName) where TArg : Argument
+    public TValue GetValue<TValue, TArg>(string argName) 
+        where TArg : Argument
     {
         return GetEvaluators<TValue, TArg>(argName).First().Invoke().Value!;
     }
+    
+    public TValue? GetValueNullableStruct<TValue, TArg>(string argName) 
+        where TArg : Argument
+        where TValue : struct
+    {
+        var evaluator = GetValueInternal<TValue?, TArg>(argName).First();
+        
+        if (evaluator.Result.HasErrored(out var error))
+        {
+            throw new CustomScriptRuntimeError(
+                $"Fetching argument '{argName}' for method '{method.Name}' failed.".AsError() 
+                + error
+            );
+        }
+        
+        return evaluator switch
+        {
+            DynamicTryGet<TValue> strict => strict.Invoke().Value,
+            DynamicTryGet<TValue?> nullable => nullable.Invoke().Value,
+            _ => throw new AndrzejFuckedUpException(
+                $"Argument '{argName}' evaluator type mismatch. " +
+                $"Got {evaluator.GetType().AccurateName}, expected {typeof(TValue).AccurateName} or {typeof(TValue?).AccurateName}.")
+        };
+    }
 
     private List<DynamicTryGet<TValue>> GetEvaluators<TValue, TArg>(string argName)
+        where TArg : Argument
     {
-        Result mainErr = 
-            $"Fetching argument '{argName}' for method '{method.Name}' failed.";
+        Result mainErr = $"Fetching argument '{argName}' for method '{method.Name}' failed.";
 
         var evaluators = GetValueInternal<TValue, TArg>(argName);
 
@@ -221,8 +252,12 @@ public class ProvidedArguments(Method method)
             }
 
             if (evaluator is not DynamicTryGet<TValue> argEvalRes)
+            {
                 throw new AndrzejFuckedUpException(
-                    mainErr + $"Argument value is not of type {typeof(TValue).Name}, evaluator: {evaluator.GetType().AccurateName}.");
+                    mainErr + 
+                    $"Argument value is not of type {typeof(TValue).Name}, evaluator: {evaluator.GetType().AccurateName}."
+                );
+            }
             
             resultList.Add(argEvalRes);
         }
@@ -230,7 +265,8 @@ public class ProvidedArguments(Method method)
         return resultList;
     }
 
-    private List<DynamicTryGet> GetValueInternal<TValue, TArg>(string argName)
+    private List<DynamicTryGet> GetValueInternal<TValue, TArg>(string argName) 
+        where TArg : Argument
     {
         if (ArgumentValues.TryGetValue((argName, typeof(TArg)), out var value))
         {
