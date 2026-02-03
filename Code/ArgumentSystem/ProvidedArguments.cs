@@ -189,9 +189,19 @@ public class ProvidedArguments(Method method)
         return GetValue<float, FloatArgument>(argName);
     }
 
+    public float? GetNullableFloat(string argName)
+    {
+        return GetValueNullableStruct<float, FloatArgument>(argName);
+    }
+
     public int GetInt(string argName)
     {
         return GetValue<int, IntArgument>(argName);
+    }
+
+    public int? GetNullableInt(string argName)
+    {
+        return GetValueNullableStruct<int, IntArgument>(argName);
     }
 
     public TEnum? GetNullableEnum<TEnum>(string argName) where TEnum : struct, Enum
