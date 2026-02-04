@@ -14,7 +14,7 @@ public class PlayerVariableDefinitionContext(VariableToken<PlayerVariable, Playe
     {
         if (token is ParenthesesToken { RawContent: "" })
         {
-            Log.Warn(
+            Log.ScriptWarn(
                 token.Script, 
                 $"Using () to create an empty player variable will be removed in future versions of SER. " +
                 $"Please use the @empty variable to create an empty variable instead."

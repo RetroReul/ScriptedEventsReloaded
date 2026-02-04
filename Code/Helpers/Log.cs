@@ -19,13 +19,23 @@ public static class Log
         Logger.Raw(o.ToString(), ConsoleColor.Magenta);
     }
 
-    public static void Warn(Script scr, object obj)
+    public static void Warn(object o)
+    {
+        Logger.Raw(o.ToString(), ConsoleColor.Yellow);
+    }
+
+    public static void Error(object o)
+    {
+        Logger.Raw(o.ToString(), ConsoleColor.Red);
+    }
+
+    public static void ScriptWarn(Script scr, object obj)
     {
         var ident = scr.CurrentLine == 0 ? "Compile warning" : $"Line {scr.CurrentLine}";
         Logger.Raw($"[Script '{scr.Name}'] [{ident}] {obj}", ConsoleColor.Yellow);
     }
     
-    public static void Warn(string scrName, uint line, object obj)
+    public static void ScriptWarn(string scrName, uint line, object obj)
     {
         Logger.Raw($"[Script '{scrName}'] [Line {line}] {obj}", ConsoleColor.Yellow);
     }

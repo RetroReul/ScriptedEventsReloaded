@@ -38,7 +38,7 @@ public abstract class TextValue : LiteralValue<string>
         
         if (Tokenizer.SliceLine(match.Value).HasErrored(out var error, out var slices))
         {
-            Log.Warn(script, error);
+            Log.ScriptWarn(script, error);
             return "<error>";
         }
 
@@ -50,13 +50,13 @@ public abstract class TextValue : LiteralValue<string>
         // ReSharper disable once DuplicatedSequentialIfBodies
         if (ExpressionToken.TryParse(collection, script).HasErrored(out error, out var token))
         {
-            Log.Warn(script, error);
+            Log.ScriptWarn(script, error);
             return "<error>";
         }
 
         if (((BaseToken)token).TryGet<LiteralValue>().HasErrored(out error, out var value))
         {
-            Log.Warn(script, error);
+            Log.ScriptWarn(script, error);
             return "<error>";
         }
             

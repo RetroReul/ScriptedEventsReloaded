@@ -18,7 +18,7 @@ public class ServerConsoleExecutor : ScriptExecutor
 
     public override void Warn(string content, Script scr)
     {
-        Log.Warn(scr, content);
+        Log.ScriptWarn(scr, content);
     }
 
     public override void Error(string content, Script scr)
