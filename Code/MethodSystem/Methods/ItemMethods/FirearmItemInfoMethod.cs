@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Exceptions;
@@ -6,6 +7,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.ItemMethods;
+
+[UsedImplicitly]
 internal class FirearmItemInfoMethod : ReturningMethod
 {
     public override string Description => "Returns info about provided firearm";
