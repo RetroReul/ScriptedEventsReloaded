@@ -67,6 +67,9 @@
         <Reference Include="Callvote-LabAPI">
             <HintPath>$(SL_DEV_REFERENCES)\Callvote-LabAPI.dll</HintPath>
         </Reference>
+        <Reference Include="UncomplicatedCustomRoles-LabAPI">
+            <HintPath>$(SL_DEV_REFERENCES)\UncomplicatedCustomRoles-LabAPI.dll</HintPath>
+        </Reference>
     </ItemGroup>
     
     <!-- QoL moving the dll -->

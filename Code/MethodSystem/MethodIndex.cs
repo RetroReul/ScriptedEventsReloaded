@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
-using Exiled.API.Features;
 using LabApi.Features.Console;
 using SER.Code.Extensions;
 using SER.Code.Helpers.FrameworkExtensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.MethodSystem.Structures;
-using Log = SER.Code.Helpers.Log;
 
 namespace SER.Code.MethodSystem;
 
@@ -24,8 +22,9 @@ public static class MethodIndex
         
         AddAllDefinedMethodsInAssembly();
         
-        ExiledHelper.OnExiledDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Exiled);
-        CallVoteHelper.OnCallvoteDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Callvote);
+        ExiledBridge.OnDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Exiled);
+        CallvoteBridge.OnDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Callvote);
+        UcrBridge.OnDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Ucr);
     }
     
     /// <summary>
