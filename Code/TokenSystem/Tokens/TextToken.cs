@@ -1,6 +1,9 @@
-﻿using SER.Code.Helpers.ResultSystem;
+﻿using SER.Code.Exceptions;
+using SER.Code.Extensions;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Slices;
 using SER.Code.TokenSystem.Structures;
+using SER.Code.TokenSystem.Tokens.ExpressionTokens;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.TokenSystem.Tokens;
@@ -26,5 +29,20 @@ public class TextToken : LiteralValueToken<TextValue>
         return DynamicTryGet.Success(Value.Value);
     }
     
-    public static TextToken GetToken(string content) => GetToken<TextToken>($"\"{content}\"");
+    public static TextToken GetToken(string content)
+    {
+        return GetToken<TextToken>($"\"{content}\"");
+    }
+    
+    public static TextToken GetToken(params object[] parts)
+    {
+        if (parts.Any(p => p.GetType() != typeof(string) && !p.GetType().IsAssignableFrom(typeof(BaseToken))))
+        {
+            throw new InvalidDocsSymbolException("Expected only strings and expressions");
+        }
+        
+        return GetToken<TextToken>(
+            $"\"{parts.Select(p => p is BaseToken t ? t.RawRep : p.ToString()).JoinStrings(" ")}\""
+        );
+    }
 }

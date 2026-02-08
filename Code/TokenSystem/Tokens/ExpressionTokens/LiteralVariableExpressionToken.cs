@@ -23,4 +23,9 @@ public class LiteralVariableExpressionToken : ExpressionToken
     public override TryGet<Value> Value() => _varToken.Value.Value();
 
     public override TypeOfValue PossibleValues => new TypeOfValue<LiteralValue>();
+
+    public static LiteralVariableExpressionToken GetToken(LiteralVariableToken lvar)
+    {
+        return GetToken<LiteralVariableExpressionToken>($"{{{lvar.RawRep}}}");
+    }
 }

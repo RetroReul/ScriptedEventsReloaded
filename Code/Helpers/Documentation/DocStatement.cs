@@ -1,4 +1,5 @@
-﻿using SER.Code.TokenSystem.Tokens;
+﻿using SER.Code.Extensions;
+using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.Helpers.Documentation;
 
@@ -20,15 +21,16 @@ public class DocStatement : DocComponent
         return this;
     }
     
-    public DocStatement Add(DocComponent child)
+    public DocStatement Add(DocComponent? child)
     {
-        _children.Add(child);
+        if (child is not null)
+            _children.Add(child);
         return this;
     }
     
-    public DocStatement AddRange(DocComponent[] children)
+    public DocStatement AddRange(DocComponent?[] children)
     {
-        _children.AddRange(children);
+        _children.AddRange(children.RemoveNulls());
         return this;
     }
     

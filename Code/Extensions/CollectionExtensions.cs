@@ -36,6 +36,7 @@ public static class CollectionExtensions
     {
         return string.Join(separator, source);
     }
+    
     public static TryGet<int> GetEnumerableHashCode<T>(this IEnumerable<T> enumerable)
     {
         if (enumerable is null) return $"{nameof(enumerable)} is null.";

@@ -3,7 +3,7 @@ using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.Helpers.Documentation;
 
-public class DocMethod : DocComponent
+public abstract class DocMethod : DocComponent
 {
 }
 

@@ -10,6 +10,7 @@ using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.MethodSystem.Methods.BroadcastMethods;
 using SER.Code.MethodSystem.Methods.OutputMethods;
 using SER.Code.TokenSystem.Tokens;
+using SER.Code.TokenSystem.Tokens.ExpressionTokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
@@ -28,38 +29,72 @@ public partial class ForeachLoopContext
     
     public override string[] Arguments => ["[player/collection variable]"];
 
-    public override DocComponent[] ExampleUsage =>
-    [
-        new DocComment("The 'foreach' will repeat the methods inside its body the same amount of times as there are provided players"),
-        new DocComment("For example, if there are 5 players on the server, 'detected player' will be printed 5 times"),
-        GetDoc(
-            PlayerVariableToken.GetToken("@all"),
-            null,
-            null,
-            new DocMethod<PrintMethod>(
-                BaseToken.GetToken<TextToken>("\"detected player\"")
-            )
-        ),
-        new DocComment("But we can also check which player we are currently 'going over'"),
-        new DocComment("The order in which that happens is pretty much random"),
-        new DocComment("For example, what will happen if there are 3 players: Player1, Player2 and Player3?"),
-        new DocComment("It will send a broadcast to each player with their specific name!"),
-        GetDoc(
-            PlayerVariableToken.GetToken("@all"),
-            PlayerVariableToken.GetToken("@plr"),
-            null,
-            new DocMethod<BroadcastMethod>(
-                PlayerVariableToken.GetToken("@plr"),
-                DurationToken.GetToken("10s"),
-                TextToken.GetToken("Hello {@plr name} on our server!")
-            )
-        ),
-        new DocComment("This loop supports 1 more argument: the 'position' of the player")
-    ];
+    public override DocComponent[] ExampleUsage
+    {
+        get
+        {
+            var plr = PlayerVariableToken.GetToken("@plr");
+            var all = PlayerVariableToken.GetToken("@all");
+            var duration = DurationToken.GetToken("10s");
+            var index = LiteralVariableToken.GetToken("$index");
+            return
+            [
+                new DocComment(
+                    "The 'foreach' will repeat the methods inside its body the same amount of times as there are provided players"),
+                new DocComment(
+                    "For example, if there are 5 players on the server, 'detected player' will be printed 5 times"),
+                GetDoc(
+                    all,
+                    null,
+                    null,
+                    new DocMethod<PrintMethod>(
+                        TextToken.GetToken("detected player")
+                    )
+                ),
+                new DocComment("But we can also check which player we are currently 'going over'"),
+                new DocComment("The order in which that happens is pretty much random"),
+                new DocComment("For example, what will happen if there are 3 players: Player1, Player2 and Player3?"),
+                new DocComment("It will send a broadcast to each player with their specific name!"),
+                GetDoc(
+                    all,
+                    plr,
+                    null,
+                    new DocMethod<BroadcastMethod>(
+                        plr,
+                        duration,
+                        TextToken.GetToken(
+                            "Hello",
+                            PlayerExpressionToken.GetToken(plr, PlayerExpressionToken.PlayerProperty.Name),
+                            "on our server!"
+                        )
+                    )
+                ),
+                new DocComment("This loop supports 1 more argument: the current 'iteration' of the loop"),
+                new DocComment("This is usually called an 'index' in programming"),
+                GetDoc(
+                    all,
+                    plr,
+                    index,
+                    new DocMethod<BroadcastMethod>(
+                        plr,
+                        duration,
+                        TextToken.GetToken(
+                            "Hello", 
+                            PlayerExpressionToken.GetToken(plr, PlayerExpressionToken.PlayerProperty.Name),
+                            "your index is:",
+                            LiteralVariableExpressionToken.GetToken(index)
+                        )
+                    )
+                ),
+                new DocComment("But players are NOT the only thing you can 'loop over'!"),
+                new DocComment("If you have a collection value, like ")
+            ];
+        }
+    }
 
     public TypeOfValue[] OptionalVariableTypes =>
     [
-        new TypesOfValue(new TypeOfValue<PlayerValue>(), new TypeOfValue<ReferenceValue>()),
+        new UnknownTypeOfValue(),
         new TypeOfValue<NumberValue>()
     ];
 
@@ -134,7 +169,7 @@ public partial class ForeachLoopContext : LoopContext, IAcceptOptionalVariableDe
             _mainErr + "Missing required arguments.");
     }
 
-    public Result SetOptionalVariables(params VariableToken[] variableTokens)
+    Result IAcceptOptionalVariableDefinitions.SetOptionalVariables(params VariableToken[] variableTokens)
     {
         if (variableTokens.Length > 2)
             return $"Too many arguments were provided for '{KeywordName}' loop, only 2 are allowed.";

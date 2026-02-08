@@ -32,4 +32,6 @@ public class LiteralVariableToken : VariableToken<LiteralVariable, LiteralValue>
                 
         return value;
     }
+    
+    public static LiteralVariableToken GetToken(string representation) => GetToken<LiteralVariableToken>(representation);
 }

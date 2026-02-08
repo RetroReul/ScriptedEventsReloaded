@@ -222,4 +222,7 @@ public class PlayerExpressionToken : ExpressionToken
     }
 
     public override TypeOfValue PossibleValues => new UnknownTypeOfValue();
+
+    public static PlayerExpressionToken GetToken(PlayerVariableToken pvar, PlayerProperty property)
+        => GetToken<PlayerExpressionToken>($"{{{pvar.RawRep} {property.ToString().LowerFirst()}}}");
 }
