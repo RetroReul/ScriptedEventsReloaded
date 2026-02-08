@@ -30,21 +30,10 @@ public class FunctionDefinitionContext :
     public string Description => "Defines a function.";
     public string[] Arguments => ["[function name]"];
     
-    // gets the type of value associated with a token type of a variable prefix
-    // sketchy!!
-    public TypeOfValue? Returns
-    {
-        get
-        {
-            var varTypeToken = VariableToken.VariablePrefixes
-                .FirstOrDefault(pair => pair.prefix == FunctionName.FirstOrDefault())
-                .varTypeToken;
-
-            if (varTypeToken == null) return null;
-
-            return new SingleTypeOfValue(varTypeToken.CreateInstance<VariableToken>().ValueType);
-        }
-    }
+    public TypeOfValue? Returns =>
+        VariableToken.GetVariableTokenTypeFromPrefix(FunctionName.First()).WasSuccessful(out var type)
+            ? new SingleTypeOfValue(type.CreateInstance<VariableToken>().ValueType)
+            : null;
 
     public Value? ReturnedValue { get; private set; }
 

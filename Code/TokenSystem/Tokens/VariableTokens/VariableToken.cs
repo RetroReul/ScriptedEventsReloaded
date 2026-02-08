@@ -26,6 +26,15 @@ public abstract class VariableToken : BaseToken, IContextableToken
         ('*', typeof(ReferenceVariableToken)),
         ('&', typeof(CollectionVariableToken))
     ];
+
+    public static TryGet<Type> GetVariableTokenTypeFromPrefix(char prefix)
+    {
+        // ReSharper disable once ReplaceConditionalExpressionWithNullCoalescing
+        // rider issue
+        return VariablePrefixes.FirstOrDefault(pair => pair.prefix == prefix).varTypeToken is { } type
+            ? type
+            : $"There is no variable prefix using '{prefix}'";
+    }
     
     public char Prefix => VariablePrefixes.First(pair => pair.varTypeToken == GetType()).prefix;
 
