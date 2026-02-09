@@ -6,6 +6,7 @@ using SER.Code.ContextSystem.Interfaces;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.FlagSystem.Flags;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.Interfaces;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.BaseMethods;
@@ -39,7 +40,7 @@ public class HelpCommand : ICommand
         [HelpOption.RefResMethods] = GetReferenceResolvingMethodsHelpPage,
         [HelpOption.PlayerProperty] = GetPlayerInfoAccessorsHelpPage,
         [HelpOption.Flags] = GetFlagHelpPage,
-        //[HelpOption.Keywords] = GetKeywordHelpPage
+        [HelpOption.Keywords] = GetKeywordHelpPage
     };
     
     public bool Execute(ArraySegment<string> arguments, ICommandSender _, out string response)
@@ -48,7 +49,7 @@ public class HelpCommand : ICommand
         {
             return GetGeneralOutput(arguments.First().ToLower(), out response);
         }
-
+        
         response = GetOptionsList();
         return true;
     }
@@ -77,7 +78,8 @@ public class HelpCommand : ICommand
                 keyword.Description,
                 keyword.Arguments,
                 keyword is StatementContext,
-                keyword.GetType()
+                keyword.GetType(),
+                ((Context)keyword).GetExampleUsage()
             );
             return true;
         }
@@ -131,20 +133,27 @@ public class HelpCommand : ICommand
                 > {"\n> ".Join(Enum.GetValues(typeof(HelpOption)).Cast<HelpOption>()
                     .Select(o => o.ToString().LowerFirst()))}
                     
-                    
                 === Other commands! ===
-                > {"\n> ".Join(Assembly.GetExecutingAssembly().GetTypes()
+                > {Assembly.GetExecutingAssembly().GetTypes()
                     .Where(t => typeof(ICommand).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract && t != typeof(HelpCommand))
                     .Select(Activator.CreateInstance)
                     .Cast<ICommand>()
                     .Where(c => !string.IsNullOrEmpty(c.Command))
                     .Select(c 
-                        => $"{c.Command} (permission: {(c as IUsePermissions)?.Permission ?? "not required"})" + 
-                           $"\n{(string.IsNullOrEmpty(c.Description) ? string.Empty : c.Description + "\n")}"))}
+                        => $"> {c.Command} (permission: {(c as IUsePermissions)?.Permission ?? "not required"})" + 
+                           $"\n{(string.IsNullOrEmpty(c.Description) ? string.Empty : c.Description + "\n")}")
+                    .JoinStrings("\n")
+                }
                 """;
     }
 
-    private static string GetKeywordInfo(string name, string description, string[] arguments, bool isStatement, Type type)
+    private static string GetKeywordInfo(
+        string name, 
+        string description, 
+        string[] arguments, 
+        bool isStatement, 
+        Type type,
+        DocComponent[] example)
     {
         var usageInfo = Activator.CreateInstance(type) is IStatementExtender extender
             ? $"""
@@ -164,6 +173,12 @@ public class HelpCommand : ICommand
                {name} {arguments.JoinStrings(" ")}
                {(isStatement ? "\t# some code\nend" : string.Empty)}
                """;
+
+        var exampleString =
+            $"""
+            --- Examples ---
+            {example.Select(c => c.ToString()).JoinStrings("\n")}
+            """;
         
         var extendableInfo = Activator.CreateInstance(type) is IExtendableStatement extendable
             ? $"""
@@ -175,16 +190,18 @@ public class HelpCommand : ICommand
         
         return 
             $"""
-            ===== {name} keyword =====
+            ===== "{name}" keyword =====
             > {description}
             
             {usageInfo}
             
             {extendableInfo}
-            """;
+            
+            {exampleString}
+            """.TrimEnd();
     }
 
-    /*private static string GetKeywordHelpPage()
+    private static string GetKeywordHelpPage()
     {
         return
             """
@@ -193,56 +210,17 @@ public class HelpCommand : ICommand
 
             Keywords are written as all lowercase words, like 'stop', 'if' etc.
 
-            Some keywords also have an ability to house methods inside their "body", making them _statements_.
-            These statements control how the methods inside their body are executed.
-
-            For example:
-            if 5 > 3
-                # here is some code
-                # which will only run if the "if" statement is true
-            end
-
-            Or another example:
-            repeat 10
-                # here is some code
-                # which will run 10 times
-            end
-
-            Here is a list of all keywords available in SER:
-            (each of them is of course searchable using 'serhelp keywordName')
-            """ + KeywordToken.KeywordTypes
-                .Select(t => t.CreateInstance<IKeywordContext>())
-                .Select(k => $"{k.KeywordName} - {k.Description}")
-                .JoinStrings("\n");
-
-        var keywords = KeywordToken.KeywordInfo.Keys.Select(k => $"\n> {k}").JoinStrings();
-
-        return
-            """
-            Keywords are special "commands" that alter how the script is executed.
-            They can range from simple things like stopping the script, to more complex things like handling advanced logic.
-
-            Keywords are written as all lowercase words, like 'stop' or 'if'.
-
             Some keywords also have an ability to house methods inside their "body", making them statements.
             These statements control how the methods inside their body are executed.
-
-            For example:
-            if ...
-                # here is some code
-                # which will only run if the "if" statement is true
-            end
-
-            Or another example:
-            repeat 10
-                # here is some code
-                # which will run 10 times
-            end
-
+            
             Here is a list of all keywords available in SER:
             (each of them is of course searchable using 'serhelp keywordName')
-            """ + keywords;
-    }*/
+            
+            """ + KeywordToken.KeywordContextTypes
+                .Select(t => t.CreateInstance<IKeywordContext>())
+                .Select(k => $"> {k.KeywordName}")
+                .JoinStrings("\n");
+    }
 
     private static string GetFlagHelpPage()
     {

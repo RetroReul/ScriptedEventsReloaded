@@ -35,7 +35,7 @@ public class TextToken : LiteralValueToken<TextValue>
     
     public static TextToken GetToken(params object[] parts)
     {
-        if (parts.Any(p => p.GetType() != typeof(string) && !p.GetType().IsAssignableFrom(typeof(BaseToken))))
+        if (parts.Any(p => p is not string && p is not BaseToken))
         {
             throw new InvalidDocsSymbolException("Expected only strings and expressions");
         }

@@ -1,12 +1,13 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ContextSystem.Contexts.Control;
 
-public class EndStatementContext : StandardContext, IKeywordContext
+public class EndContext : StandardContext, IKeywordContext
 {
     public string KeywordName => "end";
     public string Description => "Ends the current statement's body.";
@@ -22,6 +23,11 @@ public class EndStatementContext : StandardContext, IKeywordContext
     public override Result VerifyCurrentState()
     {
         return true;
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     protected override void Execute()

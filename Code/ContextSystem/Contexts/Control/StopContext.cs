@@ -2,13 +2,14 @@
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ContextSystem.Contexts.Control;
 
 [UsedImplicitly]
-public class StopScriptContext: StandardContext, IKeywordContext
+public class StopContext: StandardContext, IKeywordContext
 {
     public string KeywordName => "stop";
 
@@ -28,6 +29,11 @@ public class StopScriptContext: StandardContext, IKeywordContext
     public override Result VerifyCurrentState()
     {
         return true;
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     protected override void Execute()

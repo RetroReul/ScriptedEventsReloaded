@@ -152,6 +152,9 @@ public class Script
         return matches.Length;
     }
 
+    public static Result VerifyContent(string content) 
+        => CreateAnonymous("content verification", content).Compile();
+
     public List<Line> GetFlagLines()
     {
         DefineLines();

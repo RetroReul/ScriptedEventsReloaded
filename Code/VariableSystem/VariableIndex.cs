@@ -10,23 +10,6 @@ namespace SER.Code.VariableSystem;
 public static class VariableIndex
 {
     public static readonly List<Variable> GlobalVariables = [];
-
-    /// <summary>
-    /// A method used for documentation to verify if the variable exists.
-    /// </summary>
-    /// <param name="name">The name to verify.</param>
-    /// <returns>A formatted player variable</returns>
-    public static string DocsGet(string name)
-    {
-        if (name.StartsWith("@")) name = name[1..];
-        
-        if (GlobalVariables.FirstOrDefault(v => v.Name == name) is { } variable)
-        {
-            return $"@{variable.Name}";
-        }
-        
-        throw new Exception($"Documentation tried to use variable '@{name}' which does not exist.");
-    }
     
     public static void Initialize()
     {

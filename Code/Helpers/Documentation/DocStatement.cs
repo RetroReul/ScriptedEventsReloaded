@@ -5,7 +5,9 @@ namespace SER.Code.Helpers.Documentation;
 
 public class DocStatement : DocComponent
 {
+    private readonly string _start;
     private readonly List<DocComponent> _children = [];
+    private readonly bool _isStandalone;
 
     public DocStatement AddRangeIf(Func<DocComponent[]?> children)
     {
@@ -34,8 +36,17 @@ public class DocStatement : DocComponent
         return this;
     }
     
-    public DocStatement(string keyword, params BaseToken[] init)
+    public DocStatement(string keyword, bool isStandalone, params BaseToken[] init)
     {
-        
+        _isStandalone = isStandalone;
+        _start = BaseToken.GetToken<KeywordToken>(keyword).RawRep 
+                 + " " 
+                 + init.Select(t => t.RawRep).JoinStrings(" ");
+    }
+
+    public override string ToString()
+    {
+        return $"{_start}\n{_children.Select(c => $"    {c}").JoinStrings("\n")}"
+            + (_isStandalone ? "" : "\nend" );
     }
 }

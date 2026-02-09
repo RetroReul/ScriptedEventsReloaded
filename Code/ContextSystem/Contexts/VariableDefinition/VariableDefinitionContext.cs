@@ -4,6 +4,7 @@ using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Structures;
 using SER.Code.TokenSystem.Tokens;
@@ -29,6 +30,11 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
     private bool _equalSignSet = false;
     private (Context main, IMayReturnValueContext returner)? _returnContext = null; 
     private Func<TValue>? _parser = null;
+    
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
+    }
 
     protected override string FriendlyName => $"'{varToken.RawRep}' variable definition";
 

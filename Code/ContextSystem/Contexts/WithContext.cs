@@ -23,18 +23,6 @@ public class WithContext : StandardContext, IKeywordContext, INotRunningContext,
 
     public string[] Arguments => ["[variables...]"];
 
-    public string ExampleUsage =>
-        """
-        # "with" keyword defines a temporary variable to count from 1 to 5
-        repeat 5 
-            with $index
-            
-            Reply $index
-        end
-        
-        # some 
-        """;
-
     public static DocLine GetDoc(params VariableToken[] variables)
     {
         return new DocLine([BaseToken.GetToken<KeywordToken>("with"), ..variables]);
@@ -76,6 +64,11 @@ public class WithContext : StandardContext, IKeywordContext, INotRunningContext,
             _variables.Count > 0,
             "No variables were provided."
         );
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     protected override void Execute()

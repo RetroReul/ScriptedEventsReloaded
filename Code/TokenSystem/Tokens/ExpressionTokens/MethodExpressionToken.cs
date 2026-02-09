@@ -1,5 +1,6 @@
 ﻿using SER.Code.ContextSystem;
 using SER.Code.Exceptions;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
@@ -40,5 +41,10 @@ public class MethodExpressionToken : ExpressionToken
         
         _method.Execute();
         return _method.ReturnValue ?? throw new AndrzejFuckedUpException();
+    }
+
+    public static DocComponent GetDoc(MethodToken method, params BaseToken[] args)
+    {
+        
     }
 }

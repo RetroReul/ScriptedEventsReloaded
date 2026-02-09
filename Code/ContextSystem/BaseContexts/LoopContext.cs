@@ -15,8 +15,6 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
     public abstract string Description { get; }
     public abstract string[] Arguments { get; }
 
-    public abstract DocComponent[] GetExampleUsage();
-
     protected bool ReceivedContinue;
     protected bool ReceivedBreak;
     protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
@@ -55,4 +53,6 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
             break;
         }
     }
+
+    protected sealed override string FriendlyName => $"'{KeywordName}' loop statement";
 }

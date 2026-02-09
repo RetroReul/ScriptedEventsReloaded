@@ -3,6 +3,7 @@ using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Structures;
 using SER.Code.TokenSystem.Tokens;
@@ -54,6 +55,11 @@ public class ReturnContext : StandardContext, IKeywordContext
             _returnValueToken != null || _returnContext.HasValue,
             "Return value was not provided."
         );
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     protected override void Execute()

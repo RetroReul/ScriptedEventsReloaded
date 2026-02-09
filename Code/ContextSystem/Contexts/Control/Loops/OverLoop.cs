@@ -19,9 +19,9 @@ using SER.Code.VariableSystem.Bases;
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public partial class ForeachLoopContext
+public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitions
 {
-    public override string KeywordName => "foreach";
+    public override string KeywordName => "over";
     
     public override string Description =>
         "Repeats its body for each player in the player variable or a value in a collection variable, " +
@@ -39,7 +39,7 @@ public partial class ForeachLoopContext
         var itemRVAR = ReferenceVariableToken.GetToken("*item");
         return
         [
-            new DocComment("The 'foreach' will repeat the methods inside the same amount of times as there are players"),
+            new DocComment("The 'over' will repeat the methods inside the same amount of times as there are players"),
             new DocComment("Meaning if there are 5 players on the server, 'detected player' will be printed 5 times"),
             GetDoc(
                 allPVAR,
@@ -49,6 +49,7 @@ public partial class ForeachLoopContext
                     TextToken.GetToken("detected player")
                 )
             ),
+            new DocLine(),
             new DocComment("But we can also check which player we are currently 'going over'"),
             new DocComment("The order in which that happens is pretty much random"),
             new DocComment("For example, what will happen if there are 3 players: Player1, Player2 and Player3?"),
@@ -67,6 +68,7 @@ public partial class ForeachLoopContext
                     )
                 )
             ),
+            new DocLine(),
             new DocComment("This loop supports 1 more argument: the current 'iteration' of the loop"),
             new DocComment("This is usually called an 'index' in programming"),
             GetDoc(
@@ -84,6 +86,7 @@ public partial class ForeachLoopContext
                     )
                 )
             ),
+            new DocLine(),
             new DocComment("But players are NOT the only thing you can loop over!"),
             new DocComment(
                 "If you have a collection value, like",
@@ -93,7 +96,8 @@ public partial class ForeachLoopContext
             GetDoc(
                 PlayerExpressionToken.GetToken(plrPVAR, PlayerExpressionToken.PlayerProperty.Inventory),
                 itemRVAR,
-                null
+                null,
+                IfStatement.GetDoc([])
             )
         ];
     }
@@ -106,17 +110,15 @@ public partial class ForeachLoopContext
 
     public override Dictionary<IExtendableStatement.Signal, Func<IEnumerator<float>>> RegisteredSignals { get; } = new();
 
-    protected override string FriendlyName => "'foreach' loop statement";
-
     public static DocStatement GetDoc<TVal>(
         TVal iteratingValue, 
         VariableToken? itemVar, 
         LiteralVariableToken? indexVar,
         params DocComponent[] body
     )
-    where TVal : BaseToken, IValueToken
+        where TVal : BaseToken, IValueToken
     {
-        return new DocStatement("foreach", iteratingValue)
+        return new DocStatement("over", iteratingValue)
             .AddRangeIf(() =>
             {
                 List<VariableToken> vars = [];
@@ -132,11 +134,10 @@ public partial class ForeachLoopContext
             })
             .AddRange(body);
     }
-}
-
-public partial class ForeachLoopContext : LoopContext, IAcceptOptionalVariableDefinitions
-{
-    private readonly Result _mainErr = "Cannot create 'foreach' loop.";
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    private readonly Result _mainErr = "Cannot create 'over' loop.";
     
     private VariableToken? _indexIterationVariableToken;
     private Variable? _indexIterationVariable;
@@ -150,7 +151,7 @@ public partial class ForeachLoopContext : LoopContext, IAcceptOptionalVariableDe
         if (!token.CanReturn<TraversableValue>(out var func))
         {
             return TryAddTokenRes.Error(
-                "'foreach' loop expected to have either a player value or collection value as its third argument, " +
+                "'over' loop expected to have either a player value or collection value as its third argument, " +
                 $"but received '{token.RawRep}'."
             );
         }
@@ -225,8 +226,8 @@ public partial class ForeachLoopContext : LoopContext, IAcceptOptionalVariableDe
                 yield return coro.Current;
             }
 
-            if (_itemIterationVariable is not null) Script.RemoveVariable(_itemIterationVariable);
-            if (_indexIterationVariable is not null) Script.RemoveVariable(_indexIterationVariable);
+            if (_itemIterationVariable is not null) Script.RemoveVariable((Variable)_itemIterationVariable);
+            if (_indexIterationVariable is not null) Script.RemoveVariable((Variable)_indexIterationVariable);
 
             if (ReceivedBreak)
             {

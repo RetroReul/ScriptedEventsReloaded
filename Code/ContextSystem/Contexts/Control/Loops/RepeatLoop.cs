@@ -13,7 +13,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public class RepeatLoopContext : LoopContextWithSingleIterationVariable<NumberValue>
+public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
 {
     private readonly Result _rs = "Cannot create 'repeat' loop.";
     private Func<TryGet<ulong>>? _repeatCountExpression = null;
@@ -29,8 +29,6 @@ public class RepeatLoopContext : LoopContextWithSingleIterationVariable<NumberVa
     {
         throw new NotImplementedException();
     }
-
-    protected override string FriendlyName => "'repeat' loop statement";
 
     protected override TryAddTokenRes OnAddingToken(BaseToken token)
     {

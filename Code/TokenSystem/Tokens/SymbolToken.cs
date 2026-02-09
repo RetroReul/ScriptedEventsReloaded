@@ -10,4 +10,9 @@ public class SymbolToken : BaseToken
             ? new Success()
             : new Ignore();
     }
+
+    public static SymbolToken GetDoc(char symbol)
+    {
+        return GetToken<SymbolToken>(symbol.ToString());
+    }
 }

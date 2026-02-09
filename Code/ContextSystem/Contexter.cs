@@ -53,7 +53,7 @@ public static class Contexter
         
         switch (context)
         {
-            case EndStatementContext:
+            case EndContext:
             {
                 if (statementStack.Count == 0) 
                     return rs + "There is no statement to close with the 'end' keyword!";

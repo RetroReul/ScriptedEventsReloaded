@@ -2,4 +2,5 @@
 
 public abstract class DocComponent
 {
+    public abstract override string ToString();
 }

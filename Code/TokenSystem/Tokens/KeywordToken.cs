@@ -22,6 +22,14 @@ public class KeywordToken : BaseToken, IContextableToken
     
     protected override IParseResult InternalParse()
     {
+        if (RawRep is "foreach")
+        {
+            return new Error(
+                "The 'foreach' keyword is not valid, it has been recently renamed to 'over'. " +
+                "Please change it to 'over' and your code should work fine."
+            );
+        }
+        
         _keywordType = KeywordContextTypes.FirstOrDefault(
             keyword => keyword.CreateInstance<IKeywordContext>().KeywordName == RawRep);
 
@@ -33,11 +41,5 @@ public class KeywordToken : BaseToken, IContextableToken
     public Context? GetContext(Script? scr)
     {
         return Context.Create(_keywordType!, scr, LineNum);
-    }
-
-    public KeywordToken Get(string representation)
-    {
-        return Tokenizer.GetTokenFromString<KeywordToken>(representation, null, null).Value
-            ?? throw new Exception($"Token {representation} not found");
     }
 }

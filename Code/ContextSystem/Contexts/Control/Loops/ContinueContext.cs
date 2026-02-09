@@ -2,13 +2,14 @@
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public class LoopContinueContext : StandardContext, IKeywordContext
+public class ContinueContext : StandardContext, IKeywordContext
 {
     public string KeywordName => "continue";
     public string Description =>
@@ -25,6 +26,11 @@ public class LoopContinueContext : StandardContext, IKeywordContext
     public override Result VerifyCurrentState()
     {
         return true;
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     protected override void Execute()

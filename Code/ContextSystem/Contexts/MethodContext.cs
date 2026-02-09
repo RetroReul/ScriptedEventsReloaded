@@ -5,6 +5,7 @@ using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Extensions;
 using SER.Code.Helpers;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.MethodSystem.BaseMethods.Interfaces;
@@ -61,6 +62,11 @@ public class MethodContext(MethodToken methodToken) : YieldingContext, IMayRetur
                 .Skip(_providedArguments)
                 .Where(arg => arg.IsRequired)
                 .Select(arg => arg.Name))}");
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     protected override IEnumerator<float> Execute()

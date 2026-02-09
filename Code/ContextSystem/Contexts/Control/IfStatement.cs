@@ -1,42 +1,36 @@
-﻿using JetBrains.Annotations;
-using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Extensions;
+﻿using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ContextSystem.Contexts.Control;
 
-[UsedImplicitly]
-public class ElifStatementContext : StatementContext, IStatementExtender, IExtendableStatement, IKeywordContext
+public class IfStatement : StatementContext, IExtendableStatement, IKeywordContext
 {
-    public string KeywordName => "elif";
-    public string Description =>
-        "If the statement above it didn't execute, 'elif' statement will try to execute if the provided condition is met.";
+    public string KeywordName => "if";
+    public string Description => "This statement will execute only if the provided condition is met.";
     public string[] Arguments => ["[condition]"];
-
-    public IExtendableStatement.Signal ListensTo => IExtendableStatement.Signal.DidntExecute;
     
     public IExtendableStatement.Signal Exports => IExtendableStatement.Signal.DidntExecute;
-    
-    public Dictionary<IExtendableStatement.Signal, Func<IEnumerator<float>>> RegisteredSignals { get; } = new();
+    public Dictionary<IExtendableStatement.Signal, Func<IEnumerator<float>>> RegisteredSignals { get; } = [];
 
     private readonly List<BaseToken> _condition = [];
     
     private NumericExpressionReslover.CompiledExpression _expression;
 
-    protected override string FriendlyName => "'elif' statement";
+    protected override string FriendlyName => "'if' statement";
 
     protected override TryAddTokenRes OnAddingToken(BaseToken token)
     {
         if (NumericExpressionReslover.IsValidForExpression(token).HasErrored(out var error))
         {
             return TryAddTokenRes.Error(error);
-        }
+        }        
         
         _condition.Add(token);
         return TryAddTokenRes.Continue();
@@ -51,11 +45,21 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
         }
         
         _expression = cond;
+        
+        return _condition.Count > 0
+            ? true
+            : "An if statement expects to have a condition, but none was provided!";
+    }
 
-        return Result.Assert(
-            _condition.Count > 0,
-            "An elif statement expects to have a condition, but none was provided!"
-        );
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
+    }
+
+    public static DocStatement GetDoc(BaseToken[] condition, bool isStandalone, params DocComponent[] body)
+    {
+        return new DocStatement("if", isStandalone, condition)
+            .AddRange(body);
     }
 
     protected override IEnumerator<float> Execute()
@@ -67,7 +71,7 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
 
         if (objResult is not bool result)
         {
-            throw new ScriptRuntimeError(this, $"An elif statement condition must evaluate to a boolean value, but received {objResult.FriendlyTypeName()}");
+            throw new ScriptRuntimeError(this, $"An if statement condition must evaluate to a boolean value, but received {objResult.FriendlyTypeName()}");
         }
         
         if (!result)
@@ -77,33 +81,19 @@ public class ElifStatementContext : StatementContext, IStatementExtender, IExten
                 yield break;
             }
             
-            var coro = enumerator();
-            while (coro.MoveNext())
+            var didntExecuteCoro = enumerator();
+            while (didntExecuteCoro.MoveNext())
             {
-                if (!Script.IsRunning)
-                {
-                    yield break;
-                }
-                
-                yield return coro.Current;
+                yield return didntExecuteCoro.Current;
             }
-            
+
             yield break;
         }
         
-        foreach (var coro in Children
-                     .TakeWhile(_ => Script.IsRunning)
-                     .Select(child => child.ExecuteBaseContext()))
+        var coro = RunChildren();
+        while (coro.MoveNext())
         {
-            while (coro.MoveNext())
-            {
-                if (!Script.IsRunning)
-                {
-                    yield break;
-                }
-                
-                yield return coro.Current;
-            }
+            yield return coro.Current;
         }
     }
 }

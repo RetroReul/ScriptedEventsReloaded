@@ -5,6 +5,7 @@ using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
@@ -66,6 +67,11 @@ public class FunctionDefinitionContext :
             !string.IsNullOrWhiteSpace(FunctionName),
             "Function name was not provided."
         );
+    }
+
+    public override DocComponent[] GetExampleUsage()
+    {
+        throw new NotImplementedException();
     }
 
     public Result SetOptionalVariables(params VariableToken[] variableTokens)

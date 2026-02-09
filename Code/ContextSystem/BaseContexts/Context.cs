@@ -1,4 +1,5 @@
 ﻿using SER.Code.ContextSystem.Structures;
+using SER.Code.Helpers.Documentation;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Tokens;
@@ -32,6 +33,8 @@ public abstract class Context
     protected abstract TryAddTokenRes OnAddingToken(BaseToken token);
 
     public abstract Result VerifyCurrentState();
+    
+    public abstract DocComponent[] GetExampleUsage();
 
     public static Context Create(Type contextType, Script? scr, uint? lineNum)
     {
