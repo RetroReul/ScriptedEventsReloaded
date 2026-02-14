@@ -3,26 +3,19 @@ using Callvote.API.VoteTemplate;
 using Callvote.Features;
 using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
-using MEC;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
-using SER.Code.Extensions;
-using SER.Code.MethodSystem.BaseMethods.Yielding;
-using SER.Code.MethodSystem.MethodDescriptors;
+using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.Structures;
-using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.VotingMethods;
 
 [UsedImplicitly]
-public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAdditionalDescription, IDependOnFramework
+public class StartVoteMethod : SynchronousMethod, IDependOnFramework
 {
     public IDependOnFramework.Type DependsOn => IDependOnFramework.Type.Callvote;
     
-    public override string Description => "Starts a vote and waits until it is completed.";
-    
-    public string AdditionalDescription =>
-        "It also returns the option key that won. If it was a tie, \"tie\" will be returned.";
+    public override string Description => "Starts a vote.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -39,10 +32,8 @@ public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAddit
         }
     ];
 
-    public override IEnumerator<float> Execute()
+    public override void Execute()
     {
-        var completed = false;
-        string result = "";
         var question = Args.GetText("question");
         var options = Args.GetRemainingArguments<
             VoteOptionMethod.VoteOption, 
@@ -52,28 +43,10 @@ public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAddit
             Server.Host!,
             question,
             $"SER.{question}",
-            Callback,
+            null,
             options.Select(o => new VoteOption(o.Option, o.DisplayText)).ToHashSet()
         );
         
         VoteHandler.CallVote(voting);
-
-        yield return Timing.WaitUntilTrue(() => completed);
-
-        ReturnValue = result.ToStaticTextValue();
-        yield break;
-
-        void Callback(Vote vote)
-        {
-            completed = true;
-
-            int maxValue = vote.Counter.Values.Max();
-            var topKeys = vote.Counter
-                .Where(kvp => kvp.Value == maxValue)
-                .Select(kvp => kvp.Key)
-                .ToArray();
-
-            result = topKeys.Length > 1 ? "tie" : topKeys[0].Option;
-        }
     }
 }

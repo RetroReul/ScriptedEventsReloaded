@@ -64,9 +64,6 @@
         <Reference Include="UnityEngine.UnityWebRequestModule">
             <HintPath>$(SL_DEV_REFERENCES)\UnityEngine.UnityWebRequestModule.dll</HintPath>
         </Reference>
-        <Reference Include="Callvote-LabAPI">
-            <HintPath>$(SL_DEV_REFERENCES)\Callvote-LabAPI.dll</HintPath>
-        </Reference>
         <Reference Include="UncomplicatedCustomRoles-LabAPI">
             <HintPath>$(SL_DEV_REFERENCES)\UncomplicatedCustomRoles-LabAPI.dll</HintPath>
         </Reference>
@@ -95,7 +92,8 @@
     <!-- nuget refs -->
     <ItemGroup>
         <PackageReference Include="AudioPlayerApi" Version="1.1.2" />
-        <PackageReference Include="ExMod.Exiled" Version="9.12.5" />
+        <PackageReference Include="Callvote.LabAPI" Version="6.8.0" />
+        <PackageReference Include="ExMod.Exiled" Version="9.13.1" />
         <PackageReference Include="NCalc" Version="1.3.8" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="Northwood.LabAPI" Version="1.1.5" />

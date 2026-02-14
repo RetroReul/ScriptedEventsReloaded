@@ -11,13 +11,13 @@ public class VoteOptionMethod : ReferenceReturningMethod<VoteOptionMethod.VoteOp
 {
     public IDependOnFramework.Type DependsOn => IDependOnFramework.Type.Callvote;
 
-    public record VoteOption(string Key, string DisplayText);
+    public record VoteOption(string Option, string DisplayText);
 
     public override string Description => "Creates a vote option, which can be used in a vote.";
     
     public override Argument[] ExpectedArguments { get; } =
     [
-        new TextArgument("key", allowsSpaces: false)
+        new TextArgument("option", allowsSpaces: false)
         {
             Description = "This will be the command for voting AND the result of the vote, if it wins."
         },
@@ -29,7 +29,7 @@ public class VoteOptionMethod : ReferenceReturningMethod<VoteOptionMethod.VoteOp
 
     public override void Execute()
     {
-        var key = Args.GetText("key");
+        var key = Args.GetText("option");
         var displayText = Args.GetText("display text");
 
         ReturnValue = new(key, displayText);
