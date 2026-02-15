@@ -149,6 +149,11 @@ public class ProvidedArguments(Method method)
         return () => evaluator.Invoke().Value;
     }
 
+    public T GetLooseReference<T>(string argName)
+    {
+        return (T)GetValue<object, LooseReferenceArgument>(argName);
+    }
+    
     public T GetReference<T>(string argName)
     {
         return GetValue<T, ReferenceArgument<T>>(argName);

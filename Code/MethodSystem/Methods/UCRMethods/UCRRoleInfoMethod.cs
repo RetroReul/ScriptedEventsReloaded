@@ -10,33 +10,32 @@ using UncomplicatedCustomRoles.API.Interfaces;
 
 namespace SER.Code.MethodSystem.Methods.UCRMethods;
 
-// ReSharper disable once InconsistentNaming
 [UsedImplicitly]
-public class GetUCRRoleInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod, IDependOnFramework
+// ReSharper disable once InconsistentNaming
+public class UCRRoleInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod, IDependOnFramework
 {
-    public Type ResolvesReference => typeof(ICustomRole);
+    public Type ResolvesReference => Type.GetType("UncomplicatedCustomRoles.API.Interfaces.ICustomRole, UncomplicatedCustomRoles")
+        ?? throw new AndrzejFuckedUpException("ucr ICustomRole missing");
 
     public IDependOnFramework.Type DependsOn => IDependOnFramework.Type.Ucr;
+
+    public override string Description => "Returns information about a custom role.";
 
     public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(NumberValue), 
         typeof(TextValue)
     ]);
 
-    public override string Description => "Returns information about a custom role.";
-    
-    public override Argument[] ExpectedArguments { get; } =
+    public override Argument[] ExpectedArguments =>
     [
-        new ReferenceArgument<ICustomRole>("custom role reference"),
-        new OptionsArgument("property",
-            "id",
-            "name"
-        )
+        new LooseReferenceArgument("custom role reference", ResolvesReference),
+        new OptionsArgument("property", "id", "name")
     ];
 
     public override void Execute()
     {
-        var role = Args.GetReference<ICustomRole>("custom role reference");
+        var role = Args.GetLooseReference<ICustomRole>("custom role reference");
+        
         ReturnValue = Args.GetOption("property") switch
         {
             "id" => new NumberValue(role.Id),

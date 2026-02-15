@@ -35,16 +35,22 @@ public class StartVoteMethod : SynchronousMethod, IDependOnFramework
     public override void Execute()
     {
         var question = Args.GetText("question");
-        var options = Args.GetRemainingArguments<
+        var rawOptions = Args.GetRemainingArguments<
             VoteOptionMethod.VoteOption, 
             ReferenceArgument<VoteOptionMethod.VoteOption>>("options");
+        
+        var voteOptions = new HashSet<VoteOption>();
+        foreach (var o in rawOptions)
+        {
+            voteOptions.Add(new VoteOption(o.Option, o.DisplayText));
+        }
 
         var voting = new CustomVote(
             Server.Host!,
             question,
             $"SER.{question}",
             null,
-            options.Select(o => new VoteOption(o.Option, o.DisplayText)).ToHashSet()
+            voteOptions
         );
         
         VoteHandler.CallVote(voting);

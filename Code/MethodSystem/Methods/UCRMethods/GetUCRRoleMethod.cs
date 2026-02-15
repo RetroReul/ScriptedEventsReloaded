@@ -12,7 +12,7 @@ namespace SER.Code.MethodSystem.Methods.UCRMethods;
 
 [UsedImplicitly]
 // ReSharper disable once InconsistentNaming
-public class GetUCRRoleMethod : ReferenceReturningMethod<ICustomRole>, IAdditionalDescription, IDependOnFramework
+public class GetUCRRoleMethod : ReferenceReturningMethod, IAdditionalDescription, IDependOnFramework
 {
     public override Type ReturnType => typeof(ICustomRole);
 
@@ -31,6 +31,6 @@ public class GetUCRRoleMethod : ReferenceReturningMethod<ICustomRole>, IAddition
 
     public override void Execute()
     {
-        ReturnValue = SummonedCustomRole.Get(Args.GetPlayer("player"))?.Role!;
+        ReturnValue = new(SummonedCustomRole.Get(Args.GetPlayer("player"))?.Role);
     }
 }

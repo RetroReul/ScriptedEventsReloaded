@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using LabApi.Features.Console;
 using SER.Code.Extensions;
-using SER.Code.Helpers.FrameworkExtensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.MethodSystem.Structures;
@@ -21,10 +20,6 @@ public static class MethodIndex
         NameToMethodIndex.Clear();
         
         AddAllDefinedMethodsInAssembly();
-        
-        ExiledBridge.OnDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Exiled);
-        CallvoteBridge.OnDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Callvote);
-        UcrBridge.OnDetected += () => LoadMethodsOfFramework(IDependOnFramework.Type.Ucr);
     }
     
     /// <summary>
@@ -48,7 +43,8 @@ public static class MethodIndex
             .Where(t => t.IsClass && !t.IsAbstract && typeof(Method).IsAssignableFrom(t))
             .Where(t =>
             {
-                if (!typeof(IDependOnFramework).IsAssignableFrom(t)) return true;
+                if (!typeof(IDependOnFramework).IsAssignableFrom(t))
+                    return true;
                 
                 var framework = t.CreateInstance<IDependOnFramework>().DependsOn;
                 FrameworkDependentMethods.AddOrInitListWithKey(framework, t);
@@ -103,7 +99,7 @@ public static class MethodIndex
         return $"There is no method with name '{name}'. Did you mean '{closestMethod ?? "<error>"}'?";
     }
 
-    private static void LoadMethodsOfFramework(IDependOnFramework.Type framework)
+    internal static void LoadMethodsOfFramework(IDependOnFramework.Type framework)
     {
         foreach (var method in FrameworkDependentMethods.TryGetValue(framework, out var methods) ? methods : [])
         {

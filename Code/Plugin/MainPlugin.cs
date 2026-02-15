@@ -6,7 +6,7 @@ using LabApi.Features.Wrappers;
 using MEC;
 using SER.Code.Extensions;
 using SER.Code.FlagSystem.Flags;
-using SER.Code.Helpers.FrameworkExtensions;
+using SER.Code.Helpers;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
 using SER.Code.ScriptSystem;
@@ -108,12 +108,11 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         VariableIndex.Initialize();
         Flag.RegisterFlags();
         CommandEvents.Initialize();
-        new ExiledBridge().Load();
-        new CallvoteBridge().Load();
-        new UcrBridge().Load();
+        var fBridge = new FrameworkBridge();
+        fBridge.Load();
         SendLogo();
 
-        Events.ServerEvents.WaitingForPlayers += OnServerFullyInit;
+        Events.ServerEvents.WaitingForPlayers += () => OnServerFullyInit(fBridge);
         Events.ServerEvents.RoundRestarted += Disable;
         Events.PlayerEvents.Joined += OnJoined;
 
@@ -126,18 +125,19 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         SetPlayerDataMethod.PlayerData.Clear();
     }
 
-    private void OnServerFullyInit()
+    private void OnServerFullyInit(FrameworkBridge fBridge)
     {
         if (Config?.SendInitMessage is false) return;
 
         Logger.Raw(
             $"""
              Thank you for using ### Scripted Events Reloaded ### by {Author}!
-
+             
              Help command: {HelpCommandName}
              GitHub repository: {GitHubLink}
              Documentation: {DocsLink}
              Discord: {DiscordLink}
+             {fBridge.StopAndGetLoadedFrameworksMessage()}
              """,
             ConsoleColor.Cyan
         );
