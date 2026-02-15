@@ -7,10 +7,10 @@ using SER.Code.TokenSystem.Tokens.VariableTokens;
 
 namespace SER.Code.ContextSystem.Contexts;
 
-public class WithContext : StandardContext, IKeywordContext, INotRunningContext, IRequireCurrentStatement
+public class WithContext : StandardContext, IKeywordContext, INotRunningContext, IRequirePreviousStatementContext
 {
     private readonly List<VariableToken> _variables = [];
-    private IAcceptOptionalVariableDefinitions _receiver = null!;
+    private IAcceptOptionalVariableDefinitionsContext _receiver = null!;
     
     public string KeywordName => "with";
 
@@ -22,7 +22,7 @@ public class WithContext : StandardContext, IKeywordContext, INotRunningContext,
 
     public Result AcceptStatement(StatementContext context)
     {
-        if (context is not IAcceptOptionalVariableDefinitions receiver)
+        if (context is not IAcceptOptionalVariableDefinitionsContext receiver)
         {
             return $"{context} does not accept variable definitions.";
         }

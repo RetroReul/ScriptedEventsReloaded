@@ -17,7 +17,7 @@ namespace SER.Code.ContextSystem.Contexts;
 public class FunctionDefinitionContext :
     StatementContext,
     INotRunningContext, 
-    IAcceptOptionalVariableDefinitions,
+    IAcceptOptionalVariableDefinitionsContext,
     IMayReturnValueContext,
     IKeywordContext
 {

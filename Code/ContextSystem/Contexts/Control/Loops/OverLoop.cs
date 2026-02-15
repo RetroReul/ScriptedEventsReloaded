@@ -14,7 +14,7 @@ using SER.Code.VariableSystem.Bases;
 namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 
 [UsedImplicitly]
-public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitions
+public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
 {
     public override string KeywordName => "over";
     public override string Description =>

@@ -6,7 +6,7 @@ namespace SER.Code.ContextSystem.Interfaces;
 /// <summary>
 /// Marks that the context before is a statement that accepts optional variable definitions.
 /// </summary>
-public interface IAcceptOptionalVariableDefinitions
+public interface IAcceptOptionalVariableDefinitionsContext
 {
     public Result SetOptionalVariables(params VariableToken[] variableTokens);
 }

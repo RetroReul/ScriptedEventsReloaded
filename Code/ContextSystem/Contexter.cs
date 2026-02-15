@@ -61,7 +61,7 @@ public static class Contexter
                 statementStack.Pop();
                 return true;
             }
-            case IRequireCurrentStatement rqsContext:
+            case IRequirePreviousStatementContext rqsContext:
             {
                 if (statementStack.Count == 0)
                 {

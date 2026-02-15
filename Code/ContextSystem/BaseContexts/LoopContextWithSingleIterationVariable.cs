@@ -9,7 +9,7 @@ namespace SER.Code.ContextSystem.BaseContexts;
 
 public abstract class LoopContextWithSingleIterationVariable<TVal> : 
     LoopContext, 
-    IAcceptOptionalVariableDefinitions 
+    IAcceptOptionalVariableDefinitionsContext 
     where TVal : Value
 {
     private VariableToken? _iterationVariableToken;

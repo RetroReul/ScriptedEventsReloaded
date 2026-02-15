@@ -6,7 +6,7 @@ namespace SER.Code.ContextSystem.Interfaces;
 /// <summary>
 /// Requests the previous statement context to be provided
 /// </summary>
-public interface IRequireCurrentStatement
+public interface IRequirePreviousStatementContext
 {
     public Result AcceptStatement(StatementContext context);
 }
