@@ -34,7 +34,7 @@ public static class ScriptFlagHandler
             var name = tokens.Skip(1).FirstOrDefault()?.RawRep;
             if (name is null)
             {
-                Log.RuntimeError(scriptName, line.LineNumber, "Name of the flag is missing.");
+                Log.CompileError(scriptName, line.LineNumber, "Name of the flag is missing.");
                 return;
             }
             
@@ -50,7 +50,7 @@ public static class ScriptFlagHandler
             
             if (result.HasErrored(out var error))
             {
-                Log.RuntimeError(scriptName, line.LineNumber, error);
+                Log.CompileError(scriptName, line.LineNumber, error);
                 return;
             }
         }
