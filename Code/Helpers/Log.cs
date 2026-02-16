@@ -49,7 +49,12 @@ public static class Log
     {
         Logger.Raw($"[Script '{scrName}'] [Compile error] {msg}", ConsoleColor.Red);
     }
-
+    
+    public static void CompileError(string scrName, uint line, string msg)
+    {
+        Logger.Raw($"[Script '{scrName}'] [Compile error] [Line {line}] {msg}", ConsoleColor.Red);
+    }
+    
     public static void D(string msg)
     {
         #if DEBUG
