@@ -1,6 +1,7 @@
 ﻿using LabApi.Loader;
 using MEC;
 using SER.Code.Extensions;
+using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.Structures;
 
 namespace SER.Code.Helpers;
@@ -44,5 +45,6 @@ public class FrameworkBridge
         }
         
         _found.Add(framework);
+        MethodIndex.LoadMethodsOfFramework(framework.Type);
     }
 }

@@ -10,7 +10,7 @@ namespace SER.Code.MethodSystem;
 public static class MethodIndex
 {
     private static readonly Dictionary<string, Method> NameToMethodIndex = [];
-    private static readonly Dictionary<IDependOnFramework.Type, List<Type>> FrameworkDependentMethods = [];
+    private static readonly Dictionary<IDependOnFramework.Type, List<Method>> FrameworkDependentMethods = [];
     
     /// <summary>
     /// Initializes the method index.
@@ -41,17 +41,15 @@ public static class MethodIndex
         assembly ??= Assembly.GetCallingAssembly();
         var definedMethods = assembly.GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && typeof(Method).IsAssignableFrom(t))
+            .Select(t => Activator.CreateInstance(t) as Method)
             .Where(t =>
             {
-                if (!typeof(IDependOnFramework).IsAssignableFrom(t))
+                if (t is not IDependOnFramework framework)
                     return true;
                 
-                var framework = t.CreateInstance<IDependOnFramework>().DependsOn;
-                FrameworkDependentMethods.AddOrInitListWithKey(framework, t);
+                FrameworkDependentMethods.AddOrInitListWithKey(framework.DependsOn, t);
                 return false;
-
             })
-            .Select(t => Activator.CreateInstance(t) as Method)
             .ToList();
         
         foreach (var method in definedMethods.OfType<Method>())
@@ -103,7 +101,7 @@ public static class MethodIndex
     {
         foreach (var method in FrameworkDependentMethods.TryGetValue(framework, out var methods) ? methods : [])
         {
-            AddMethod((Method)Activator.CreateInstance(method));
+            AddMethod(method);
         }
     }
 
