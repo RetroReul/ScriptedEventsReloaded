@@ -118,7 +118,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Code\" />
-      <Folder Include="Code\MethodSystem\Methods\EXILED_custom_roleMethods\" />
     </ItemGroup>
 
     <!-- embedding dependencies into SER.dll -->
