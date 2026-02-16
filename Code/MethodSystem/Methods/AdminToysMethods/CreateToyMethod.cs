@@ -11,7 +11,6 @@ using CapybaraToy = LabApi.Features.Wrappers.CapybaraToy;
 using LightSourceToy = LabApi.Features.Wrappers.LightSourceToy;
 using PrimitiveObjectToy = LabApi.Features.Wrappers.PrimitiveObjectToy;
 using TextToy = LabApi.Features.Wrappers.TextToy;
-using WaypointToy = LabApi.Features.Wrappers.WaypointToy;
 
 namespace SER.Code.MethodSystem.Methods.AdminToysMethods;
 
@@ -32,8 +31,7 @@ public class CreateToyMethod : ReferenceReturningMethod<AdminToy>, IAdditionalDe
             Option.Reference<InteractableToy>("interactable"),
             Option.Reference<CameraToy>("camera"),
             Option.Reference<CapybaraToy>("capybara"), 
-            Option.Reference<TextToy>("text"),
-            Option.Reference<WaypointToy>("waypoint")
+            Option.Reference<TextToy>("text")
         )
     ];
 
@@ -48,7 +46,6 @@ public class CreateToyMethod : ReferenceReturningMethod<AdminToy>, IAdditionalDe
             "camera"          => CameraToy.Create(networkSpawn: false),
             "capybara"        => CapybaraToy.Create(networkSpawn: false),
             "text"            => TextToy.Create(networkSpawn: false),
-            "waypoint"        => WaypointToy.Create(networkSpawn: false),
             _                 => throw new TosoksFuckedUpException("out of order")
         };
     }
