@@ -21,7 +21,7 @@ public class SetAppearanceMethod : SynchronousMethod, IDependOnFramework
     [
         new PlayersArgument("players whose appearance will be changed"),
         new EnumArgument<RoleTypeId>("role to change appearance to"),
-        new PlayerArgument("players who will see the change")
+        new PlayersArgument("players who will see the change")
         {
             DefaultValue = new(null, "everyone")
         }
