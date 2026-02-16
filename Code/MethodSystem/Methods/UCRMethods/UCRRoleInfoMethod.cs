@@ -1,7 +1,10 @@
 ﻿using JetBrains.Annotations;
+using PlayerRoles;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.ArgumentSystem.Structures;
 using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.MethodSystem.Structures;
@@ -14,8 +17,7 @@ namespace SER.Code.MethodSystem.Methods.UCRMethods;
 // ReSharper disable once InconsistentNaming
 public class UCRRoleInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod, IDependOnFramework
 {
-    public Type ResolvesReference => Type.GetType("UncomplicatedCustomRoles.API.Interfaces.ICustomRole, UncomplicatedCustomRoles")
-        ?? throw new AndrzejFuckedUpException("ucr ICustomRole missing");
+    public Type ResolvesReference => typeof(ICustomRole);
 
     public IDependOnFramework.Type DependsOn => IDependOnFramework.Type.Ucr;
 
@@ -28,8 +30,14 @@ public class UCRRoleInfoMethod : LiteralValueReturningMethod, IReferenceResolvin
 
     public override Argument[] ExpectedArguments =>
     [
-        new LooseReferenceArgument("custom role reference", ResolvesReference),
-        new OptionsArgument("property", "id", "name")
+        new LooseReferenceArgument("custom role reference", typeof(ICustomRole)),
+        new OptionsArgument("property", 
+            "id",
+            "name",
+            Option.Enum<RoleTypeId>("role"),
+            Option.Enum<Team>("team"), 
+            Option.Enum<RoleTypeId>("roleAppearance")
+        )
     ];
 
     public override void Execute()
@@ -40,6 +48,9 @@ public class UCRRoleInfoMethod : LiteralValueReturningMethod, IReferenceResolvin
         {
             "id" => new NumberValue(role.Id),
             "name" => new StaticTextValue(role.Name),
+            "role" => role.Role.ToString().ToStaticTextValue(),
+            "team" => role.Team.ToString().ToStaticTextValue(),
+            "roleAppearance" => role.RoleAppearance.ToString().ToStaticTextValue(),
             _ => throw new AndrzejFuckedUpException()
         };
     }
