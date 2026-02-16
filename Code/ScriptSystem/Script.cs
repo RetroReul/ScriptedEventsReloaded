@@ -44,10 +44,10 @@ public class Script
             switch (value)
             {
                 case RemoteAdminExecutor { Sender: { } sender } when Player.TryGet(sender, out var player):
-                    AddVariable(new PlayerVariable("sender", new([player])));
+                    AddLocalVariable(new PlayerVariable("sender", new([player])));
                     break;
                 case PlayerConsoleExecutor { Sender: { } hub }:
-                    AddVariable(new PlayerVariable("sender", new([Player.Get(hub)])));
+                    AddLocalVariable(new PlayerVariable("sender", new([Player.Get(hub)])));
                     break;
             }
 
@@ -71,8 +71,8 @@ public class Script
     private static readonly List<Script> RunningScriptsList = [];
     public static readonly ReadOnlyCollection<Script> RunningScripts = RunningScriptsList.AsReadOnly();
     
-    private readonly HashSet<Variable> _variables = [];
-    public ReadOnlyCollection<Variable> Variables => _variables.ToList().AsReadOnly();
+    private readonly HashSet<Variable> _localVariables = [];
+    public ReadOnlyCollection<Variable> LocalVariables => _localVariables.ToList().AsReadOnly();
 
     public DateTime StartTime { get; private set; }
 
@@ -342,7 +342,7 @@ public class Script
 
     public TryGet<T> TryGetVariable<T>(string name) where T : Variable
     {
-        var variable = _variables.FirstOrDefault(v => v.Name == name);
+        var variable = _localVariables.FirstOrDefault(v => v.Name == name);
         if (variable is not null)
         {
             if (variable is not T casted)
@@ -362,28 +362,37 @@ public class Script
         return $"There is no variable called {name}.";
     }
 
-    public void AddVariable(Variable variable)
+    public static void CheckForVariableNameCollisions(Variable newVariable, IEnumerable<Variable> existingVariables)
     {
-        Log.Debug($"Added variable {variable.Name} to script {Name}");
-        RemoveVariable(variable.Name);
-        _variables.Add(variable);
-    }
-
-    public void AddVariables(params Variable[] variables)
-    {
-        foreach (var variable in variables)
+        if ((existingVariables as Variable[] ?? existingVariables.ToArray())
+            .Any(gv => Variable.AreSyntacticallySame(gv, newVariable)))
         {
-            AddVariable(variable);
+            throw new CustomScriptRuntimeError(
+                $"Tried to create a local variable '{newVariable}', " +
+                $"but there is already a global variable with the same name."
+            );
         }
     }
 
-    public void RemoveVariable(Variable variable)
+    public void AddLocalVariable(Variable variable)
     {
-        RemoveVariable(variable.Name);
+        CheckForVariableNameCollisions(variable, _localVariables);
+        
+        Log.Debug($"Added variable {variable.Name} to script {Name}");
+        RemoveLocalVariable(variable);
+        _localVariables.Add(variable);
     }
-    
-    public void RemoveVariable(string name)
+
+    public void AddLocalVariables(params Variable[] variables)
     {
-        _variables.RemoveWhere(var => var.Name == name);
+        foreach (var variable in variables)
+        {
+            AddLocalVariable(variable);
+        }
+    }
+
+    public void RemoveLocalVariable(Variable variable)
+    {
+        _localVariables.RemoveWhere(lv => Variable.AreSyntacticallySame(lv, variable));
     }
 }

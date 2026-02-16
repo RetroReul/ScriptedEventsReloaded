@@ -134,12 +134,12 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
             }
 
             DefinedVariable = Variable.Create(varToken.Name, tValue);
-            Script.AddVariable(DefinedVariable);
+            Script.AddLocalVariable(DefinedVariable);
         }
         else if (_parser is not null)
         {
             DefinedVariable = Variable.Create(varToken.Name, Value.Parse(_parser(), Script));
-            Script.AddVariable(DefinedVariable);
+            Script.AddLocalVariable(DefinedVariable);
         }
         else
         {

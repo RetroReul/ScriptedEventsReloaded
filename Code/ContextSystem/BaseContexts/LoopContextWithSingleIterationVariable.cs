@@ -34,14 +34,14 @@ public abstract class LoopContextWithSingleIterationVariable<TVal> :
         if (_iterationVariableToken is null) return;
         
         _iterationVariable = Variable.Create(_iterationVariableToken.Name, value);
-        Script.AddVariable(_iterationVariable);
+        Script.AddLocalVariable(_iterationVariable);
     }
 
     protected void RemoveVariable()
     {
         if (_iterationVariable is null) return;
         
-        Script.RemoveVariable(_iterationVariable);
+        Script.RemoveLocalVariable(_iterationVariable);
         _iterationVariable = null;
     }
 }

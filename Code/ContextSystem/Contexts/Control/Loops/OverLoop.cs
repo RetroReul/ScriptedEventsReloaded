@@ -160,13 +160,13 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
             if (_itemIterationVariableToken is not null)
             {
                 _itemIterationVariable = Variable.Create(_itemIterationVariableToken.Name, value);
-                Script.AddVariable(_itemIterationVariable);
+                Script.AddLocalVariable(_itemIterationVariable);
             }
 
             if (_indexIterationVariableToken is not null)
             {
                 _indexIterationVariable = Variable.Create(_indexIterationVariableToken.Name, new NumberValue(index+1));
-                Script.AddVariable(_indexIterationVariable);
+                Script.AddLocalVariable(_indexIterationVariable);
             }
 
             var coro = RunChildren();
@@ -175,8 +175,8 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
                 yield return coro.Current;
             }
 
-            if (_itemIterationVariable is not null) Script.RemoveVariable(_itemIterationVariable);
-            if (_indexIterationVariable is not null) Script.RemoveVariable(_indexIterationVariable);
+            if (_itemIterationVariable is not null) Script.RemoveLocalVariable(_itemIterationVariable);
+            if (_indexIterationVariable is not null) Script.RemoveLocalVariable(_indexIterationVariable);
 
             if (ReceivedBreak)
             {

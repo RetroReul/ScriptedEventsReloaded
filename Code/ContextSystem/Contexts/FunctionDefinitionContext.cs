@@ -111,7 +111,7 @@ public class FunctionDefinitionContext :
             _localVariables.Add(Variable.Create(variableToken.Name, value));
         }
         
-        Script.AddVariables(_localVariables.ToArray());
+        Script.AddLocalVariables(_localVariables.ToArray());
         return Execute();
     }
 
@@ -153,6 +153,6 @@ public class FunctionDefinitionContext :
         }
         
         Exit:
-        _localVariables.ForEach(v => Script.RemoveVariable(v));
+        _localVariables.ForEach(v => Script.RemoveLocalVariable(v));
     }
 }

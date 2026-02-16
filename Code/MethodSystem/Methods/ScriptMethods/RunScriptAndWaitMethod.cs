@@ -29,7 +29,7 @@ public class RunScriptAndWaitMethod : YieldingMethod
         var script = Args.GetCreatedScript("script to create");
         var variables = Args.GetRemainingArguments<Variable, VariableArgument>("variables to pass");
         
-        script.AddVariables(variables);
+        script.AddLocalVariables(variables);
         script.Run(RunContext.Script, Script);
         
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse

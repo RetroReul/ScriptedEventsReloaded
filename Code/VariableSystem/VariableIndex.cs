@@ -2,6 +2,7 @@
 using MapGeneration;
 using PlayerRoles;
 using SER.Code.Extensions;
+using SER.Code.ScriptSystem;
 using SER.Code.VariableSystem.Bases;
 using SER.Code.VariableSystem.Variables;
 
@@ -76,6 +77,11 @@ public static class VariableIndex
 
     public static void AddGlobalVariable(Variable variable)
     {
+        foreach (var runningScript in Script.RunningScripts)
+        {
+            Script.CheckForVariableNameCollisions(variable, runningScript.LocalVariables);
+        }
+        
         RemoveGlobalVariable(variable);
         GlobalVariables.Add(variable);
     }

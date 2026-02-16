@@ -25,6 +25,6 @@ public class TransferVariablesMethod : SynchronousMethod
         var script = Args.GetRunningScript("target script");
         var variables = Args.GetRemainingArguments<Variable, VariableArgument>("variables");
         
-        script.AddVariables(variables);
+        script.AddLocalVariables(variables);
     }
 }

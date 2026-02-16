@@ -238,12 +238,12 @@ public class CustomCommandFlag : Flag
             {
                 if (token.TryGetLiteralValue<LiteralValue>().WasSuccessful(out var value))
                 {
-                    script.AddVariable(Variable.Create(name, value));
+                    script.AddLocalVariable(Variable.Create(name, value));
                     continue;
                 }
             }
             
-            script.AddVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
+            script.AddLocalVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
         }
 
         script.Run(RunContext.Command);

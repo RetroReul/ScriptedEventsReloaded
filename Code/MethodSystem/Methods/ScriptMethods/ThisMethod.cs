@@ -44,7 +44,7 @@ public class ThisMethod : ReturningMethod
             "duration" => new DurationValue(Script.TimeRunning),
             "name" => new StaticTextValue(Script.Name),
             "path" => new StaticTextValue(FileSystem.FileSystem.GetScriptPath(Script)),
-            "variables" => new CollectionValue(Script.Variables.Select(v => v.Prefix + v.Name)),
+            "variables" => new CollectionValue(Script.LocalVariables.Select(v => v.Prefix + v.Name)),
             _ => throw new TosoksFuckedUpException("out of order")
         };
     }

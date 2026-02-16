@@ -178,7 +178,7 @@ public static class EventHandler
                 continue;
             }
             
-            script.AddVariables(variables);
+            script.AddLocalVariables(variables);
             var isAllowed = script.RunForEvent(RunContext.Event);
             if (isAllowed.HasValue && ev is ICancellableEvent cancellable1)
                 cancellable1.IsAllowed = isAllowed.Value;

@@ -29,7 +29,7 @@ public class PopVariableMethod : ReturningMethod
         switch (Args.GetOption("target"))
         {
             case "local": 
-                Script.RemoveVariable(variable);
+                Script.RemoveLocalVariable(variable);
                 break;
             case "global":
                 VariableIndex.RemoveGlobalVariable(variable);

@@ -29,7 +29,7 @@ public class CollectionRemoveMethod : SynchronousMethod
         var amountToRemove = Args.GetInt("amount of matches to remove");
         var value = Args.GetAnyValue("value to remove");
         
-        Script.AddVariable(
+        Script.AddLocalVariable(
             new CollectionVariable(
                 collectionVar.Name,
                 CollectionValue.Remove(collectionVar.Value, value, amountToRemove)

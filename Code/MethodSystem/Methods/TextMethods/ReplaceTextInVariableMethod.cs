@@ -35,7 +35,7 @@ public class ReplaceTextInVariableMethod : SynchronousMethod, ICanError
         if (variable.Value is not TextValue textValue)
             throw new ScriptRuntimeError(this, ErrorReasons[0]);
         
-        Script.AddVariable(
+        Script.AddLocalVariable(
             new LiteralVariable(
                 variable.Name,
                 new DynamicTextValue(textValue.Value.Replace(text, replacement), Script)

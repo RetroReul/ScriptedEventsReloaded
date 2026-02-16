@@ -54,7 +54,7 @@ public class InteractableToyEventFlag : Flag
                 continue;
             }
 
-            script.AddVariables(variables);
+            script.AddLocalVariables(variables);
             script.Run(RunContext.Event);
         }
     }

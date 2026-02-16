@@ -80,7 +80,7 @@ public class RunFuncMethod : SynchronousMethod, ICanError
                 throw new AndrzejFuckedUpException();
             }
             
-            scriptToRun.AddVariable(variable);
+            scriptToRun.AddLocalVariable(variable);
         }
         
         scriptToRun.Run(RunContext.Script, Script);

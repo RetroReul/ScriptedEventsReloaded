@@ -27,7 +27,7 @@ public class CollectionInsertMethod : SynchronousMethod, IAdditionalDescription
     {
         var collVar = Args.GetCollectionVariable("collection variable");
         
-        Script.AddVariable(
+        Script.AddLocalVariable(
             new CollectionVariable(
                 collVar.Name, 
                 CollectionValue.Insert(collVar, Args.GetAnyValue("value"))
