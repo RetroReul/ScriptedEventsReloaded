@@ -27,7 +27,8 @@ public enum RunContext
     Unknown,
     Script,
     Event,
-    Command
+    BaseCommand,
+    CustomCommand
 }
 
 public class Script

@@ -155,7 +155,17 @@ public class CustomCommandFlag : Flag
             }
         }
     }
-    
+
+    public override Result OnScriptRunning(Script scr)
+    {
+        if (scr.Context == RunContext.CustomCommand)
+        {
+            return true;
+        }
+
+        return $"A script using '{Name}' flag cannot be ran by any other mean than a custom command.";
+    }
+
     public class CustomCommand : ICommand, IUsageProvider, IHelpProvider
     {
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -246,7 +256,7 @@ public class CustomCommandFlag : Flag
             script.AddLocalVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
         }
 
-        script.Run(RunContext.Command);
+        script.Run(RunContext.CustomCommand);
         return true;
     }
 

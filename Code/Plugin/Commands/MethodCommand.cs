@@ -27,7 +27,7 @@ public class MethodCommand : ICommand, IUsePermissions
             Executor = ScriptExecutor.Get(sender)
         };
         
-        script.Run(RunContext.Command);
+        script.Run(RunContext.BaseCommand);
         response = "Method executed.";
         return true;
     }

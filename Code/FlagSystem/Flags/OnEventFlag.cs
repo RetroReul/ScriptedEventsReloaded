@@ -1,4 +1,6 @@
 ﻿using JetBrains.Annotations;
+using SER.Code.Helpers.ResultSystem;
+using SER.Code.ScriptSystem;
 using EventHandler = SER.Code.EventSystem.EventHandler;
 
 namespace SER.Code.FlagSystem.Flags;
@@ -32,7 +34,17 @@ public class OnEventFlag : Flag
         },
         true
     );
-    
+
+    public override Result OnScriptRunning(Script scr)
+    {
+        if (scr.Context == RunContext.Event)
+        {
+            return true;
+        }
+        
+        return $"A script using '{Name}' flag cannot be ran by any other mean than an event.";
+    }
+
     public override Argument[] Arguments => [];
 
     public override void Unbind()
