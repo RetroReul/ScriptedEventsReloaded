@@ -26,7 +26,7 @@ public class VariableNameArgument(string name) : Argument(name)
 public class VariableNameArgument<T>(string name) : Argument(name)
     where T : VariableToken
 {
-    public string TypeName => typeof(T).AccurateName[.."VariableToken".Length].LowerFirst();
+    public string TypeName => typeof(T).AccurateName[..^"VariableToken".Length].LowerFirst();
     
     public override string InputDescription => $"A {TypeName} variable name (doesn't have to be real)";
     
