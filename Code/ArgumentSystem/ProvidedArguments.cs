@@ -102,10 +102,16 @@ public class ProvidedArguments(Method method)
     {
         return GetValue<Item[], ItemsArgument>(argName);
     }
-    
-    public PlayerVariableToken GetPlayerVariableName(string argName)
+
+    public VariableToken GetVariableName(string argName)
     {
-        return GetValue<PlayerVariableToken, PlayerVariableNameArgument>(argName);
+        return GetValue<VariableToken, VariableNameArgument>(argName);
+    }
+
+    public T GetVariableName<T>(string argName)
+        where T : VariableToken
+    {
+        return GetValue<T, VariableNameArgument<T>>(argName);
     }
     
     public Variable GetVariable(string argName)

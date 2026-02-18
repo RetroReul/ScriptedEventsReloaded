@@ -1,5 +1,6 @@
 ﻿using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Variables;
 
@@ -29,6 +30,8 @@ public abstract class Variable
     public sealed override string ToString() => $"{Prefix}{Name}";
     
     public static bool AreSyntacticallySame(Variable a, Variable b) => a.Prefix == b.Prefix && a.Name == b.Name;
+
+    public static bool AreSyntacticallySame(Variable a, VariableToken b) => a.Prefix == b.Prefix && a.Name == b.Name;
 }
 
 public abstract class Variable<TValue> : Variable
