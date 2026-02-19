@@ -37,7 +37,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
     [Flags]
     public enum Contribution : ushort
     {
-        LeadDeveloper = 1 << 8,
+        ProjectLead = 1 << 8,
         Developer = 1 << 7,
         QualityAssurance = 1 << 6,
         Sponsor = 1 << 5,
@@ -51,7 +51,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
     [
         new(
             Instance.Author, 
-            Contribution.LeadDeveloper, 
+            Contribution.ProjectLead, 
             "76561198361176072@steam"
         ),
         new(
