@@ -55,14 +55,14 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
             "76561198361176072@steam"
         ),
         new(
-            "Whitty985playz", 
-            Contribution.QualityAssurance | Contribution.EarlyAdopter, 
-            "76561198859902154@steam"
-        ),
-        new(
             "Tosoks67", 
             Contribution.Developer | Contribution.Betatester, 
             "76561199175834203@steam"
+        ),
+        new(
+            "Whitty985playz", 
+            Contribution.QualityAssurance | Contribution.EarlyAdopter, 
+            "76561198859902154@steam"
         ),
         new(
             "Krzysiu Wojownik", 
