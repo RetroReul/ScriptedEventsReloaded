@@ -16,7 +16,7 @@ public class GiveEffectMethod : SynchronousMethod, IDependOnFramework
     
     public override string Description => "Adds a provided effect to a player.";
 
-    public override Argument[] ExpectedArguments { get; } =
+    public override Argument[] ExpectedArguments =>
     [
         new PlayersArgument("players"),
         new EnumArgument<EffectType>("effect type"),

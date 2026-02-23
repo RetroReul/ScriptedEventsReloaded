@@ -32,12 +32,16 @@ public class PlayerCassieMethod : SynchronousMethod, IDependOnFramework
 
     public override void Execute()
     {
-        var players = Args.GetPlayers("players");
+        var labApiPlayers = Args.GetPlayers("players");
+        Player[] players = [];
+        for (uint i = 0; i < labApiPlayers.Length; i++)
+            players[i] = Player.Get(labApiPlayers[i]);
+        
         var isNoisy = Args.GetOption("mode") == "jingle";
         var message = Args.GetText("message");
         var subtitles = Args.GetText("subtitles");
 
-        foreach (var player in players.Select(Player.Get))
+        foreach (var player in players)
         {
             player.MessageTranslated(
                 message, 

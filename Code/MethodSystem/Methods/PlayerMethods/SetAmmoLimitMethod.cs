@@ -16,7 +16,7 @@ public class SetAmmoLimitMethod : SynchronousMethod, IDependOnFramework
     
     public override string Description => "Sets the players' limit on a certain ammunition type";
     
-    public override Argument[] ExpectedArguments { get; } =
+    public override Argument[] ExpectedArguments =>
     [
         new PlayersArgument("players to set the limit to"),
         new EnumArgument<AmmoType>("ammo type"),
