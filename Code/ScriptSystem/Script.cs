@@ -1,4 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+<<<<<<< Updated upstream
+=======
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
+>>>>>>> Stashed changes
 using LabApi.Features.Wrappers;
 using SER.Code.ContextSystem;
 using SER.Code.ContextSystem.BaseContexts;
@@ -10,6 +15,7 @@ using SER.Code.FlagSystem;
 using SER.Code.FlagSystem.Flags;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
+using SER.Code.MethodSystem;
 using SER.Code.ScriptSystem.Structures;
 using SER.Code.TokenSystem;
 using SER.Code.TokenSystem.Structures;
@@ -23,6 +29,10 @@ namespace SER.Code.ScriptSystem;
 
 public class Script
 {
+    private Line[] _lines = [];
+    private Context[] _contexts = [];
+    private bool? _isEventAllowed;
+    
     public required ScriptName Name { get; init; }
     
     public required string Content { get; init; }
@@ -34,20 +44,21 @@ public class Script
         {
             switch (value)
             {
-                case RemoteAdminExecutor { Sender: { } sender } when Player.TryGet(sender, out var player):
-                    AddLocalVariable(new PlayerVariable("sender", new([player])));
+                case RemoteAdminExecutor { Sender: { } sender } when Player.Get(sender) is { } player:
+                {
+                    AddLocalVariable(new PlayerVariable("sender", new(player)));
                     break;
-                case PlayerConsoleExecutor { Sender: { } hub }:
-                    AddLocalVariable(new PlayerVariable("sender", new([Player.Get(hub)])));
+                }
+                case PlayerConsoleExecutor { Sender: { } hub } when Player.Get(hub) is { } player:
+                {
+                    AddLocalVariable(new PlayerVariable("sender", new(player)));
                     break;
+                }
             }
 
             field = value;
         }
     }
-    
-    public Line[] Lines = [];
-    public Context[] Contexts = [];
     
     public bool Killed { get; private set; }
     
@@ -57,22 +68,20 @@ public class Script
     
     public RunReason RunReason { get; private set; }
     
-    public uint CurrentLine { get; set; } = 0;
-
-    private static readonly List<Script> RunningScriptsList = [];
-    public static readonly ReadOnlyCollection<Script> RunningScripts = RunningScriptsList.AsReadOnly();
+    public uint CurrentLine { get; set; }
     
-    private readonly HashSet<Variable> _localVariables = [];
-    public ReadOnlyCollection<Variable> LocalVariables => _localVariables.ToList().AsReadOnly();
-
     public DateTime StartTime { get; private set; }
 
     public TimeSpan TimeRunning => StartTime == DateTime.MinValue ? TimeSpan.Zero : DateTime.Now - StartTime;
-    
-    private bool? _isEventAllowed;
 
-    private readonly Dictionary<string, FunctionDefinitionContext> _definedFunctions = [];
-    public ReadOnlyDictionary<string, FunctionDefinitionContext> DefinedFunctions => new(_definedFunctions);
+    private static readonly HashSet<Script> RunningScriptsList = [];
+    public static readonly Script[] RunningScripts = RunningScriptsList.ToArray();
+    
+    private readonly HashSet<Variable> _localVariables = [];
+    public Variable[] LocalVariables => _localVariables.ToArray();
+
+    private readonly Dictionary<string, FuncStatement> _definedFunctions = [];
+    public ReadOnlyDictionary<string, FuncStatement> DefinedFunctions => new(_definedFunctions);
 
     public void Reply(string message)
     {
@@ -121,7 +130,7 @@ public class Script
 
     public static int StopAll()
     {
-        var count = RunningScripts.Count;
+        var count = RunningScripts.Length;
         foreach (var script in new List<Script>(RunningScripts))
         {
             script.ExternalStop();
@@ -150,12 +159,30 @@ public class Script
         return ScriptFlagHandler.ScriptsFlags[Name].Any(f => f is T);
     }
 
-    public List<Line> GetFlagLines()
+    public TryGet<List<Line>> GetFlagLines()
     {
         DefineLines();
-        SliceLines();
-        TokenizeLines();
-        return Lines.Where(l => l.Tokens.FirstOrDefault() is FlagToken or FlagArgumentToken).ToList();
+        if (SliceLines().HasErrored(out var err) || TokenizeLines().HasErrored(out err))
+        {
+            return err;
+        }
+
+        return _lines.Where(l => l.Tokens.FirstOrDefault() is FlagToken or FlagArgumentToken).ToList();
+    }
+
+    /// <summary>
+    /// Used for external tools to verify the script content.
+    /// This is NOT to be used in an actual server.
+    /// </summary>
+    [UsedImplicitly]
+    public static string? VerifyForExternalTool(string content)
+    {
+        if (MethodIndex.NameToMethodIndex.Count is 0)
+        {
+            MethodIndex.Initialize();
+        }
+        
+        return CreateAnonymous("test", content).Compile().HasErrored(out var err) ? err : null;
     }
 
     /// <summary>
@@ -206,22 +233,16 @@ public class Script
         }
     }
 
-    public Result DefineLines()
+    public void DefineLines()
     {
         var prof = Profile is not null 
             ? new Profile(Profile, nameof(DefineLines))
             : null;
         
-        if (Tokenizer.GetInfoFromMultipleLines(Content).HasErrored(out var err, out var info))
-        {
-            return "Defining script lines failed." + err;
-        }
+        _lines = Tokenizer.GetInfoFromMultipleLines(Content);
         
+        Log.Debug($"Script {Name} defines {_lines.Length} lines");
         prof?.Stop();
-        
-        Log.Debug($"Script {Name} defines {info.Length} lines");
-        Lines = info;
-        return true;
     }
     
     public Result SliceLines()
@@ -230,18 +251,24 @@ public class Script
             ? new Profile(Profile, nameof(SliceLines))
             : null;
         
-        foreach (var line in Lines)
+        List<Result> errors = [];
+        foreach (var line in _lines)
         {
             if (Tokenizer.SliceLine(line).HasErrored(out var error))
             {
-                Result mainErr = $"Processing line {line.LineNumber} has failed.";
-                return mainErr + error;
+                errors.Add(error);
             }
+        }
+
+        if (errors.Any())
+        {
+            return Result.Merge(errors);
         }
         
         prof?.Stop();
         
-        Log.Debug($"Script {Name} sliced {Lines.Length} lines into {Lines.Sum(l => l.Slices.Length)} slices");
+        Log.Debug($"Script {Name} sliced {_lines.Length} lines into {_lines.Sum(l => l.Slices.Length)} slices");
+        
         return true;
     }
 
@@ -251,21 +278,23 @@ public class Script
             ? new Profile(Profile, nameof(TokenizeLines))
             : null;
         
-        foreach (var line in Lines)
+        List<Result> errors = [];
+        foreach (var line in _lines)
         {
             if (Tokenizer.TokenizeLine(line, this).HasErrored(out var error))
             {
-                return error;
+                errors.Add(error);
             }
         }
         
         prof?.Stop();
+        if (errors.Any()) return Result.Merge(errors);
 
-        Log.Debug($"Script {Name} tokenized {Lines.Length} lines into {Lines.Sum(l => l.Tokens.Length)} tokens");
+        Log.Debug($"Script {Name} tokenized {_lines.Length} lines into {_lines.Sum(l => l.Tokens.Length)} tokens");
         return true;
     }
     
-    public void DefineFunction(string name, FunctionDefinitionContext context) 
+    public void DefineFunction(string name, FuncStatement context) 
         => _definedFunctions.Add(name, context);
     
     private Result ContextLines()
@@ -274,23 +303,23 @@ public class Script
             ? new Profile(Profile, nameof(ContextLines))
             : null;
         
-        if (Contexter.ContextLines(Lines, this).HasErrored(out var err, out var contexts))
+        if (Contexter.ContextLines(_lines, this).HasErrored(out var err, out var contexts))
         {
             return err;
         }
         
         prof?.Stop();
         
-        Contexts = contexts;
+        _contexts = contexts;
         return true;
     }
     
     public Result Compile()
     {
-        if (DefineLines().HasErrored(out var err) ||
-               SliceLines().HasErrored(out err) ||
-               TokenizeLines().HasErrored(out err) ||
-               ContextLines().HasErrored(out err))
+        DefineLines();
+        if (SliceLines().HasErrored(out var err) ||
+            TokenizeLines().HasErrored(out err) ||
+            ContextLines().HasErrored(out err))
         {
             return err;
         }
@@ -305,7 +334,7 @@ public class Script
             throw new ScriptCompileError(err);
         }
         
-        foreach (var context in Contexts)
+        foreach (var context in _contexts)
         {
             var handle = context.ExecuteBaseContext();
             while (handle.MoveNext())
