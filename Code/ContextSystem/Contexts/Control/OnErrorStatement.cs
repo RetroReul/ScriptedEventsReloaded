@@ -13,19 +13,19 @@ using SER.Code.VariableSystem.Variables;
 namespace SER.Code.ContextSystem.Contexts.Control;
 
 [UsedImplicitly]
-public class CatchStatement : StatementContext, IStatementExtender, IKeywordContext, IAcceptOptionalVariableDefinitionsContext
+public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordContext, IAcceptOptionalVariableDefinitionsContext
 {
-    public string KeywordName => "catch";
+    public string KeywordName => "on_error";
     public string Description => "Catches an exception thrown inside of a " +
-                                 typeof(TryStatement).FriendlyTypeName(true);
+                                 typeof(AttemptStatement).FriendlyTypeName(true);
     public string[] Arguments => [];
     public string? Example =>
         """
         &collection = EmptyCollection
-        try
+        attempt
             Print {CollectionFetch &collection 2}
             # throws because there's nothing at index 2
-        catch
+        on_error
             with *exception
             
             Print "Error!: {ExceptionInfo *exception message}"
@@ -33,7 +33,7 @@ public class CatchStatement : StatementContext, IStatementExtender, IKeywordCont
         """;
 
     public IExtendableStatement.Signal Extends => IExtendableStatement.Signal.ThrewException;
-    protected override string FriendlyName => "'catch' statement";
+    protected override string FriendlyName => "'on_error' statement";
 
     public Exception? Exception
     {

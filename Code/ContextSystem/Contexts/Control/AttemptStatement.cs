@@ -9,19 +9,19 @@ using SER.Code.TokenSystem.Tokens;
 namespace SER.Code.ContextSystem.Contexts.Control;
 
 [UsedImplicitly]
-public class TryStatement : StatementContext, IExtendableStatement, IKeywordContext
+public class AttemptStatement : StatementContext, IExtendableStatement, IKeywordContext
 {
-    public string KeywordName => "try";
+    public string KeywordName => "attempt";
     public string Description => "Runs everything inside the statement, and if something throws an exception (error), " +
                                  "the statement skips everything after it and jumps straight to the " +
-                                 $"{typeof(CatchStatement).FriendlyTypeName(true)} " +
+                                 $"{typeof(OnErrorStatement).FriendlyTypeName(true)} " +
                                  "after it if provided.";
     public string[] Arguments => [];
     public string? Example =>
         """
         &collection = EmptyCollection
         # swallows the error (doesn't stop the script)
-        try
+        attempt
             Print {CollectionFetch &collection 2}
             # throws because there's nothing at index 2
         end
@@ -29,7 +29,7 @@ public class TryStatement : StatementContext, IExtendableStatement, IKeywordCont
 
     public IExtendableStatement.Signal AllowedSignals => IExtendableStatement.Signal.ThrewException;
     public Dictionary<IExtendableStatement.Signal, StatementContext> RegisteredSignals { get; } = [];
-    protected override string FriendlyName => "'try' statement";
+    protected override string FriendlyName => "'attempt' statement";
 
     private Exception? _exception;
     
@@ -66,7 +66,7 @@ public class TryStatement : StatementContext, IExtendableStatement, IKeywordCont
         if (!RegisteredSignals.TryGetValue(IExtendableStatement.Signal.ThrewException, out var statement))
             yield break;
 
-        if (statement is CatchStatement catchStatement)
+        if (statement is OnErrorStatement catchStatement)
         {
             catchStatement.Exception = _exception;
         }
