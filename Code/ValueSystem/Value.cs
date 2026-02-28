@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using LabApi.Features.Wrappers;
 using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.ScriptSystem;
 
 namespace SER.Code.ValueSystem;
@@ -41,7 +42,7 @@ public abstract class Value
         };
     }
 
-    public static string FriendlyName(Type type) => type.Name.Replace("Value", "").ToLower();
+    public static string FriendlyName(Type type) => type.Name.Replace("Value", "").Spaceify().ToLower();
     public string FriendlyName() => FriendlyName(GetType());
 
     public override string ToString()
