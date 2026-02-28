@@ -74,6 +74,10 @@ public static class MethodIndex
         }
         
         NameToMethodIndex.Add(method.Name, method);
+        
+        // Used to create all arguments, so initializers can do outside work
+        // for example, EnumArgument adds its enum type to serhelp command
+        _ = method.ExpectedArguments;
     }
 
     /// <summary>
