@@ -354,7 +354,7 @@ public class Script
         {
             if (variable is not T casted)
             {
-                return $"Variable '{name}' is not of type '{typeof(T).Name}', it's of '{variable.GetType().AccurateName}' instead.";
+                return $"Variable '{name}' is not a {Variable.GetFriendlyName(typeof(T))}, but a {variable.FriendlyName} instead.";
             }
 
             return casted;
@@ -369,7 +369,7 @@ public class Script
         return $"There is no variable called {name}.";
     }
 
-    public static void CheckForVariableNameCollisions(Variable newVariable, IEnumerable<Variable> existingVariables)
+    public static void AssertNoVariableNameCollisions(Variable newVariable, IEnumerable<Variable> existingVariables)
     {
         if ((existingVariables as Variable[] ?? existingVariables.ToArray())
             .Any(gv => Variable.AreSyntacticallySame(gv, newVariable)))
@@ -383,7 +383,7 @@ public class Script
 
     public void AddLocalVariable(Variable variable)
     {
-        CheckForVariableNameCollisions(variable, VariableIndex.GlobalVariables);
+        AssertNoVariableNameCollisions(variable, VariableIndex.GlobalVariables);
         
         Log.Debug($"Added variable {variable.Name} to script {Name}");
         RemoveLocalVariable(variable);

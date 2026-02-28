@@ -29,7 +29,7 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
                 return SpaceCheck(token.GetBestTextRepresentation(null));
             }
             
-            return DynamicTryGet.Error($"Value '{token.RawRep}' cannot represent text.");
+            return DynamicTryGet.Error("Value cannot represent text.");
         }
 
         if (valToken.IsConstant)
@@ -43,7 +43,7 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
         {
             if (!allowsSpaces && value.Any(char.IsWhiteSpace))
             {
-                return $"Value '{token.RawRep}' contains spaces, which are not allowed!".AsError();
+                return $"Value contains spaces, which are not allowed".AsError();
             }
             
             return value.AsSuccess();
