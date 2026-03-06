@@ -22,21 +22,6 @@ namespace SER.Code.ArgumentSystem;
 public class ProvidedArguments(Method method)
 {
     private Dictionary<(string name, Type type), List<DynamicTryGet>> ArgumentValues { get; } = [];
-
-    public T? GetNullableFlags<T>(string argName) where T : struct, Enum
-    {
-        return GetValueNullableStruct<T, FlagsArgument<T>>(argName);
-    }
-    
-    public T GetFlags<T>(string argName) where T : struct, Enum
-    {
-        return GetValue<T, FlagsArgument<T>>(argName);
-    }
-    
-    public Type GetEnumType(string argName)
-    {
-        return GetValue<Type, EnumTypeArgument>(argName);
-    }
     
     public T GetVariable<T>(string argName) where T : Variable
     {

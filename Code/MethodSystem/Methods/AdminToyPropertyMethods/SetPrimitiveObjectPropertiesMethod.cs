@@ -19,7 +19,7 @@ public class SetPrimitiveObjectPropertiesMethod : SynchronousMethod
         
         new EnumArgument<PrimitiveType>("type")    { DefaultValue = new(null, "not changing") },
         new ColorArgument("color")                 { DefaultValue = new(null, "not changing") },
-        new FlagsArgument<PrimitiveFlags>("flags") { DefaultValue = new(null, "not changing") },
+        new EnumArgument<PrimitiveFlags>("flags")  { DefaultValue = new(null, "not changing") },
     ];
     
     public override void Execute()
@@ -28,6 +28,6 @@ public class SetPrimitiveObjectPropertiesMethod : SynchronousMethod
 
         if (Args.GetNullableEnum<PrimitiveType>("type")    is { } type)  toy.Type  = type;
         if (Args.GetNullableColor("color")                 is { } color) toy.Color = color;
-        if (Args.GetNullableFlags<PrimitiveFlags>("flags") is { } flags) toy.Flags = flags;
+        if (Args.GetNullableEnum<PrimitiveFlags>("flags")  is { } flags) toy.Flags = flags;
     }
 }

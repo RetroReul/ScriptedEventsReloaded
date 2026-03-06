@@ -11,12 +11,21 @@ namespace SER.Code.ArgumentSystem.Arguments;
 
 public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
 {
+    private readonly bool _isFlag;
+    
     public EnumArgument(string name) : base(name)
     {
         HelpInfoStorage.UsedEnums.Add(typeof(TEnum));
+        
+        if (typeof(TEnum).IsDefined(typeof(FlagsAttribute), false))
+        {
+            _isFlag = true;
+        }
     }
-    
-    public override string InputDescription => $"{typeof(TEnum).GetAccurateName()} enum value - found using 'serhelp {typeof(TEnum).GetAccurateName()}' command";
+
+    public override string InputDescription => 
+        $"{typeof(TEnum).AccurateName} enum value - found using 'serhelp {typeof(TEnum).AccurateName}' command"
+        + (_isFlag ? ". Use '|' character to provide multiple e.g. Val1|Val2|Val3" : "");
 
     [UsedImplicitly]
     public DynamicTryGet<TEnum> GetConvertSolution(BaseToken token)
@@ -42,19 +51,43 @@ public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
         });
     }
 
-    public static TryGet<TEnum> Convert(BaseToken token, Script script)
+    public static TryGet<TEnum> Convert(BaseToken token, Script script, bool isFlag)
     {
-        if (Convert(token, script, typeof(TEnum)).HasErrored(out var error, out var value))
+        if (!isFlag)
         {
-            return error;
-        }
+            if (ConvertOne(token.GetBestTextRepresentation(script), typeof(TEnum))
+                .HasErrored(out var error, out var value))
+            {
+                return error;
+            }
         
-        return (TEnum)value;
+            return (TEnum)value;
+        }
+
+        ulong result = 0;
+        foreach (var part in token
+                     .GetBestTextRepresentation(script)
+                     .Split(['|'], StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (ConvertOne(part, typeof(TEnum)).HasErrored(out var error, out var value))
+            {
+                return error;
+            }
+            
+            result |= System.Convert.ToUInt64(value);
+        }
+
+        return (TEnum)Enum.ToObject(typeof(TEnum), result);
     }
 
-    public static TryGet<object> Convert(BaseToken token, Script script, Type enumType)
+    public static TryGet<TEnum> ConvertOne(string stringRep)
     {
-        var stringRep = token.GetBestTextRepresentation(script);
+        return ConvertOne(stringRep, typeof(TEnum)).OnSuccess(v => (TEnum)v);
+    }
+
+    public static TryGet<object> ConvertOne(string stringRep, Type enumType)
+    {
+        stringRep = stringRep.Trim();
         
         // only allow exact matches or matches with the first letter not capitalized
         if (Enum.IsDefined(enumType, stringRep) || 
@@ -63,11 +96,11 @@ public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
             return Enum.Parse(enumType, stringRep, true);
         }
         
-        return $"Value '{token.RawRep}' is not a {enumType.GetAccurateName()} enum value.";
+        return $"Value '{stringRep}' is not a {enumType.AccurateName} enum value.";
     }
-    
+
     private TryGet<TEnum> InternalConvert(BaseToken token)
     {
-        return Convert(token, Script);
+        return Convert(token, Script, _isFlag);
     }
 }

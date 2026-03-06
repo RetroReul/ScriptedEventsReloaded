@@ -14,7 +14,8 @@ public abstract class EnumHandlingArgument(string name) : Argument(name)
     {
         foreach (var enumType in handlers.Keys)
         {
-            if (EnumArgument< /* dummy type */ RoomName>.Convert(token, Script, enumType).HasErrored(out _, out var enumValue))
+            if (EnumArgument< /* dummy type */ RoomName>.ConvertOne(token.GetBestTextRepresentation(Script), enumType)
+                .HasErrored(out _, out var enumValue))
             {
                 continue;
             }

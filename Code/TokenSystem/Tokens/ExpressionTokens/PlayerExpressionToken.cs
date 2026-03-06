@@ -198,7 +198,7 @@ public class PlayerExpressionToken : ExpressionToken
                 return new Error(rs + $"A player expression expects to have only one argument, but {tokens.Length - 1} were provided.");
         }
 
-        if (EnumArgument<PlayerProperty>.Convert(tokens.Last(), Script)
+        if (EnumArgument<PlayerProperty>.ConvertOne(tokens.Last().GetBestTextRepresentation(Script))
             .HasErrored(out var error, out var property))
         {
             return new Error(rs + error);
