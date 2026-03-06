@@ -19,8 +19,7 @@ public class CreateToyMethod : ReferenceReturningMethod<AdminToy>, IAdditionalDe
 {
     public override string Description => "Creates an Admin Toy";
 
-    public string AdditionalDescription =>
-        $"Remember to set the position if the admin to using methods like {GetFriendlyName(typeof(TPToyPosMethod))}";
+    public string AdditionalDescription => "Remember to also TP the created toy somewhere in order to see it.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
