@@ -20,7 +20,7 @@ public class LooseReferenceArgument(string name, Type type) : Argument(name)
             return $"Value '{token.RawRep}' does not represent a valid reference.";
         }
 
-        return new(() => get().OnSuccess(rv => TryParse(rv, type), null));
+        return new(() => get().OnSuccess(rv => TryParse(rv, type)));
     }
 
     public TryGet<object> TryParse(ReferenceValue value, Type targetType)
@@ -48,7 +48,7 @@ public class ReferenceArgument<TValue>(string name) : LooseReferenceArgument(nam
             return $"Value '{token.RawRep}' does not represent a valid reference.";
         }
 
-        return new(() => get().OnSuccess(TryParse, null));
+        return new(() => get().OnSuccess(TryParse));
     }
 
     public static TryGet<TValue> TryParse(ReferenceValue value)

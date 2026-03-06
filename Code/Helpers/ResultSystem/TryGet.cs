@@ -84,7 +84,7 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     }
     
     [Pure]
-    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TTarget> transform, string? mainErr)
+    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TTarget> transform, string? mainErr = null)
     {
         if (HasErrored(out var error, out var val))
         {
@@ -98,7 +98,7 @@ public sealed class TryGet<TValue>(TValue? value, string? errorMsg)
     }
     
     [Pure]
-    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TryGet<TTarget>> transform, string? mainErr)
+    public TryGet<TTarget> OnSuccess<TTarget>(Func<TValue, TryGet<TTarget>> transform, string? mainErr = null)
     {
         if (HasErrored(out var error, out var val))
         {

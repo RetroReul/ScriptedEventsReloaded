@@ -50,7 +50,7 @@ public abstract class VariableToken<TVariable, TValue> : VariableToken, IValueTo
         return Script.TryGetVariable<TVariable>(this);
     }
 
-    public TryGet<TValue> ExactValue => TryGetVariable().OnSuccess(variable => variable.Value, null);
+    public TryGet<TValue> ExactValue => TryGetVariable().OnSuccess(variable => variable.Value);
 
     protected override IParseResult InternalParse(Script scr)
     {
@@ -70,7 +70,7 @@ public abstract class VariableToken<TVariable, TValue> : VariableToken, IValueTo
 
     public TryGet<Value> Value()
     {
-        return TryGetVariable().OnSuccess(Value (variable) => variable.Value, null);
+        return TryGetVariable().OnSuccess(Value (variable) => variable.Value);
     }
 
     public TypeOfValue PossibleValues => new TypeOfValue<TValue>();

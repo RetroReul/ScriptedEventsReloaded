@@ -58,7 +58,7 @@ public class FloatArgument : Argument
             return VerifyRange(number.Value.Value);
         }
         
-        return new(() => token.TryGetLiteralValue<NumberValue>().OnSuccess(VerifyRange, null));
+        return new(() => token.TryGetLiteralValue<NumberValue>().OnSuccess(VerifyRange));
     }
 
     private TryGet<float> VerifyRange(NumberValue value)

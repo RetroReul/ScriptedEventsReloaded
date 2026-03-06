@@ -19,7 +19,7 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
     {
         if (token is TextToken textToken)
         {
-            return new(() => textToken.GetDynamicResolver().Invoke().OnSuccess(SpaceCheck, null));
+            return new(() => textToken.GetDynamicResolver().Invoke().OnSuccess(SpaceCheck));
         }    
         
         if (token is not IValueToken valToken || !valToken.CapableOf<LiteralValue>(out var get))
@@ -34,10 +34,10 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
 
         if (valToken.IsConstant)
         {
-            return SpaceCheck(get().OnSuccess(v => v.StringRep, null));
+            return SpaceCheck(get().OnSuccess(v => v.StringRep));
         }
 
-        return new(() => get().OnSuccess(v => SpaceCheck(v.StringRep), null));
+        return new(() => get().OnSuccess(v => SpaceCheck(v.StringRep)));
         
         TryGet<string> SpaceCheck(string value)
         {
