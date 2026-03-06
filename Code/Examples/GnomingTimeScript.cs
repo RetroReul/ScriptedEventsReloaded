@@ -11,10 +11,22 @@ public class GnomingTimeScript : Example
         """
         !-- OnEvent Death
 
+        # stop if its unknown who died
+        # theoretically, this should never happen, but check just in case
+        if {VarExists @evPlayer} is false
+            stop
+        end
+        
+        # stop if death was not caused by a player
         if {VarExists @evAttacker} is false
             stop
         end
 
+        # stop if death was a suicide - meaning @evPlayer and @evAttacker are the same player 
+        if {Overlapping @evPlayer @evAttacker} is true
+            stop
+        end
+        
         @plr = @evAttacker
 
         # lower size by .1 when killing someone
