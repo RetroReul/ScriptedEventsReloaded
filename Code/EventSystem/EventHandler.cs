@@ -66,7 +66,7 @@ public static class EventHandler
         ScriptsUsingEvent.Add(evName, [scriptName]);
 
         EventInfo? matchingEventInfo = AvailableEvents.FirstOrDefault(e => e.Name == evName);
-        if (matchingEventInfo == null)
+        if (matchingEventInfo is null)
         {
             return $"Event '{evName}' does not exist!"; 
         }
