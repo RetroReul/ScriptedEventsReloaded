@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
+using MEC;
 using SER.Code.ContextSystem;
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Contexts;
@@ -71,7 +72,7 @@ public class Script
     public TimeSpan TimeRunning => StartTime == DateTime.MinValue ? TimeSpan.Zero : DateTime.Now - StartTime;
 
     private static readonly HashSet<Script> RunningScriptsList = [];
-    public static readonly Script[] RunningScripts = RunningScriptsList.ToArray();
+    public static Script[] RunningScripts => RunningScriptsList.ToArray();
     
     private readonly HashSet<Variable> _localVariables = [];
     public Variable[] LocalVariables => _localVariables.ToArray();
