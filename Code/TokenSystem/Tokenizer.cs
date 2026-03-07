@@ -136,8 +136,7 @@ public static class Tokenizer
 
     public static TryGet<BaseToken[]> TokenizeLine(string line, Script scr, uint? lineNum)
     {
-        if (SliceLine(line)
-            .HasErrored(out var sliceError, out var slices))
+        if (SliceLine(line).HasErrored(out var sliceError, out var slices))
         {
             return sliceError;
         }
