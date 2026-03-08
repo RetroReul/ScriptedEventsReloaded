@@ -7,7 +7,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 using Console = GameCore.Console;
 
-namespace SER.Code.MethodSystem.Methods.ServerMethods;
+namespace SER.Code.MethodSystem.Methods.CommandMethods;
 
 [UsedImplicitly]
 public class CommandMethod : SynchronousMethod, IAdditionalDescription
