@@ -1,5 +1,6 @@
 ﻿using CommandSystem;
 using JetBrains.Annotations;
+using LabApi.Features.Permissions;
 using LabApi.Features.Wrappers;
 using RemoteAdmin;
 using SER.Code.Exceptions;
@@ -20,8 +21,14 @@ namespace SER.Code.FlagSystem.Flags;
 [UsedImplicitly]
 public class CustomCommandFlag : Flag
 {
-    public override string Description => 
-        "Creates a command and binds it to the script. When the command is ran, it executes the script.";
+    public override string Description =>
+        """
+        Creates a command and binds it to the script. When the command is ran, it executes the script. 
+
+        Injects the following variables into the script:
+        > @sender (the player who ran the command, NOT added when command is ran by the server console)
+        > *command (reference to this 'CustomCommand', used for resetting cooldown)
+        """;
     
     public override Argument? InlineArgument => new(
         "command name",
@@ -49,52 +56,117 @@ public class CustomCommandFlag : Flag
         
             return true;
         },
-        true
+        true,
+        "!-- CustomCommand myban"
     );
 
     public override Argument[] Arguments =>
     [
         new(
-            "arguments",
-            "The arguments that this command expects in order to run. " +
-            "The script cannot run unless every single argument is specified. " +
-            "When the command is ran, the provided values for the arguments turn into their own literal local " +
-            "variables for you to use in the script. " +
-            "For example: making a command with an argument 'name' will then create a local variable $name in your script. " +
-            "Side note: when a player is running the command, a @sender local player variable will also be created.",
-            AddArguments,
-            false
-        ),
-        new(
             "availableFor",
-            $"Specifies from which console the command can be executed from. Accepts {nameof(ConsoleType)} enum values.",
+            "Specifies from which console the command can be executed from. Accepts: " +
+            Enum.GetNames(typeof(ConsoleType)).Without(nameof(ConsoleType.None)).JoinStrings(" or "),
             AddConsoleType,
-            false
+            false,
+            "-- availableFor Player RemoteAdmin"
         ),
         new(
             "description",
             "The description of the command.",
             AddDescription,
-            false
+            false,
+            "-- description \"Used to ban a player\""
+        ),
+        new(
+            "neededPermission",
+            """
+            The permission that the player has to have in order to be able to use this command.
+            You can provide multiple permissions, and if the player has any of the listed permissions, they will be able to use the command.
+            """,
+            AddNeededPermission,
+            false,
+            "-- neededPermission ban.use ban.bypass"
+        ),
+        new(
+            "noPermissionMessage",
+            "Defines a message for when the sender does not have the needed permission (defined in 'neededPermission' argument).",
+            AddNoPermissionMessage,
+            false,
+            "-- noPermissionMessage \"You do not have the required permissions to ban a player!\""
         ),
         new(
             "neededRank",
-            "The required remote admin rank in order to have access to this command. " +
-            "You can provide multiple ranks, and if the player has any of the listed ranks, they will be able to use the command.",
+            """
+            The required remote admin rank in order to have access to this command.
+            You can provide multiple ranks, and if the player has any of the listed ranks, they will be able to use the command.
+            """,
             AddNeededRank,
-            false
+            false,
+            "-- neededRank owner admin moderator staff"
         ),
         new(
             "invalidRankMessage",
             "Defines a message for when the sender does not have the needed rank (defined in 'neededRank' argument).",
             AddInvalidRankMessage,
-            false
+            false,
+            "-- invalidRankMessage \"You are not server staff!\""
         ),
         new(
             "cooldown",
             "The time the player has to wait before being able to use the command again.",
-            AddCooldown,
-            false
+            args => AddCooldown(args, false),
+            false,
+            "-- cooldown 30s"
+        ),
+        new(
+            "onCooldownMessage",
+            """
+            Defines a message for when the player tries to run a command but is on cooldown. 
+            Additionally, you can use %time% in the message to show the remaining time (in seconds) the player has to wait before being able to use the command again.
+            """,
+            args => AddOnCooldownMessage(args, false),
+            false,
+            "-- onCooldownMessage \"You are on cooldown! You can use this command in %time% seconds.\""
+        ),
+        new(
+            "globalCooldown",
+            """
+            The time all players have to wait before being able to use the command again.
+            If anyone uses a command, everyone else will be unable to use it for the specified duration.
+            This also applies to the server console.
+            """,
+            args => AddCooldown(args, true),
+            false,
+            "-- globalCooldown 30s"
+        ),
+        new(
+            "onGlobalCooldownMessage",
+            """
+            Defines a message for when someone tries to run a command but is on global cooldown. 
+            Additionally, you can use %time% in the message to show the remaining time (in seconds) someone has to wait before being able to use the command.
+            """,
+            args => AddOnCooldownMessage(args, true),
+            false,
+            "-- onGlobalCooldownMessage \"This command is on cooldown! You can use this command in %time% seconds\""
+        ),
+        new(
+            "arguments",
+            """
+            The arguments that this command expects in order to run. 
+            The script cannot run unless every single argument is specified. 
+            
+            When the command is ran, the provided values for the arguments turn into their own literal local variables for you to use in the script. 
+            For example: making a command with an argument 'name' will then create a local variable '$name' in your script.
+            
+            If you want some arguments to be optional, you can use the '?' symbol after the argument name. 
+            For example: 'reason?' argument will be optional, and if the sender does not provide a value for it, the script will still run.
+            Then, the '$reason' command will not be created in your script.
+            
+            (the '?' suffix is NOT added to the variable names)
+            """,
+            AddArguments,
+            false,
+            "-- arguments id time reason?"
         )
     ];
     
@@ -130,7 +202,6 @@ public class CustomCommandFlag : Flag
                     CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(Command);
                     continue;
                 case ConsoleType.None:
-                    continue;
                 default:
                     throw new AndrzejFuckedUpException();
             }
@@ -155,7 +226,6 @@ public class CustomCommandFlag : Flag
                     CommandProcessor.RemoteAdminCommandHandler.UnregisterCommand(Command);
                     break;
                 case ConsoleType.None:
-                    continue;
                 default:
                     throw new AndrzejFuckedUpException();
             }
@@ -195,12 +265,23 @@ public class CustomCommandFlag : Flag
         public required string Command { get; init; }
         public string[] Aliases { get; set; } = [];
         public string Description { get; set; } = "";
-        public ConsoleType ConsoleTypes { get; set; } = ConsoleType.Server;
         public string[] Usage { get; set; } = [];
-        public string[] NeededRanks { get; set; } = [];
-        public string? InvalidRankMessage { get; set; } = null;
-        public TimeSpan PlayerCooldown { get; set; } = TimeSpan.Zero;
+        public ConsoleType ConsoleTypes = ConsoleType.Server;
+        
+        public string[] NeededRanks = [];
+        public string? InvalidRankMessage = null;
+        
+        public string[] NeededPermissions = [];
+        public string? NoPermissionMessage = null;
+        
+        public TimeSpan PlayerCooldown = TimeSpan.Zero;
         public Dictionary<Player, DateTime> NextEligableDateForPlayer { get; } = [];
+        public string? OnCooldownMessage = null;
+        
+        public TimeSpan GlobalCooldown = TimeSpan.Zero;
+        public DateTime? NextEligableDateForGlobal = null;
+        public string? OnGlobalCooldownMessage = null;
+        
         public string GetHelp(ArraySegment<string> arguments)
         {
             return $"Description: {Description}\n" +
@@ -218,6 +299,27 @@ public class CustomCommandFlag : Flag
         {
             return plrErr;
         }
+
+        if (cmd.GlobalCooldown > TimeSpan.Zero)
+        {
+            if (cmd.NextEligableDateForGlobal is { } nextEligableDate
+                && nextEligableDate > DateTime.UtcNow)
+            {
+                var timeRemaining = Math.Round(
+                    (nextEligableDate - DateTime.UtcNow).TotalSeconds, 
+                    MidpointRounding.AwayFromZero
+                );
+                
+                if (cmd.OnGlobalCooldownMessage is not null)
+                {
+                    return cmd.OnGlobalCooldownMessage.Replace("%time%", timeRemaining.ToString());
+                }
+
+                return $"This command is on cooldown! You will be able to use this command in {timeRemaining} seconds.";
+            }
+            
+            cmd.NextEligableDateForGlobal = DateTime.UtcNow + cmd.GlobalCooldown;
+        }
         
         if (!ScriptCommands.TryGetValue(cmd, out var flag))
         {
@@ -230,17 +332,18 @@ public class CustomCommandFlag : Flag
             return sliceError;
         }
 
-        var slices = outSlices.ToArray();
-        if (slices.Length < cmd.Usage.Length)
+        var provided = outSlices.ToArray();
+        var requiredArgumentLen = cmd.Usage.Count(arg => arg.Last() != '?');
+        if (provided.Length < requiredArgumentLen)
         {
             return "Not enough arguments. " +
-                   $"Expected {cmd.Usage.Length} but got {slices.Length}.";
+                   $"Expected at least {requiredArgumentLen}, but got {provided.Length}.";
         }
 
-        if (slices.Length > cmd.Usage.Length)
+        if (provided.Length > cmd.Usage.Length)
         {
             return "Too many arguments. " +
-                   $"Expected {cmd.Usage.Length} but got {slices.Length}.";
+                   $"Expected at most {cmd.Usage.Length}, but got {provided.Length}.";
         }
 
         if (Script.CreateByScriptName(flag.ScriptName, sender)
@@ -249,11 +352,16 @@ public class CustomCommandFlag : Flag
             return error;
         }
 
-        for (var index = 0; index < cmd.Usage.Length; index++)
+        for (var index = 0; index < provided.Length; index++)
         {
-            var slice = slices[index];
+            var slice = provided[index];
             var argVariable = cmd.Usage[index];
             var name = argVariable[0].ToString().ToLower() + argVariable[1..];
+
+            if (name.Last() == '?')
+            {
+                name = name[..^1];
+            }
 
             if (Tokenizer.GetTokenFromSlice(slice, null!, 0)
                 .WasSuccessful(out var token))
@@ -268,6 +376,7 @@ public class CustomCommandFlag : Flag
             script.AddLocalVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
         }
 
+        script.AddLocalVariable(new ReferenceVariable("command", new ReferenceValue(cmd)));
         script.Run(RunReason.CustomCommand);
         return true;
     }
@@ -288,6 +397,17 @@ public class CustomCommandFlag : Flag
                        $"{cmd.NeededRanks.Select(r => $"'{r}'").JoinStrings(" or ")}";
             }
         }
+
+        if (cmd.NeededPermissions.Any() && !plr.HasAnyPermission(cmd.NeededPermissions))
+        {
+            if (cmd.NoPermissionMessage is not null)
+            {
+                return cmd.NoPermissionMessage;
+            }
+            
+            return "You do not have one of the required permissions to use this command. " +
+                   $"Required permissions: {cmd.NeededPermissions.JoinStrings(", ")}.";    
+        }
         
         if (cmd.PlayerCooldown <= TimeSpan.Zero)
         {
@@ -296,8 +416,17 @@ public class CustomCommandFlag : Flag
         
         if (cmd.NextEligableDateForPlayer.TryGetValue(plr, out var nextEligableDate) && nextEligableDate > DateTime.UtcNow)
         {
-            return $"You are on cooldown! You can use this command in " +
-                   $"{Math.Round((nextEligableDate - DateTime.UtcNow).TotalSeconds, MidpointRounding.AwayFromZero)} seconds.";
+            var timeRemaining = Math.Round(
+                (nextEligableDate - DateTime.UtcNow).TotalSeconds,
+                MidpointRounding.AwayFromZero
+            );
+            
+            if (cmd.OnCooldownMessage is not null)
+            {
+                return cmd.OnCooldownMessage.Replace("%time%", timeRemaining.ToString());
+            }
+            
+            return $"You are on cooldown! You will be able to use this command in {timeRemaining} seconds.";
         }
         
         cmd.NextEligableDateForPlayer[plr] = DateTime.UtcNow + cmd.PlayerCooldown;
@@ -306,11 +435,28 @@ public class CustomCommandFlag : Flag
     
     private Result AddArguments(string[] args)
     {
+        bool onlyOptionals = false;
         foreach (var arg in args)
         {
-            if (!arg.All(char.IsLetter))
+            var markedOptional = arg.Last() == '?';
+            if (markedOptional)
+            {
+                onlyOptionals = true;
+            }
+            else if (onlyOptionals && !markedOptional)
+            {
+                return $"Argument '{arg}' is not optional, but previous arguments were marked as optional.";
+            }
+
+            var varName = markedOptional ? arg[..^1] : arg;
+            if (!varName.All(char.IsLetter))
             {
                 return $"Argument '{arg}' contains non-letter characters.";
+            }
+            
+            if (markedOptional && arg.Length == 1)
+            {
+                return $"You cannot provide a {arg} as an argument.";
             }
         }
 
@@ -320,8 +466,7 @@ public class CustomCommandFlag : Flag
 
     private Result AddConsoleType(string[] args)
     {
-        ConsoleType types = ConsoleType.None;
-
+        ConsoleType types = default;
         foreach (var arg in args)
         {
             if (Enum.TryParse(arg, true, out ConsoleType consoleType))
@@ -342,6 +487,18 @@ public class CustomCommandFlag : Flag
         Command.Description = args.JoinStrings(" ");
         return true;
     }
+
+    private Result AddNeededPermission(string[] args)
+    {
+        Command.NeededPermissions = args;
+        return true;
+    }
+    
+    private Result AddNoPermissionMessage(string[] args)
+    {
+        Command.NoPermissionMessage = args.JoinStrings(" ");
+        return true;
+    }
     
     private Result AddNeededRank(string[] args)
     {
@@ -355,7 +512,7 @@ public class CustomCommandFlag : Flag
         return true;
     }
     
-    private Result AddCooldown(string[] args)
+    private Result AddCooldown(string[] args, bool isGlobal)
     {
         switch (args.Length)
         {
@@ -370,7 +527,29 @@ public class CustomCommandFlag : Flag
             return $"Value '{rawValue}' is not a valid duration.";
         }
 
-        Command.PlayerCooldown = durationToken.Value;
+        if (isGlobal)
+        {
+            Command.GlobalCooldown = durationToken.Value;
+        }
+        else
+        {
+            Command.PlayerCooldown = durationToken.Value;
+        }
+        
+        return true;
+    }
+
+    private Result AddOnCooldownMessage(string[] args, bool isGlobal)
+    {
+        if (isGlobal)
+        {
+            Command.OnGlobalCooldownMessage = args.JoinStrings(" ");
+        }
+        else
+        {
+            Command.OnCooldownMessage = args.JoinStrings(" ");
+        }
+        
         return true;
     }
 }
