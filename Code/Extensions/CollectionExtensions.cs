@@ -51,6 +51,11 @@ public static class CollectionExtensions
         }
     }
 
+    public static IEnumerable<T> Without<T>(this IEnumerable<T> source, T value)
+    {
+        return source.Where(x => x?.Equals(value) is false);
+    }
+
     extension<T>(List<T> list)
     {
         public uint Len => (uint) list.Count;
