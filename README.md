@@ -1,39 +1,112 @@
 ![VERSION](https://img.shields.io/github/v/release/ScriptedEvents/ScriptedEventsReloaded?include_prereleases&logo=gitbook&style=for-the-badge)
 ![COMMITS](https://img.shields.io/github/commit-activity/m/ScriptedEvents/ScriptedEventsReloaded?logo=git&style=for-the-badge)
 [![DISCORD](https://img.shields.io/discord/1060274824330620979?label=Discord&logo=discord&style=for-the-badge)](https://discord.gg/3j54zBnbbD)
+![scriptedeventslogo.png](scriptedeventslogo.png)
 
- 
- # What is `Scripted Events Reloaded`?
-**Scripted Events Reloaded (SER)** is an SCP:SL plugin for LabAPI that adds a complete custom programming language for server owners to use.
+
+# What is `Scripted Events Reloaded`?
+**Scripted Events Reloaded (SER)** is an SCP:SL plugin that adds a custom scripting language for server-side events.
+
+# Main goal
+Making plugins with C# is NOT an easy thing, especially for beginners.
+If you want to get started with SCP:SL server-side scripting, SER is a great way to begin.
+
+SER simplifies the most essential plugin features into a friendly package.
+All you need to get started is a text editor and a server!
+
+# Nice-to-Haves of SER
+- **Simplification** of the most essential features like commands, events and player management.
+- **No compilation required**, while C# plugins require a full development environment, compilation, and DLL management.
+- **Lots of built-in features** like AudioPlayer, Databases, Discord webhooks, HTTP and more!
+- **Extendable** with frameworks like UCR, EXILED or Callvote, but __without__ any dependencies! 
+- **Plugin docs** are available directly on the server using the `serhelp` command.
+- **Helpful community** available to help you with any questions you may have.
 
 # SER Tutorials
 > https://scriptedeventsreloaded.gitbook.io/docs/tutorial
 
-# Why use SER?
-## ✅ Designed with SCP:SL in mind
-Every aspect of SER is designed around simplifying the most widely used features of SCP:SL plugins.
+# Examples
+(these scripts may be outdated, use them as a general overview)
+### Welcome message
+```
+!-- OnEvent Joined
 
-## 🧠 Easy to learn
-SER cuts down on the unnecessary complexity to remain simple and intuitive, while still providing all the features you need.
+Broadcast @evPlayer 10s "Welcome to the server {@evPlayer name}!"
+```
+### Coin on kill
+```
+!-- OnEvent Death
 
-## 📰 Extensive documentation and examples
-A core part of SER is its devotion to easy access to required documentation and examples. Check out the Wiki!
+# check if player died without an attacker
+if {VarExists @evAttacker} is false
+    stop
+end
 
-## 💰 Money saving
-SER is completely free to use, why pay someone to make a simple plugin for you?
+GiveItem @evAttacker Coin
+```
+### VIP broadcast command
+```
+# define the command with custom attributes
+!-- CustomCommand vipbc
+-- description "broadcasts a message to all players - VIP only"
+-- neededRank vip svip mvip
+-- arguments message
+-- availableFor Player
+-- cooldown 2m
 
-## 🗂️ All on the server
-You don't need any external programs to write scripts with SER, just text files and access to your server.
+# send the broadcast to all players
+Broadcast @all 10s "{@sender name} used VIP broadcast<br>{$message}"
+```
+### Heal random SCP
+```
+!-- CustomCommand healscp
+-- description "heals a random SCP"
+-- availableFor Player
+-- cooldown 10s
 
-## ⚡ Speed of development
-As soon as you save your script, the changes are applied immediately, no server restart is required.
+# dont allow SCPs to use this command
+if {@sender team} is "SCPs"
+    stop
+end
 
-## 🔌 Plugin extensions
-SER allows you to control other plugins (like custom roles) directly from your scripts! 
+@randomScp = LimitPlayers @scpPlayers 1
+Heal @randomScp 50
+Broadcast @randomScp 4s "You were healed by {@sender name}!"
+```
+### Hot Potato event
+```
+!-- OnEvent RoundStarted
 
-### Just Another Way to Make Plugins?
-Nope. SER is not here to compete with traditional plugins.
+forever
+    Wait 1m
 
-To stay simple and approachable, SER doesn't support the more advanced features that standard plugin frameworks do.  
-**Do not treat SER as an all-in-one replacement** for C# plugin development.
+    # Get a random player from the alive players
+    @potatoCarrier = LimitPlayers @alivePlayers 1
 
+    # if no player is alive, continue to next attempt
+    if {AmountOf @potatoCarrier} is 0
+        continue
+    end
+    
+    Hint @potatoCarrier 3s "YOU HAVE THE HOT POTATO! DROP IT OR DIE!"
+    GiveItem @potatoCarrier GunA7
+
+    Wait 3s
+
+    # Check if they still have the item (GunA7) in their inventory
+    over {@potatoCarrier inventory}
+        with *item
+
+        if {ItemInfo *item type} isnt "GunA7"
+            continue
+        end
+
+        AdvDestroyItem *item
+        Explode @potatoCarrier
+        Broadcast @all 5s "{@potatoCarrier name} failed the Hot Potato!"
+        stop
+    end
+        
+    Broadcast @all 5s "The Hot Potato has been neutralized... for now."
+end
+```
