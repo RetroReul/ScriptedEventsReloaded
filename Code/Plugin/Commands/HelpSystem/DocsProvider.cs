@@ -232,38 +232,39 @@ public static class DocsProvider
             .Select(arg => $"-- {arg.Name} ...")
             .JoinStrings("\n");
 
-        StringBuilder argumentDescription = new();
+        StringBuilder argDesc = new();
         if (flag.InlineArgument.HasValue)
         {
-            argumentDescription.AppendLine($"  Inline argument '{flag.InlineArgument.Value.Name}':");
-            argumentDescription.AppendLine($"  > {flag.InlineArgument.Value.Description}");
-            argumentDescription.AppendLine();
+            argDesc.AppendLine(
+                (flag.InlineArgument.Value.IsRequired ? "> Required" : "> Optional") 
+                + $" inline argument '{flag.InlineArgument.Value.Name}':"
+            );
+            argDesc.AppendLine($"{flag.InlineArgument.Value.Description}");
+            argDesc.AppendLine("> Example usage");
+            argDesc.AppendLine(flag.InlineArgument.Value.Example);
+            argDesc.AppendLine();
         }
 
         foreach (var arg in flag.Arguments)
         {
-            argumentDescription.AppendLine($"  Additional argument '{arg.Name}':");
-            argumentDescription.AppendLine($"  > {arg.Description}");
-            
-            if (!arg.IsRequired)
-            {
-                argumentDescription.AppendLine($"  > This argument is not required for the flag to operate");
-            }
-            
-            argumentDescription.AppendLine();
+            argDesc.AppendLine((arg.IsRequired ? "> Required" : "> Optional") + $" argument '{arg.Name}':");
+            argDesc.AppendLine($"{arg.Description}");
+            argDesc.AppendLine("> Example usage");
+            argDesc.AppendLine(arg.Example);
+            argDesc.AppendLine();
         }
         
         return
             $"""
              ===== {flagName} =====
-             > {flag.Description}
+             {flag.Description}
              
              Usage:
              !-- {flagName} {inlineArgumentUsage}
              {argumentsUsage}
              
-             {(argumentDescription.Length > 0 ? "Arguments:" : "")}
-             {argumentDescription}
+             {(argDesc.Length > 0 ? "+++ Arguments +++" : "")}
+             {argDesc}
              """;
     }
 

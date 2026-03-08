@@ -30,7 +30,8 @@ public class OnCustomTriggerFlag : Flag
             ScriptsBoundToTrigger.AddOrInitListWithKey(_trigger, ScriptName);
             return true;
         },
-        true
+        true,
+        "!-- OnCustomTrigger myTrigger"
     );
     
     public override Argument[] Arguments => [];

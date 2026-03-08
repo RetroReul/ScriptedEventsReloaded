@@ -13,8 +13,11 @@ public class OnEventFlag : Flag
     private Safe<string> _event;
     
     public override string Description =>
-        "Binds a script to an in-game event. When the event happens, the script will execute. " +
-        "Events can sometimes also carry information of their own, ";
+        """
+        Binds a script to an in-game event. 
+        When the event happens, the script will execute. 
+        Find events using 'serhelp events' command.
+        """;
 
     public override Argument? InlineArgument => new(
         "eventName",
@@ -37,7 +40,8 @@ public class OnEventFlag : Flag
 
             return true;
         },
-        true
+        true,
+        "!-- OnEvent RoundStarted"
     );
 
     public override Result OnScriptRunning(Script scr)

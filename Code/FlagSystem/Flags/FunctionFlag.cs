@@ -39,7 +39,8 @@ public class FunctionFlag : Flag
                 _expectedVarTokens.Add(token);
                 return true;
             },
-            true
+            true,
+            "-- argument $name"
         )
     ];
     

@@ -15,7 +15,8 @@ public abstract class Flag
         string Name, 
         string Description, 
         Func<string[], Result> Handler, 
-        bool IsRequired
+        bool IsRequired,
+        string Example
     ) {
         public Result AddArgument(string[] values) => Handler(values);
     }
