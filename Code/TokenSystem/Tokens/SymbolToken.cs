@@ -5,6 +5,7 @@ namespace SER.Code.TokenSystem.Tokens;
 public class SymbolToken : BaseToken
 {
     public bool IsJoker => RawRep == "*";
+    public bool IsFloor => RawRep == "_";
     
     protected override IParseResult InternalParse(Script scr)
     {
