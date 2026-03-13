@@ -36,6 +36,7 @@ public static class DocsProvider
 
     public static bool GetGeneralOutput(string arg, out string response)
     {
+        arg = arg.ToLower();
         if (Enum.TryParse(arg, true, out HelpOption option))
         {
             if (!GeneralOptions.TryGetValue(option, out var func))
@@ -125,7 +126,7 @@ public static class DocsProvider
                 """;
     }
 
-    private static string GetKeywordInfo(string name, string description, string[] arguments, bool isStatement, Type type)
+    public static string GetKeywordInfo(string name, string description, string[] arguments, bool isStatement, Type type)
     {
         var usageInfo = Activator.CreateInstance(type) is IStatementExtender extender
             ? $"""
@@ -177,7 +178,7 @@ public static class DocsProvider
             """;
     }
 
-    private static string GetKeywordHelpPage()
+    public static string GetKeywordHelpPage()
     {
         return
             """
@@ -198,7 +199,7 @@ public static class DocsProvider
                 .JoinStrings("\n");
     }
 
-    private static string GetFlagHelpPage()
+    public static string GetFlagHelpPage()
     {
         var flags = Flag.FlagInfos.Keys
             .Select(f => $"> {f}")
@@ -220,7 +221,7 @@ public static class DocsProvider
             """;
     }
 
-    private static string GetFlagInfo(string flagName)
+    public static string GetFlagInfo(string flagName)
     {
         var flag = Flag.FlagInfos[flagName].CreateInstance<Flag>();
         
@@ -268,7 +269,7 @@ public static class DocsProvider
              """;
     }
 
-    private static string GetEventInfo(EventInfo ev)
+    public static string GetEventInfo(EventInfo ev)
     {
         var variables = EventSystem.EventHandler.GetMimicVariables(ev);
         var msg = variables.Count > 0 
@@ -286,7 +287,7 @@ public static class DocsProvider
               """;
     }
     
-    private static string GetReferenceResolvingMethodsHelpPage()
+    public static string GetReferenceResolvingMethodsHelpPage()
     {
         var referenceResolvingMethods = MethodIndex.GetMethods()
             .Where(m => m is IReferenceResolvingMethod)
@@ -308,7 +309,7 @@ public static class DocsProvider
              """;
     }
 
-    private static string GetEventsHelpPage()
+    public static string GetEventsHelpPage()
     {
         var sb = new StringBuilder();
         
@@ -337,7 +338,7 @@ public static class DocsProvider
             """;
     }
     
-    private static string GetEnum(Type enumType)
+    public static string GetEnum(Type enumType)
     {
         return
             $"""
@@ -353,7 +354,7 @@ public static class DocsProvider
             """;
     }
 
-    private static string GetEnumHelpPage()
+    public static string GetEnumHelpPage()
     {
         return 
             $"""
@@ -386,7 +387,7 @@ public static class DocsProvider
         return methodsByCategory;
     }
 
-    private static string GetMethodList()
+    public static string GetMethodList()
     {
         const string retsSuffix = " [rets]";
 
@@ -418,7 +419,7 @@ public static class DocsProvider
         return sb.ToString();
     }
     
-    private static string GetVariableList()
+    public static string GetVariableList()
     {
         var allVars = VariableIndex.GlobalVariables
             .Where(var => var is PredefinedPlayerVariable)
@@ -441,7 +442,7 @@ public static class DocsProvider
         return sb.ToString();
     }
 
-    private static string GetMethodHelp(Method method)
+    public static string GetMethodHelp(Method method)
     {
         var sb = new StringBuilder($"=== {method.Name} ===\n");
 

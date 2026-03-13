@@ -42,9 +42,10 @@ public abstract class Flag
     
     public static Dictionary<string, Type> FlagInfos = [];
 
-    internal static void RegisterFlags()
+    public static void RegisterFlags(Assembly? ass = null)
     {
-        FlagInfos = GetRegisteredFlags(Assembly.GetExecutingAssembly());
+        ass ??= Assembly.GetExecutingAssembly();
+        FlagInfos = GetRegisteredFlags(ass);
     }
 
     // ReSharper disable once UnusedMember.Global

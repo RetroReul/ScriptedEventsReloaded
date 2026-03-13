@@ -14,7 +14,7 @@ public class HelpCommand : ICommand
     {
         if (arguments.Count > 0)
         {
-            return DocsProvider.GetGeneralOutput(arguments.First().ToLower(), out response);
+            return DocsProvider.GetGeneralOutput(arguments.First(), out response);
         }
 
         response = DocsProvider.GetOptionsList();

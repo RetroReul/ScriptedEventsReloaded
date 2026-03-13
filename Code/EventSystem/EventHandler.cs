@@ -23,7 +23,7 @@ public static class EventHandler
     private static readonly HashSet<string> DisabledEvents = [];
     public static List<EventInfo> AvailableEvents = [];
     
-    internal static void Initialize()
+    public static void Initialize()
     {
         AvailableEvents = typeof(PluginLoader).Assembly.GetTypes()
             .Where(t => t.FullName?.Equals($"LabApi.Events.Handlers.{t.Name}") is true)
