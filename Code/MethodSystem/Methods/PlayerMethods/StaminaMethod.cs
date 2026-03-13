@@ -9,7 +9,7 @@ namespace SER.Code.MethodSystem.Methods.PlayerMethods;
 [UsedImplicitly]
 public class StaminaMethod : SynchronousMethod
 {
-    public override string Description => "Control a player's stamina.";
+    public override string Description => "Control the stamina of players.";
 
     public override Argument[] ExpectedArguments =>
     [
@@ -44,11 +44,11 @@ public class StaminaMethod : SynchronousMethod
             {
                 case "add":
                     newStamina = plr.StaminaRemaining + staminaValue;
-                    if (newStamina > 1) newStamina = 1;
+                    if (newStamina > 1f) newStamina = 1f;
                     break;
                 case "remove":
                     newStamina = plr.StaminaRemaining - staminaValue;
-                    if (newStamina < 0) newStamina = 0;
+                    if (newStamina < 0f) newStamina = 0f;
                     break;
                 case "set":
                     newStamina = staminaValue;

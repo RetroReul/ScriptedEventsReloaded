@@ -12,7 +12,7 @@ namespace SER.Code.MethodSystem.Methods.ElevatorMethods;
 [UsedImplicitly]
 public class ElevatorInfoMethod : ReturningMethod, IReferenceResolvingMethod
 {
-    public override string? Description => IReferenceResolvingMethod.Desc.Get(this);
+    public override string Description => IReferenceResolvingMethod.Desc.Get(this);
     public override Argument[] ExpectedArguments => 
         [
             new ReferenceArgument<Elevator>("elevator"),
@@ -41,10 +41,13 @@ public class ElevatorInfoMethod : ReturningMethod, IReferenceResolvingMethod
             "alldoorslockedreason" => new StaticTextValue(elevator.AllDoorsLockedReason.ToString()),
             "anydoorlockedreason" => new StaticTextValue(elevator.AnyDoorLockedReason.ToString()),
             "isadminlocked" => new BoolValue(elevator.DynamicAdminLock),
-            _ => throw new ScriptRuntimeError(this, "out of range")
+            _ => throw new RetroReulFuckedUpException()
         };
     }
 
-    public override TypeOfValue Returns => new TypesOfValue([typeof(TextValue), typeof(BoolValue)]);
+    public override TypeOfValue Returns => new TypesOfValue([
+        typeof(TextValue),
+        typeof(BoolValue)
+    ]);
     public Type ResolvesReference => typeof(Elevator);
 }
