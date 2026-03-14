@@ -10,7 +10,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.ElevatorMethods;
 
 [UsedImplicitly]
-public class ElevatorInfoMethod : ReturningMethod, IReferenceResolvingMethod
+public class ElevatorInfoMethod : LiteralValueReturningMethod, IReferenceResolvingMethod
 {
     public override string Description => IReferenceResolvingMethod.Desc.Get(this);
     public override Argument[] ExpectedArguments => 
@@ -45,7 +45,7 @@ public class ElevatorInfoMethod : ReturningMethod, IReferenceResolvingMethod
         };
     }
 
-    public override TypeOfValue Returns => new TypesOfValue([
+    public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
         typeof(TextValue),
         typeof(BoolValue)
     ]);

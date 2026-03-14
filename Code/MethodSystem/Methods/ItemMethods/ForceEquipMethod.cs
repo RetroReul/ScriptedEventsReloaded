@@ -25,7 +25,9 @@ public class ForceEquipMethod : SynchronousMethod
         
         players.ForEach(plr =>
         {
-            var item = itemType != ItemType.None ? Item.Get(plr.Inventory.UserInventory.Items.FirstOrDefault(x => x.Value.ItemTypeId == itemType).Value) : null;
+            var item = itemType != ItemType.None 
+                ? Item.Get(plr.Inventory.UserInventory.Items.FirstOrDefault(x => x.Value.ItemTypeId == itemType).Value) 
+                : null;
             plr.CurrentItem = item;
         });
     }

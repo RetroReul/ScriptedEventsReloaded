@@ -11,7 +11,7 @@ using SER.Code.MethodSystem.Structures;
 namespace SER.Code.MethodSystem.Methods.EffectMethods;
 
 [UsedImplicitly]
-public class ClearEffectMethod : SynchronousMethod, IDependOnFramework, IAdditionalDescription
+public class ClearEffectMethod : SynchronousMethod, IDependOnFramework
 {
     public override string Description => "Removes the provided status effect from players.";
 
@@ -19,20 +19,19 @@ public class ClearEffectMethod : SynchronousMethod, IDependOnFramework, IAdditio
     [
         new PlayersArgument("players"),
         new EnumArgument<EffectType>("effect type")
-            { DefaultValue = new (EffectType.None, "Removes all status effects") },
+            { DefaultValue = new (null, "Removes all status effects") },
     ];
     
     public override void Execute()
     {
         var players = Args.GetPlayers("players");
-        var effectType = Args.GetEnum<EffectType>("effect type");
+        var effectType = Args.GetNullableEnum<EffectType>("effect type");
         
-        if (effectType == EffectType.None)
-            players.ForEach(plr => Player.Get(plr).DisableAllEffects());
+        if (effectType.HasValue)
+            players.ForEach(plr => Player.Get(plr).DisableEffect(effectType.Value));
         else
-            players.ForEach(plr => Player.Get(plr).DisableEffect(effectType));
+            players.ForEach(plr => Player.Get(plr).DisableAllEffects());
     }
 
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;
-    public string AdditionalDescription => $"Using the effect type {EffectType.None} will remove all status effects.";
 }
