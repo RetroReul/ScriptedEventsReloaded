@@ -72,7 +72,7 @@ public class SpawnRagdollMethod : SynchronousMethod, ICanError
         var rotation = new Quaternion(xRotation, yRotation, zRotation, wRotation);
         var size = new Vector3(xSize, ySize, zSize);
         
-        DamageHandlerBase? damageHandler = null;
+        DamageHandlerBase? damageHandler;
         
         switch (value)
         {
@@ -87,10 +87,9 @@ public class SpawnRagdollMethod : SynchronousMethod, ICanError
             case TextValue textValue:
                 damageHandler = new CustomReasonDamageHandler(textValue.StringRep);
                 break;
+            default:
+                throw new ScriptRuntimeError(this, ErrorReasons[0]);
         }
-        
-        if (damageHandler is null)
-            throw new ScriptRuntimeError(this, ErrorReasons[0]);
         
         Ragdoll.SpawnRagdoll(role, position, rotation, damageHandler, name, size);
     }
