@@ -102,7 +102,7 @@ public static class ScriptFlagHandler
     private static TryGet<Flag> HandleFlag(string name, string[] arguments, ScriptName scriptName)
     {
         _currentFlag?.OnParsingComplete();
-        Result rs = $"Flag '{name}' failed when parsing.";
+        var rs = $"Flag '{name}' failed when parsing.".AsError();
         
         if (Flag.TryGet(name, scriptName).HasErrored(out var getErr, out var flag))
         {
@@ -112,6 +112,11 @@ public static class ScriptFlagHandler
         if (flag.InlineArgument.HasValue && flag.InlineArgument.Value.AddArgument(arguments).HasErrored(out var error))
         {
             return rs + error;
+        }
+
+        if (ScriptsFlags.TryGetValue(scriptName, out var scriptFlags) && scriptFlags.Any(f => f.Name == flag.Name))
+        {
+            return rs + $"A '{flag.Name}' flag has been already registered once - one script cannot have two of the same flags.";
         }
         
         ScriptsFlags.AddOrInitListWithKey(scriptName, flag);
