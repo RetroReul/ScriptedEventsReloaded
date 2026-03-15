@@ -82,7 +82,7 @@ public class Database
                 return $"Value '{value}' cannot be stored in databases";
         }
         
-        _db[key] = new(value.GetType(), saveVal);
+        _db[key] = new(value is DynamicTextValue ? typeof(StaticTextValue) : value.GetType(), saveVal);
         if (save) Save();
         return true;
     }
