@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
