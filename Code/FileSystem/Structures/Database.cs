@@ -94,6 +94,7 @@ public class Database
     public void RemoveKey(string key, bool save = true)
     {
         _db.Remove(key);
+        if (save) Save();
     }
 
     public TryGet<DatabaseValue> HasKey(string key)
