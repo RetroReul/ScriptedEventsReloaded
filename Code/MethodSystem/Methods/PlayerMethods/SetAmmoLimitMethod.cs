@@ -31,6 +31,10 @@ public class SetAmmoLimitMethod : SynchronousMethod, IDependOnFramework
         var ammoType = Args.GetEnum<AmmoType>("ammo type");
         var limit = (ushort) Args.GetInt("limit");
         var labApiPlayers = Args.GetPlayers("players to set the limit to");
-        labApiPlayers.ForEach(plr => Player.Get(plr).SetAmmoLimit(ammoType, limit));
+
+        foreach (var plr in labApiPlayers)
+        {
+            Player.Get(plr).SetAmmoLimit(ammoType, limit);
+        }
     }
 }
