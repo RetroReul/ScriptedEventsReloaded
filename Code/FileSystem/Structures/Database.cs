@@ -9,9 +9,9 @@ namespace SER.Code.FileSystem.Structures;
 
 public class Database
 {
-    public readonly struct DatabaseValue(Type originalType, object value)
+    public readonly struct DatabaseValue(string type, object value)
     {
-        public string Type { get; } = originalType.AccurateName;
+        public string Type { get; } = type;
         public object Value { get; } = value;
     }
     
@@ -82,9 +82,18 @@ public class Database
                 return $"Value '{value}' cannot be stored in databases";
         }
         
-        _db[key] = new(value is DynamicTextValue ? typeof(StaticTextValue) : value.GetType(), saveVal);
+        _db[key] = new(
+            value is DynamicTextValue
+                ? typeof(StaticTextValue).AccurateName
+                : value.GetType().AccurateName, saveVal
+            );
         if (save) Save();
         return true;
+    }
+
+    public void RemoveKey(string key, bool save = true)
+    {
+        _db.Remove(key);
     }
 
     public TryGet<DatabaseValue> HasKey(string key)
