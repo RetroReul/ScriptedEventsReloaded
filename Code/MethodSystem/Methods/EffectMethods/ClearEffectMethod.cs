@@ -28,9 +28,11 @@ public class ClearEffectMethod : SynchronousMethod, IDependOnFramework
         var effectType = Args.GetNullableEnum<EffectType>("effect type");
         
         if (effectType.HasValue)
-            players.ForEach(plr => Player.Get(plr).DisableEffect(effectType.Value));
+            foreach (var plr in players)
+                Player.Get(plr).DisableEffect(effectType.Value);
         else
-            players.ForEach(plr => Player.Get(plr).DisableAllEffects());
+            foreach (var plr in players)
+                Player.Get(plr).DisableAllEffects();
     }
 
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;

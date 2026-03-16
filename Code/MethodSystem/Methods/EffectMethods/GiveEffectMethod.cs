@@ -13,7 +13,7 @@ namespace SER.Code.MethodSystem.Methods.EffectMethods;
 public class GiveEffectMethod : SynchronousMethod, IDependOnFramework
 {
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;
-    
+
     public override string Description => "Adds a provided effect to a player.";
 
     public override Argument[] ExpectedArguments =>
@@ -40,9 +40,11 @@ public class GiveEffectMethod : SynchronousMethod, IDependOnFramework
         var effectType = Args.GetEnum<EffectType>("effect type");
         var duration = (float)Args.GetDuration("duration").TotalSeconds;
         var intensity = (byte)Args.GetInt("intensity");
-        
-        players.ForEach(plr 
-            => Player.Get(plr).EnableEffect(effectType, intensity, duration)
-        );
+        var addDurationIfActive = Args.GetBool("add duration if active");
+
+        foreach (var plr in players)
+        {
+            Player.Get(plr).EnableEffect(effectType, intensity, duration, addDurationIfActive);
+        }
     }
 }
