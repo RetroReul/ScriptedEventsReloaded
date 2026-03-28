@@ -15,10 +15,10 @@ namespace SER.Code.ContextSystem;
 /// </summary>
 public static class Contexter
 {
-    public static TryGet<Context[]> ContextLines(Line[] lines, Script scr)
+    public static TryGet<RunnableContext[]> ContextLines(Line[] lines, Script scr)
     {
         Stack<StatementContext> statementStack = [];
-        List<Context> contexts = [];
+        List<RunnableContext> contexts = [];
         
         List<Result> errors = [];
         foreach (var line in lines)
@@ -47,10 +47,10 @@ public static class Contexter
     }
 
     private static Result TryAddResult(
-        Context context,
+        RunnableContext context,
         uint lineNum, 
         Stack<StatementContext> statementStack, 
-        List<Context> contexts
+        List<RunnableContext> contexts
     ) {
         Result rs = $"Invalid context {context}";
 
@@ -129,12 +129,12 @@ public static class Contexter
         return true;
     }
 
-    public static TryGet<Context?> ContextLine(BaseToken[] tokens, uint? lineNum, Script scr)
+    public static TryGet<RunnableContext?> ContextLine(BaseToken[] tokens, uint? lineNum, Script scr)
     {
         Result rs = $"Line {(lineNum.HasValue ? $"{lineNum.Value} " : "")}is invalid";
         
         var firstToken = tokens.FirstOrDefault();
-        if (firstToken is null) return null as Context;
+        if (firstToken is null) return null as RunnableContext;
         
         if (firstToken is not IContextableToken contextable)
         {
@@ -142,6 +142,7 @@ public static class Contexter
         }
 
         var context = contextable.GetContext(scr);
+        if (context is null) return context;
 
         foreach (var token in tokens.Skip(1))
         {
@@ -154,7 +155,7 @@ public static class Contexter
         return context;
     }
 
-    private static Result HandleCurrentContext(BaseToken token, Context context, out bool endLineContexting)
+    private static Result HandleCurrentContext(BaseToken token, RunnableContext context, out bool endLineContexting)
     {
         Result rs = $"Cannot add '{token.RawRep}' to {context}";
         Log.Debug($"Handling token {token} in context {context}");

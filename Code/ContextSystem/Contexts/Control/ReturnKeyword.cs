@@ -15,7 +15,7 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 public class ReturnKeyword : StandardContext, IKeywordContext
 {
     private IValueToken? _returnValueToken;
-    private (Context main, IMayReturnValueContext returner)? _returnContext = null; 
+    private (RunnableContext main, IMayReturnValueContext returner)? _returnContext = null; 
     
     public string KeywordName => "return";
     public string Description => "Returns value when in a function.";

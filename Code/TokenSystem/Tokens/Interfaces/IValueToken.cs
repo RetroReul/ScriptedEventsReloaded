@@ -11,7 +11,7 @@ public interface IValueToken
     public TryGet<Value> Value();
     
     /// <summary>
-    /// A signature of all possible return values. Null if return signature unknown.
+    /// A signature of all possible return values.
     /// </summary>
     public TypeOfValue PossibleValues { get; }
     

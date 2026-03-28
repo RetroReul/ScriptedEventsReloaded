@@ -70,6 +70,8 @@ public class CollectionValue(IEnumerable value) : Value
         ? throw new TosoksFuckedUpException(error)
         : val;
 
+    public override Dictionary<string, PropInfo> Properties => [];
+
     public TryGet<Value> GetAt(int index)
     {
         if (index < 1) return $"Provided index {index}, but index cannot be less than 1";

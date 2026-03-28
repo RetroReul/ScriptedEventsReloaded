@@ -16,7 +16,7 @@ public class KeywordToken : BaseToken, IContextableToken
             t.IsClass && 
             !t.IsAbstract && 
             typeof(IKeywordContext).IsAssignableFrom(t) &&
-            typeof(Context).IsAssignableFrom(t)
+            typeof(RunnableContext).IsAssignableFrom(t)
         )
         .ToArray();
     
@@ -38,8 +38,8 @@ public class KeywordToken : BaseToken, IContextableToken
             : new Ignore();
     }
 
-    public Context GetContext(Script scr)
+    public RunnableContext GetContext(Script scr)
     {
-        return Context.Create(_keywordType!, (scr, LineNum));
+        return RunnableContext.Create(_keywordType!, scr, LineNum);
     }
 }

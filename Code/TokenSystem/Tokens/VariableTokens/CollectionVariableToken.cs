@@ -10,7 +10,7 @@ public class CollectionVariableToken : VariableToken<CollectionVariable, Collect
 {
     public static string Example => "&collection";
 
-    public override Context GetContext(Script scr)
+    public override RunnableContext? GetContext(Script scr)
     {
         return new CollectionVariableDefinitionContext(this)
         {

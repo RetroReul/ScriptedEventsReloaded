@@ -43,6 +43,25 @@ public abstract class Value
             _                       => new ReferenceValue(obj),
         };
     }
+    
+    public abstract class PropInfo
+    {
+        public abstract Func<object, Value> Func { get; }
+        public abstract SingleTypeOfValue ReturnType { get; }
+        public abstract string? Description { get; }
+    }
+
+    public class PropInfo<T>(Func<object, T> handler, string? description) : PropInfo 
+        where T : Value
+    {
+        public override Func<object, Value> Func => handler;
+        public override SingleTypeOfValue ReturnType => new(typeof(T));
+        public override string? Description => description;
+    }
+    
+    public abstract Dictionary<string, PropInfo> Properties { get; }
+
+    public static Dictionary<string, PropInfo> GetPropertiesOfValue(Type t) => t.CreateInstance<Value>().Properties;
 
     public string FriendlyName => GetFriendlyName(GetType());
     

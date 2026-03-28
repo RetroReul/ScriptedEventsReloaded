@@ -18,4 +18,6 @@ public class BoolValue(bool value) : LiteralValue<bool>(value)
 
     [UsedImplicitly]
     public new static string FriendlyName = "boolean (true/false) value";
+
+    public override Dictionary<string, PropInfo> Properties => [];
 }

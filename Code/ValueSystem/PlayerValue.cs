@@ -30,4 +30,6 @@ public class PlayerValue : Value
 
     [UsedImplicitly]
     public new static string FriendlyName = "player value";
+    
+    public override Dictionary<string, PropInfo> Properties => [];
 }

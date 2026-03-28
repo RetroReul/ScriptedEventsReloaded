@@ -1,6 +1,6 @@
 ﻿namespace SER.Code.ContextSystem.BaseContexts;
 
-public abstract class StandardContext : Context
+public abstract class StandardContext : RunnableContext
 {
     public void Run()
     {

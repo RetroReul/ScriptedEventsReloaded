@@ -9,7 +9,7 @@ public class ScriptRuntimeError : SystemException
     {
     }
 
-    public ScriptRuntimeError(Context context, string error) : base($"{context} has errored: {error}")
+    public ScriptRuntimeError(RunnableContext context, string error) : base($"{context} has errored: {error}")
     {
     }
 
