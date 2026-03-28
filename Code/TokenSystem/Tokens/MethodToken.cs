@@ -32,7 +32,7 @@ public class MethodToken : BaseToken, IContextableToken
         return new Success();
     }
 
-    public Context GetContext(Script scr)
+    public RunnableContext GetContext(Script scr)
     {
         return new MethodContext(this)
         {

@@ -1,4 +1,6 @@
-﻿using SER.Code.Extensions;
+﻿using SER.Code.ContextSystem.BaseContexts;
+using SER.Code.ContextSystem.Contexts;
+using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Slices;
@@ -8,7 +10,7 @@ using SER.Code.ValueSystem;
 
 namespace SER.Code.TokenSystem.Tokens.ExpressionTokens;
 
-public abstract class ExpressionToken : BaseToken, IValueToken
+public class ExpressionToken : BaseToken, IValueToken
 {
     protected override IParseResult InternalParse(Script scr)
     {
@@ -29,7 +31,10 @@ public abstract class ExpressionToken : BaseToken, IValueToken
             return new Error($"Expression '{collection.Value}' is empty.");
         }
 
-        return InternalParse(tokens);
+        var ctx = new ValueExpressionContext(tokens[0], false, );
+        
+
+        return 
     }
 
     public static TryGet<ExpressionToken> TryParse(CollectionSlice slice, Script script)
@@ -46,8 +51,6 @@ public abstract class ExpressionToken : BaseToken, IValueToken
         
         return expToken;
     }
-
-    protected abstract IParseResult InternalParse(BaseToken[] tokens);
 
     public abstract TryGet<Value> Value();
     public abstract TypeOfValue PossibleValues { get; }

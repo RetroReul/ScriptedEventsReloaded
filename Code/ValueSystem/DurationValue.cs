@@ -51,4 +51,6 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value)
 
     [UsedImplicitly]
     public new static string FriendlyName = "duration value";
+
+    public override Dictionary<string, PropInfo> Properties => [];
 }

@@ -3,7 +3,7 @@ using SER.Code.Helpers;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
-public abstract class YieldingContext : Context
+public abstract class YieldingContext : RunnableContext
 {
     public IEnumerator<float> Run()
     {

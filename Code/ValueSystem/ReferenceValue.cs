@@ -24,6 +24,8 @@ public class ReferenceValue(object? value) : Value
     {
         return $"<{Value.GetType().AccurateName} reference | {Value.GetHashCode()}>";
     }
+    
+    public override Dictionary<string, PropInfo> Properties => [];
 }
 
 public class ReferenceValue<T>(T? value) : ReferenceValue(value)

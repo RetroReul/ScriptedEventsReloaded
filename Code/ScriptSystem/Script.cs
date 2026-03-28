@@ -26,7 +26,7 @@ namespace SER.Code.ScriptSystem;
 public class Script
 {
     private Line[] _lines = [];
-    private Context[] _contexts = [];
+    private RunnableContext[] _contexts = [];
     private bool? _isEventAllowed;
     
     public required ScriptName Name { get; init; }

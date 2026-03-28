@@ -7,7 +7,7 @@ namespace SER.Code.ContextSystem.Extensions;
 
 public static class BaseContextExtensions
 {
-    public static IEnumerator<float> ExecuteBaseContext(this Context context)
+    public static IEnumerator<float> ExecuteBaseContext(this RunnableContext context)
     {
         Log.Debug($"Executing context {context.FriendlyTypeName()}");
         switch (context)

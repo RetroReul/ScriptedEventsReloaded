@@ -66,6 +66,8 @@ public abstract class TextValue : LiteralValue<string>
             
         return value.StringRep;
     });
+    
+    public override Dictionary<string, PropInfo> Properties => [];
 }
 
 public class DynamicTextValue(string text, Script script) : TextValue(text, script)

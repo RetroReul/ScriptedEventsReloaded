@@ -6,7 +6,7 @@ namespace SER.Code.ContextSystem.BaseContexts;
 
 public abstract class StatementContext : YieldingContext
 {
-    public readonly List<Context> Children = [];
+    public readonly List<RunnableContext> Children = [];
     
     public void SendControlMessage(ParentContextControlMessage msg)
     {

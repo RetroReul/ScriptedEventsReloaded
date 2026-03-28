@@ -18,4 +18,6 @@ public class NumberValue(decimal value) : LiteralValue<decimal>(value)
     
     [UsedImplicitly]
     public new static string FriendlyName = "number value";
+    
+    public override Dictionary<string, PropInfo> Properties => [];
 }

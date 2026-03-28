@@ -1,5 +1,4 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Contexts;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Structures;
 
@@ -14,12 +13,5 @@ public class FlagToken : BaseToken, IContextableToken
             : new Ignore();
     }
 
-    public Context GetContext(Script scr)
-    {
-        return new NoOperationContext
-        {
-            Script = Script,
-            LineNum = LineNum,
-        };
-    }
+    public RunnableContext? GetContext(Script scr) => null;   
 }
