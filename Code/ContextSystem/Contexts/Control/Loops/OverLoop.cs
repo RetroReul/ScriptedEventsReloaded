@@ -41,11 +41,11 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
         over @all
             with @plr
             
-            Print "found player {@plr name}"
+            Print "found player {@plr -> name}"
         end
         
         # this also works for collections:
-        &inventory = {@sender inventory}
+        &inventory = @sender -> inventory
         over &inventory
             with *item
             
@@ -61,7 +61,7 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
         over @all
             with @plr $index
             
-            Print "found player #{$index}: {@plr name}"
+            Print "found player #{$index}: {@plr -> name}"
         end
         """;
     

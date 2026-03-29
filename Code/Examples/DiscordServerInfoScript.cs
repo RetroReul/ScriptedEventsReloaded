@@ -23,7 +23,7 @@ public class DiscordServerInfoScript : Example
                 with @plr
                 
                 # <br> creates a new line
-                $text = JoinText $text "<br>- {@plr name}"
+                $text = JoinText $text "<br>- {@plr -> name}"
             end
         
             *embed = DiscordEmbed "📡 {ServerInfo name} status 📡" $text

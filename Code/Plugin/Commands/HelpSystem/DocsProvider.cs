@@ -596,7 +596,7 @@ public static class DocsProvider
     public static string GetPlayerInfoAccessorsHelpPage()
     {
         StringBuilder sb = new();
-        var properties = PlayerExpressionToken.PropertyInfoMap;
+        var properties = PlayerValue.PropertyInfoMap;
         foreach (var (property, info) in properties.Select(kvp => (kvp.Key, kvp.Value)))
         {
             sb.Append($"{property.ToString().LowerFirst()} -> {info.ReturnType}");
@@ -609,7 +609,7 @@ public static class DocsProvider
             
             This syntax works as follows: {@plr property}
             > @plr: is a player variable with exactly 1 player stored in it
-            > property: is a property of the player we want to get information about (its a {{nameof(PlayerExpressionToken.PlayerProperty)}} enum)
+            > property: is a property of the player we want to get information about (its a {{nameof(PlayerValue.PlayerProperty)}} enum)
             
             Here is a list of all available properties and what they return:
             {{sb}}

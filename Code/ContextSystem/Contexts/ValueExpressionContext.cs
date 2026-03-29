@@ -45,6 +45,10 @@ public class ValueExpressionContext : AdditionalContext
             {
                 _handler = new MethodHandler(methodToken, allowsYielding, initial.Script);
             }
+            else if (initial is KeywordToken { RawRep: "run"} )
+            {
+                _handler = new FunctionCallHandler(initial.Script);
+            }
             else if (initial is not IValueToken valToken)
             {
                 _error = $"{initial} is not a valid way to get a value.";
@@ -103,7 +107,8 @@ public class ValueExpressionContext : AdditionalContext
     /// </summary>
     public IEnumerator<float> Run()
     {
-        var coro = _handler!.Run();
+        if (_handler is null) yield break;
+        var coro = _handler.Run();
         while (coro.MoveNext()) yield return coro.Current;
     }
     
@@ -192,10 +197,15 @@ public class ValuePropertyHandler(
             var prop = _propertyNames.Dequeue();
             if (!current.Properties.TryGetValue(prop, out var propInfo))
             {
-                return $"{value} does not have property '{prop}'.";
+                return $"{current} does not have property '{prop}'.";
             }
             
-            current = propInfo.Func(current);
+            if (propInfo.GetValue(current).HasErrored(out var fetchError, out var fetchedValue))
+            {
+                return fetchError;
+            }
+            
+            current = fetchedValue;
         }
         
         return current;
@@ -205,6 +215,7 @@ public class ValuePropertyHandler(
     {
         if (token is SymbolToken { IsArrow: true })
         {
+            _exprRepr += $" {token.RawRep}";
             return TryAddTokenRes.Continue();
         }
         
@@ -217,13 +228,14 @@ public class ValuePropertyHandler(
                 {
                     _exprRepr += $" {token.RawRep}";
                     _lastValueType = property.ReturnType;
-                    break;
+                    goto found;
                 }
             }
             
             return TryAddTokenRes.Error($"'{token.RawRep}' is not a valid property of '{_exprRepr}' value.");
         }
         
+        found:
         _propertyNames.Enqueue(token.RawRep);
         return TryAddTokenRes.Continue();
     }
@@ -278,4 +290,72 @@ public class NumericExpressionHandler(BaseToken initial, Script scr)
     {
         yield break;
     }
+}
+
+public class FunctionCallHandler(Script scr) : ValueExpressionContext.Handler
+{
+    private FuncStatement? _func;
+    private readonly List<IValueToken> _providedValues = [];
+
+    public override TryGet<Value> GetReturnValue()
+    {
+        if (_func!.ReturnedValue is { } value) return value;
+        return _func.MissingValueHint;
+    }
+
+    public override TryAddTokenRes TryAddToken(BaseToken token)
+    {
+        if (_func is null)
+        {
+            if (scr.DefinedFunctions.TryGetValue(token.RawRep, out var func))
+            {
+                _func = func;
+            }
+            else
+            {
+                return TryAddTokenRes.Error($"Function '{token.RawRep}' is not defined.");
+            }
+        }
+        
+        if (token is IValueToken valToken)
+        {
+            _providedValues.Add(valToken);
+            return TryAddTokenRes.Continue();
+        }
+
+        return TryAddTokenRes.Error($"Unexpected token '{token.RawRep}'");
+    }
+
+    public override Result VerifyCurrentState()
+    {
+        return Result.Assert(
+            _func is not null, 
+            "Function to run was not provided."
+        );
+    }
+
+    public override IEnumerator<float> Run()
+    {
+        List<Value> varsToProvide = []; 
+        foreach (var valToken in _providedValues)
+        {
+            if (valToken.Value().HasErrored(out var error, out var variable))
+            {
+                throw new ScriptRuntimeError(_func!, 
+                    $"Cannot run {_func!.FriendlyName}: {error}"
+                );
+            }
+            
+            varsToProvide.Add(variable);
+        }
+
+        var coro = _func!.RunProperly(varsToProvide.ToArray());
+        while (coro.MoveNext()) yield return coro.Current;
+    }
+
+    public override string FriendlyName => _func!.FriendlyName;
+
+    public override TypeOfValue PossibleValues =>
+        _func?.Returns 
+        ?? throw new AndrzejFuckedUpException("Function has no return type.");
 }

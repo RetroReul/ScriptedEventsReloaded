@@ -1,25 +1,10 @@
-﻿using SER.Code.TokenSystem.Tokens.ValueTokens;
-using SER.Code.TokenSystem.Tokens.VariableTokens;
+﻿using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Variables;
 
 namespace SER.Code.ContextSystem.Contexts.VariableDefinition;
 
-public class LiteralVariableDefinitionContext :
-    VariableDefinitionContext<VariableToken<LiteralVariable, LiteralValue>, LiteralValue, LiteralVariable>
-{
-    public LiteralVariableDefinitionContext(VariableToken<LiteralVariable, LiteralValue> varToken) : base(varToken)
-    {
-        AdditionalTokenParser = token =>
-        {
-            if (token is TextToken textToken)
-            {
-                return () => textToken.Value;
-            }
-
-            return null;
-        };
-    }
-}
+public class LiteralVariableDefinitionContext(VariableToken<LiteralVariable, LiteralValue> varToken) :
+    VariableDefinitionContext<VariableToken<LiteralVariable, LiteralValue>, LiteralValue, LiteralVariable>(varToken);
 
 

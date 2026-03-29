@@ -9,7 +9,7 @@ namespace SER.Code.MethodSystem.Methods.PlayerMethods;
 public class SetCustomInfoMethod : SynchronousMethod
 {
     public override string Description =>
-        "Sets custom info (overhead text) for specific players, visible to specific target players.";
+        "Sets custom info (overhead text) for specific players.";
 
     public override Argument[] ExpectedArguments { get; } =
     [

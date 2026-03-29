@@ -5,6 +5,9 @@ namespace SER.Code.ValueSystem;
 
 public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value)
 {
+    [UsedImplicitly]
+    public DurationValue() : this(TimeSpan.Zero) {}
+
     public static implicit operator DurationValue(TimeSpan value)
     {
         return new(value);

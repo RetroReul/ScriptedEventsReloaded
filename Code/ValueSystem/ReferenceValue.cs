@@ -4,8 +4,12 @@ using SER.Code.Extensions;
 
 namespace SER.Code.ValueSystem;
 
+[UsedImplicitly]
 public class ReferenceValue(object? value) : Value
 {
+    [UsedImplicitly]
+    public ReferenceValue() : this(null) {}
+
     public bool IsValid => value is not null;
     public object Value => value ?? throw new CustomScriptRuntimeError("Value of reference is invalid.");
 
@@ -28,8 +32,12 @@ public class ReferenceValue(object? value) : Value
     public override Dictionary<string, PropInfo> Properties => [];
 }
 
+[UsedImplicitly]
 public class ReferenceValue<T>(T? value) : ReferenceValue(value)
 {
+    [UsedImplicitly]
+    public ReferenceValue() : this(default) {}
+
     public new T Value => (T) base.Value;
 
     [UsedImplicitly]
