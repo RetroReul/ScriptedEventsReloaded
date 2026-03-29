@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
@@ -14,16 +15,16 @@ public class FilterPlayersMethod : ReturningMethod<PlayerValue>
     public override Argument[] ExpectedArguments { get; } =
     [
         new PlayersArgument("players to filter"),
-        new EnumArgument<PlayerExpressionToken.PlayerProperty>("player property"),
+        new EnumArgument<PlayerValue.PlayerProperty>("player property"),
         new AnyValueArgument("desired value")
     ];
     
     public override void Execute()
     {
         var playersToFilter = Args.GetPlayers("players to filter");
-        var playerProperty = Args.GetEnum<PlayerExpressionToken.PlayerProperty>("player property");
+        var playerProperty = Args.GetEnum<PlayerValue.PlayerProperty>("player property");
         var desiredValue = Args.GetAnyValue("desired value");
-        var handler = PlayerExpressionToken.PropertyInfoMap[playerProperty].Handler;
+        var handler = ((Value.PropInfo<Player>)PlayerValue.PropertyInfoMap[playerProperty]).Func;
 
         ReturnValue = new(playersToFilter.Where(p => handler(p) == desiredValue));
     }

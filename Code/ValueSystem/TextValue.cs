@@ -70,14 +70,22 @@ public abstract class TextValue : LiteralValue<string>
     public override Dictionary<string, PropInfo> Properties => [];
 }
 
+[UsedImplicitly]
 public class DynamicTextValue(string text, Script script) : TextValue(text, script)
 {
+    [UsedImplicitly]
+    public DynamicTextValue() : this(string.Empty, null!) {}
+
     [UsedImplicitly]
     public new static string FriendlyName = "dynamic text value";
 }
 
+[UsedImplicitly]
 public class StaticTextValue(string text) : TextValue(text, null)
 {
+    [UsedImplicitly]
+    public StaticTextValue() : this(string.Empty) {}
+
     public static implicit operator StaticTextValue(string text)
     {
         return new(text);

@@ -30,7 +30,7 @@ public class ChaosCoinScript : Example
         # 50% chance to lose the coin
         if {Chance 50%}
             Hint @evPlayer 3s "{$hintInfo}Your coin has turned into dust..."
-            AdvDestroyItem {@evPlayer heldItemRef}
+            AdvDestroyItem {@evPlayer -> heldItemRef}
         end
 
         # select a random effect of the coin, from 9 available
@@ -55,7 +55,7 @@ public class ChaosCoinScript : Example
 
         # rave 
         if $effect is 3
-            *room = {@evPlayer roomRef}
+            *room = @evPlayer -> roomRef
 
             # explode player if he isnt in a room
             if not {ValidRef *room}
@@ -93,7 +93,7 @@ public class ChaosCoinScript : Example
         # bomb 
         if $effect is 4
             SetPlayerData @evPlayer "coin locked" true
-            $initRole = {@evPlayer role}
+            $initRole = @evPlayer -> role
 
             Countdown @evPlayer 15s "{$baseText}<color=red>You have %seconds% seconds left to live!"
 
@@ -103,7 +103,7 @@ public class ChaosCoinScript : Example
 
                 # every second we are checking if the role of the player changed
                 # if so, we remove the countdown and unlock the coin
-                if {@evPlayer role} != $initRole
+                if {@evPlayer -> role} isnt $initRole
                     ClearCountdown @evPlayer
                     SetPlayerData @evPlayer "coin locked" false
                     stop
@@ -117,7 +117,7 @@ public class ChaosCoinScript : Example
 
         # bypass
         if $effect is 5
-            $initRole = {@evPlayer role}
+            $initRole = @evPlayer -> role
             SetPlayerData @evPlayer "coin locked" true
 
             Countdown @evPlayer 15s "{$baseText}You can now open any keycard locked thing! (for %seconds% seconds)"
@@ -126,7 +126,7 @@ public class ChaosCoinScript : Example
             repeat 15
                 Wait 1s
 
-                if {@evPlayer role} isnt $initRole
+                if {@evPlayer -> role} isnt $initRole
                     ClearCountdown @evPlayer
                     break
                 end
@@ -139,9 +139,10 @@ public class ChaosCoinScript : Example
 
         # role downgrade 
         if $effect is 6
-            if {@evPlayer role} isnt "ClassD"
+            $role = @evPlayer -> role
+            if $role isnt "ClassD"
                 SetRole @evPlayer ClassD None
-            elif {@evPlayer role} isnt "Scp0492"
+            elif $role isnt "Scp0492"
                 SetRole @evPlayer Scp0492
             else
                 SetRole @evPlayer Spectator
@@ -182,9 +183,9 @@ public class ChaosCoinScript : Example
 
             # gets a random player that is not @evPlayer
             @swapPlayer = LimitPlayers {RemovePlayers * @evPlayer} 1
-            $swapX = {@swapPlayer positionX}
-            $swapY = {@swapPlayer positionY}
-            $swapZ = {@swapPlayer positionZ}
+            $swapX = @swapPlayer -> positionX
+            $swapY = @swapPlayer -> positionY
+            $swapZ = @swapPlayer -> positionZ
 
             # we can teleport @swapPlayer directly to @evPlayer
             TPPlayer @swapPlayer @evPlayer 

@@ -3,6 +3,7 @@ using System.Reflection;
 using LabApi.Features.Wrappers;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 
 namespace SER.Code.ValueSystem;
@@ -46,16 +47,28 @@ public abstract class Value
     
     public abstract class PropInfo
     {
-        public abstract Func<object, Value> Func { get; }
+        public abstract TryGet<Value> GetValue(object obj);
         public abstract SingleTypeOfValue ReturnType { get; }
         public abstract string? Description { get; }
     }
-
-    public class PropInfo<T>(Func<object, T> handler, string? description) : PropInfo 
-        where T : Value
+    
+    public abstract class PropInfo<T> : PropInfo
     {
-        public override Func<object, Value> Func => handler;
-        public override SingleTypeOfValue ReturnType => new(typeof(T));
+        public abstract Func<T, Value> Func { get; }
+    }
+
+    public class PropInfo<TIn, TOut>(Func<TIn, TOut> handler, string? description) : PropInfo<TIn> 
+        where TOut : Value
+    {
+        public override Func<TIn, Value> Func => handler;
+        
+        public override TryGet<Value> GetValue(object obj)
+        {
+            if (obj is not TIn inObj) return $"Provided value is not of type {typeof(TIn).AccurateName}";
+            return handler(inObj);
+        }
+
+        public override SingleTypeOfValue ReturnType => new(typeof(TOut));
         public override string? Description => description;
     }
     

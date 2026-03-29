@@ -2,6 +2,7 @@
 using LabApi.Features.Enums;
 using MapGeneration;
 using SER.Code.FlagSystem.Flags;
+using SER.Code.ValueSystem;
 
 namespace SER.Code.Plugin.Commands.HelpSystem;
 
@@ -15,6 +16,6 @@ public static class HelpInfoStorage
         typeof(ItemType),
         typeof(ElevatorGroup),
         typeof(CustomCommandFlag.ConsoleType),
-        typeof(PlayerExpressionToken.PlayerProperty)
+        typeof(PlayerValue.PlayerProperty)
     ];
 }

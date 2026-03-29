@@ -14,7 +14,7 @@ public class PinataLootScript : Example
         end
         
         # Only trigger if the victim is SCP-173
-        if {@evPlayer role} isnt "Scp173"
+        if {@evPlayer -> role} isnt "Scp173"
             stop
         end
 

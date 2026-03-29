@@ -1,8 +1,10 @@
-﻿/*using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
+using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.ValueSystem;
@@ -16,7 +18,11 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
     
     public Type ResolvesReference => typeof(Item);
 
-    public override TypeOfValue Returns => ReferenceVariableExpressionToken.GetTypesOfValue(ResolvesReference);
+    public override TypeOfValue Returns => new TypesOfValue(
+        typeof(TextValue), 
+        typeof(BoolValue), 
+        typeof(PlayerValue)
+    );
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -32,10 +38,13 @@ public class ItemInfoMethod : ReturningMethod, IReferenceResolvingMethod
     public override void Execute()
     {
         var item = Args.GetReference<Item>("reference");
-        ReturnValue = ReferenceVariableExpressionToken
-            .PropertyInfoMap
-            [typeof(Item)]
-            [Args.GetOption("property")]
-            .Handler(item);
+        ReturnValue = Args.GetOption("property") switch
+        {
+            "type" => item.Type.ToString().ToStaticTextValue(),
+            "category" => item.Category.ToString().ToStaticTextValue(),
+            "owner" => new PlayerValue(item.CurrentOwner),
+            "isEquipped" => new BoolValue(item.IsEquipped),
+            _ => throw new AndrzejFuckedUpException()
+        };
     }
-}*/
+}

@@ -75,7 +75,11 @@ public class ExpressionToken : BaseToken, IValueToken
         return expToken;
     }
 
-    public TryGet<Value> Value() => _context?.GetValue() ?? throw new AndrzejFuckedUpException();
-    public TypeOfValue PossibleValues => _context?.PossibleValues ?? throw new AndrzejFuckedUpException();
+    public TryGet<Value> Value()
+    {
+        _context!.Run().MoveNext();
+        return _context.GetValue();
+    }
+    public TypeOfValue PossibleValues => _context!.PossibleValues;
     public bool IsConstant => false;
 }

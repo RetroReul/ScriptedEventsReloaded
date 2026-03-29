@@ -4,6 +4,9 @@ namespace SER.Code.ValueSystem;
 
 public class BoolValue(bool value) : LiteralValue<bool>(value)
 {
+    [UsedImplicitly]
+    public BoolValue() : this(false) {}
+
     public static implicit operator BoolValue(bool value)
     {
         return new(value);

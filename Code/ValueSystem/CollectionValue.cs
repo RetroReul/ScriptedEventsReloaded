@@ -8,6 +8,9 @@ namespace SER.Code.ValueSystem;
 
 public class CollectionValue(IEnumerable value) : Value
 {
+    [UsedImplicitly]
+    public CollectionValue() : this(Array.Empty<object>()) {}
+
     public Value[] CastedValues
     {
         get

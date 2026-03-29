@@ -30,13 +30,13 @@ public class GnomingTimeScript : Example
         @plr = @evAttacker
 
         # lower size by .1 when killing someone
-        SetSize @plr ({@plr sizeX} - .1) ({@plr sizeY} - .1) ({@plr sizeZ} - .1)
+        SetSize @plr {{@plr -> sizeX} - .1} {{@plr -> sizeY} - .1} {{@plr -> sizeZ} - .1}
         Hint @plr 5s "KILLED PLAYER - IT'S GNOMING TIME!"
 
         Wait 15s
 
         # return them to normal
-        SetSize @plr ({@plr sizeX} + .1) ({@plr sizeY} + .1) ({@plr sizeZ} + .1)
+        SetSize @plr ({@plr -> sizeX} + .1) ({@plr -> sizeY} + .1) ({@plr -> sizeZ} + .1)
         Hint @plr 5s "Gnoming potential depleted :("
         """;
 }

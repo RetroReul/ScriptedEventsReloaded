@@ -28,7 +28,7 @@ public class HotPotatoScript : Example
             Wait 3s
 
             # Check if they still have the item (GunA7) in their inventory
-            over {@potatoCarrier inventory}
+            over {@potatoCarrier -> inventory}
                 with *item
 
                 if {ItemInfo *item type} isnt "GunA7"
@@ -37,7 +37,7 @@ public class HotPotatoScript : Example
 
                 AdvDestroyItem *item
                 Explode @potatoCarrier
-                Broadcast @all 5s "{@potatoCarrier name} failed the Hot Potato!"
+                Broadcast @all 5s "{@potatoCarrier -> name} failed the Hot Potato!"
                 stop
             end
                 

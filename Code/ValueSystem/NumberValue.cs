@@ -4,6 +4,9 @@ namespace SER.Code.ValueSystem;
 
 public class NumberValue(decimal value) : LiteralValue<decimal>(value)
 {
+    [UsedImplicitly]
+    public NumberValue() : this(0m) {}
+
     public static implicit operator NumberValue(decimal value)
     {
         return new(value);

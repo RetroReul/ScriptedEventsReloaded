@@ -17,7 +17,7 @@ public class RaveScript : Example
         
         # the values for the rave
         $duration = .5s
-        *room = {@sender roomRef}
+        *room = @sender -> roomRef
         
         # verify that the player is in a room
         if not {ValidRef *room}

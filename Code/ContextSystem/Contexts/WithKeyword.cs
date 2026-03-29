@@ -27,20 +27,20 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
         over @all
             with @plr
 
-            Print {@plr name}
+            Print {@plr -> name}
         end
 
         # WRONG - "with" keyword does not add indentation
         over @all
             with @plr
-                Print {@plr name}
+                Print {@plr -> name}
         end
 
         # WRONG - with keyword is not a statement that can be closed
         # this causes an error
         # over @all
         #     with @plr
-        #         Print {@plr name}
+        #         Print {@plr -> name}
         #     end
         # end
         """;
