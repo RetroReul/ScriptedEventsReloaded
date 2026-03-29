@@ -1,11 +1,13 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
+using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.TokenSystem.Tokens.ValueTokens;
 using SER.Code.ValueSystem;
+using ZstdSharp.Unsafe;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
@@ -32,10 +34,10 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
             
             return DynamicTryGet.Error("Value cannot represent text.");
         }
-
+        
         if (valToken.IsConstant)
         {
-            return SpaceCheck(get().OnSuccess(v => v.StringRep));
+            return get().OnSuccess(v => SpaceCheck(v.StringRep));
         }
 
         return new(() => get().OnSuccess(v => SpaceCheck(v.StringRep)));
@@ -44,7 +46,7 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
         {
             if (!allowsSpaces && value.Any(char.IsWhiteSpace))
             {
-                return $"Value contains spaces, which are not allowed".AsError();
+                return "Value contains spaces, which are not allowed".AsError();
             }
             
             return value.AsSuccess();
