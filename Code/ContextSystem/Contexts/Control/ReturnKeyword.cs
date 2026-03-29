@@ -22,7 +22,7 @@ public class ReturnKeyword : StandardContext, IKeywordContext
     public string[] Arguments => ["[return value]"];
     public string? Example => null;
 
-    protected override string FriendlyName => "'return' keyword";
+    public override string FriendlyName => "'return' keyword";
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

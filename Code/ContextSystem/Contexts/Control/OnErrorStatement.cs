@@ -45,7 +45,7 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
         """;
 
     public IExtendableStatement.Signal Extends => IExtendableStatement.Signal.ThrewException;
-    protected override string FriendlyName => "'on_error' statement";
+    public override string FriendlyName => "'on_error' statement";
 
     public Exception? Exception
     {

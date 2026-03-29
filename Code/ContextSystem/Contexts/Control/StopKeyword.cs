@@ -19,7 +19,7 @@ public class StopKeyword : StandardContext, IKeywordContext
     
     public string? Example => null;
 
-    protected override string FriendlyName => "'stop' keyword";
+    public override string FriendlyName => "'stop' keyword";
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

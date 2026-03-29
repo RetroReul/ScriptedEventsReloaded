@@ -9,7 +9,7 @@ public abstract class Context
 {
     public required Script Script { get; set; } = null!;
 
-    protected abstract string FriendlyName { get; }
+    public abstract string FriendlyName { get; }
 
     public abstract TryAddTokenRes TryAddToken(BaseToken token);
 

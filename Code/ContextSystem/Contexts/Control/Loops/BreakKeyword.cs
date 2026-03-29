@@ -33,7 +33,7 @@ public class BreakKeyword : StandardContext, IKeywordContext
         end
         """;
 
-    protected override string FriendlyName => "'break' keyword";
+    public override string FriendlyName => "'break' keyword";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

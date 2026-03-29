@@ -14,7 +14,7 @@ namespace SER.Code.ContextSystem.Contexts;
 [UsedImplicitly]
 public class GlobalKeyword : YieldingContext, IKeywordContext
 {
-    protected override string FriendlyName =>
+    public override string FriendlyName =>
         $"global{(_variableToken is null ? "" : $" '{_variableToken.RawRep}'")} variable definition";
 
     public string KeywordName => "global";

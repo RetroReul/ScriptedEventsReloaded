@@ -26,7 +26,7 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
     protected bool ReceivedContinue;
     protected bool ReceivedBreak;
 
-    protected sealed override string FriendlyName => $"'{KeywordName}' loop statement";
+    public sealed override string FriendlyName => $"'{KeywordName}' loop statement";
 
     protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
     {

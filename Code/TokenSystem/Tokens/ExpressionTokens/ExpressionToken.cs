@@ -1,5 +1,5 @@
-﻿using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Contexts;
+﻿using SER.Code.ContextSystem.Contexts;
+using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
@@ -12,6 +12,8 @@ namespace SER.Code.TokenSystem.Tokens.ExpressionTokens;
 
 public class ExpressionToken : BaseToken, IValueToken
 {
+    private ValueExpressionContext? _context;
+    
     protected override IParseResult InternalParse(Script scr)
     {
         if (Slice is not CollectionSlice { Type: CollectionBrackets.Curly } collection)
@@ -31,10 +33,31 @@ public class ExpressionToken : BaseToken, IValueToken
             return new Error($"Expression '{collection.Value}' is empty.");
         }
 
-        var ctx = new ValueExpressionContext(tokens[0], false, );
-        
+        _context = new ValueExpressionContext(tokens[0], false)
+        {
+            Script = scr
+        };
 
-        return 
+        foreach (var token in tokens.Skip(1))
+        {
+            var res = _context.TryAddToken(token);
+            if (res.ShouldContinueExecution)
+            {
+                continue;
+            }
+            
+            if (res.HasErrored)
+            {
+                return new Error(res.ErrorMessage);
+            }
+        }
+        
+        if (_context.VerifyCurrentState().HasErrored(out var error2))
+        {
+            return new Error(error2);
+        }
+
+        return new Success();
     }
 
     public static TryGet<ExpressionToken> TryParse(CollectionSlice slice, Script script)
@@ -52,7 +75,7 @@ public class ExpressionToken : BaseToken, IValueToken
         return expToken;
     }
 
-    public abstract TryGet<Value> Value();
-    public abstract TypeOfValue PossibleValues { get; }
+    public TryGet<Value> Value() => _context?.GetValue() ?? throw new AndrzejFuckedUpException();
+    public TypeOfValue PossibleValues => _context?.PossibleValues ?? throw new AndrzejFuckedUpException();
     public bool IsConstant => false;
 }

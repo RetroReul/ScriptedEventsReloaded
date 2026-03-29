@@ -18,34 +18,40 @@ namespace SER.Code.ContextSystem.Contexts;
 /// </summary>
 public class ValueExpressionContext : AdditionalContext
 {
-    private readonly BaseToken _initial;
-
     public abstract class Handler
     {
         public abstract TryGet<Value> GetReturnValue();
         public abstract TryAddTokenRes TryAddToken(BaseToken token);
         public abstract Result VerifyCurrentState();
         public abstract IEnumerator<float> Run();
+        public abstract string FriendlyName { get; }
+        public abstract TypeOfValue PossibleValues { get; }
     }
 
+    private readonly BaseToken _initial;
+    private readonly IValueToken? _initialValueToken;
     private readonly string? _error;
     private Handler? _handler;
     
     /// <summary>
     /// Used to unify method calls, math expressions and property access into a single context that returns a value.
     /// </summary>
-    public ValueExpressionContext(BaseToken initial, bool allowsYielding, RunnableContext parent)
+    public ValueExpressionContext(BaseToken initial, bool allowsYielding)
     {
         _initial = initial;
         try
         {
             if (initial is MethodToken methodToken)
             {
-                _handler = new MethodHandler(methodToken, allowsYielding, parent);
+                _handler = new MethodHandler(methodToken, allowsYielding, initial.Script);
             }
-            else if (initial is not IValueToken)
+            else if (initial is not IValueToken valToken)
             {
                 _error = $"{initial} is not a valid way to get a value.";
+            }
+            else
+            {
+                _initialValueToken = valToken;
             }
         }
         catch (Exception e)
@@ -54,45 +60,70 @@ public class ValueExpressionContext : AdditionalContext
         }
     }
 
-    protected override string FriendlyName => "value expression";
+    public override string FriendlyName => _handler?.FriendlyName ?? "value expression";
+    
+    public TypeOfValue PossibleValues => _handler?.PossibleValues ?? new UnknownTypeOfValue();
     
     public override TryAddTokenRes TryAddToken(BaseToken token) 
     {
-        if (_error is not null) return TryAddTokenRes.Error(_error);
-
-        _handler ??= token switch
+        if (_error is not null)
         {
-            SymbolToken => new GenericValueExpressionResolver(_initial, Script),
-            // we assume that an unknown token means property access, but thats kinda sloppy
-            _ => new ValuePropertyHandler(_initial, (IValueToken)_initial)
+            return TryAddTokenRes.Error(_error);
+        }
+
+        if (_handler is not null)
+        {
+            goto try_add_token;
+        }
+
+        if (token is not SymbolToken symbol)
+        {
+            return TryAddTokenRes.Error($"{token} is not a valid way to get a value with {_initial}");
+        }
+            
+        _handler = symbol switch
+        {
+            { IsArrow: false } => new NumericExpressionHandler(_initial, Script),
+            { IsArrow: true } => new ValuePropertyHandler(_initial, (IValueToken)_initial)
         };
-        
+
+        try_add_token:
         return _handler.TryAddToken(token);
     }
 
     public override Result VerifyCurrentState()
     {
         if (_error is not null) return _error;
-        if (_handler is null) return $"{_initial} is not a valid way to get a value.";
+        if (_handler is null) return true;
         return _handler.VerifyCurrentState();
     }
 
+    /// <summary>
+    /// If the context is not yielding, disregard the return value.
+    /// </summary>
     public IEnumerator<float> Run()
     {
         var coro = _handler!.Run();
         while (coro.MoveNext()) yield return coro.Current;
     }
+    
+    public TryGet<Value> GetValue() => 
+        _handler?.GetReturnValue() 
+        ?? _initialValueToken?.Value() 
+        ?? throw new AndrzejFuckedUpException();
 }
 
 public class MethodHandler : ValueExpressionContext.Handler
 {
-    private readonly RunnableContext _parent;
     private readonly MethodContext _context;
 
-    public MethodHandler(MethodToken token, bool allowsYielding, RunnableContext parent)
+    public MethodHandler(MethodToken token, bool allowsYielding, Script scr)
     {
-        _parent = parent;
-        _context = (MethodContext)token.GetContext(token.Script);
+        _context = new MethodContext(token)
+        {
+            Script = scr,
+            LineNum = null
+        };
         var method = token.Method;
         
         if (method is not IReturningMethod) 
@@ -104,8 +135,17 @@ public class MethodHandler : ValueExpressionContext.Handler
                 $"Consider making a variable and using that variable instead.");
     }
 
-    public override TryGet<Value> GetReturnValue() => _context.ReturnedValue 
-                                                      ?? throw new ScriptRuntimeError(_parent, _context.MissingValueHint);
+    public override string FriendlyName => _context.FriendlyName;
+    
+    public override TypeOfValue PossibleValues =>
+        _context.Returns 
+        ?? throw new AndrzejFuckedUpException("Method has no return type.");
+
+    public override TryGet<Value> GetReturnValue()
+    {
+        if (_context.ReturnedValue is { } value) return value;
+        return _context.MissingValueHint;
+    }
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
@@ -132,14 +172,17 @@ public class ValuePropertyHandler(
     IValueToken valueToken) : ValueExpressionContext.Handler
 {
     private readonly Queue<string> _propertyNames = [];
-    private string _valueRepresentation = baseToken.RawRep;
+    private string _exprRepr = baseToken.RawRep;
     private TypeOfValue _lastValueType = valueToken.PossibleValues;
+
+    public override string FriendlyName => "property access";
+    public override TypeOfValue PossibleValues => _lastValueType;
 
     public override TryGet<Value> GetReturnValue()
     {
         if (valueToken.Value().HasErrored(out var error, out var value))
         {
-            return $"Failed to get value from '{_valueRepresentation}'".AsError()
+            return $"Failed to get value from '{_exprRepr}'".AsError()
                    + error.AsError();
         }
 
@@ -160,6 +203,11 @@ public class ValuePropertyHandler(
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
+        if (token is SymbolToken { IsArrow: true })
+        {
+            return TryAddTokenRes.Continue();
+        }
+        
         // type verification
         if (_lastValueType.AreKnown(out var types))
         {
@@ -167,20 +215,23 @@ public class ValuePropertyHandler(
             {
                 if (Value.GetPropertiesOfValue(type).TryGetValue(token.RawRep, out var property))
                 {
-                    _valueRepresentation += $" {token.RawRep}";
+                    _exprRepr += $" {token.RawRep}";
                     _lastValueType = property.ReturnType;
                     break;
                 }
             }
             
-            return TryAddTokenRes.Error($"'{token.RawRep}' is not a valid property of '{_valueRepresentation}' value.");
+            return TryAddTokenRes.Error($"'{token.RawRep}' is not a valid property of '{_exprRepr}' value.");
         }
         
         _propertyNames.Enqueue(token.RawRep);
         return TryAddTokenRes.Continue();
     }
 
-    public override Result VerifyCurrentState() => true;
+    public override Result VerifyCurrentState() => Result.Assert(
+        _propertyNames.Count > 0, 
+        $"The '{SymbolToken.Arrow}' operator was used, but no property to be accessed was specified."
+    );
 
     public override IEnumerator<float> Run()
     {
@@ -191,12 +242,16 @@ public class ValuePropertyHandler(
 /// <summary>
 /// Used for math expressions.
 /// </summary>
-public class GenericValueExpressionResolver(BaseToken initial, Script scr)
+public class NumericExpressionHandler(BaseToken initial, Script scr)
     : ValueExpressionContext.Handler
 {
     private readonly List<BaseToken> _tokens = [initial];
     private Safe<NumericExpressionReslover.CompiledExpression> _expression;
-    
+
+    public override string FriendlyName => $"numeric expression";
+
+    public override TypeOfValue PossibleValues => new UnknownTypeOfValue();
+
     public override TryGet<Value> GetReturnValue()
     {
         return _expression.Value.Evaluate().OnSuccess(obj => Value.Parse(obj, scr));

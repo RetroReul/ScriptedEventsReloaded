@@ -34,10 +34,7 @@ public static class Tokenizer
     
     public static readonly Type[] OrderedImportanceTokensFromCollectionSlices =
     [
-        typeof(ReferenceVariableExpressionToken),
-        typeof(PlayerExpressionToken),
-        typeof(MethodExpressionToken),
-        typeof(LiteralVariableExpressionToken),
+        typeof(ExpressionToken),
         typeof(ParenthesesToken),
         typeof(TextToken)
     ];
