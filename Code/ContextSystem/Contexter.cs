@@ -61,7 +61,7 @@ public static class Contexter
             case EndKeyword:
             {
                 if (statementStack.Count == 0) 
-                    return rs + "There is no statement to close with the 'end' keyword!";
+                    return rs + "There is no valid statement to close with the 'end' keyword! Check if the statement you are trying to close hasn't thrown an error when compiling.".AsError();
 
                 statementStack.Pop();
                 return true;
