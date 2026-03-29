@@ -21,7 +21,7 @@ public class ElseStatement : StatementContext, IStatementExtender, IKeywordConte
 
     public IExtendableStatement.Signal Extends => IExtendableStatement.Signal.DidntExecute;
 
-    protected override string FriendlyName => "'else' statement";
+    public override string FriendlyName => "'else' statement";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

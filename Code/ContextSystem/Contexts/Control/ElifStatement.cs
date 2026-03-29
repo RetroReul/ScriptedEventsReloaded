@@ -31,7 +31,7 @@ public class ElifStatement : StatementContext, IStatementExtender, IExtendableSt
     
     private NumericExpressionReslover.CompiledExpression _expression;
 
-    protected override string FriendlyName => "'elif' statement";
+    public override string FriendlyName => "'elif' statement";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

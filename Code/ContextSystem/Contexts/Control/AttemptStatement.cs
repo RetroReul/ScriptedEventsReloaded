@@ -28,7 +28,7 @@ public class AttemptStatement : StatementContext, IExtendableStatement, IKeyword
 
     public IExtendableStatement.Signal AllowedSignals => IExtendableStatement.Signal.ThrewException;
     public Dictionary<IExtendableStatement.Signal, StatementContext> RegisteredSignals { get; } = [];
-    protected override string FriendlyName => "'attempt' statement";
+    public override string FriendlyName => "'attempt' statement";
 
     private Exception? _exception;
     

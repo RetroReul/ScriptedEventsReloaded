@@ -19,7 +19,7 @@ public class ContinueKeyword : StandardContext, IKeywordContext
     
     public string? Example => null;
 
-    protected override string FriendlyName => "'continue' keyword";
+    public override string FriendlyName => "'continue' keyword";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

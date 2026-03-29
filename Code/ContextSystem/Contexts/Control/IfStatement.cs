@@ -27,7 +27,7 @@ public class IfStatement : StatementContext, IExtendableStatement, IKeywordConte
     
     private NumericExpressionReslover.CompiledExpression _expression;
 
-    protected override string FriendlyName => "'if' statement";
+    public override string FriendlyName => "'if' statement";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

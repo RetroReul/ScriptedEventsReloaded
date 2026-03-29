@@ -51,7 +51,7 @@ public class FuncStatement :
     public string MissingValueHint => "Maybe you forgot to use the 'return' keyword?";
     public string UndefinedReturnsHint => "Maybe you forgot to define the return type in the function name?";
 
-    protected override string FriendlyName =>
+    public override string FriendlyName =>
         FunctionName is not null
             ? $"'{FunctionName}' function definition statement"
             : "function definition statement";

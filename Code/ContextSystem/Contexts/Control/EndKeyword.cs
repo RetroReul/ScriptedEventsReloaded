@@ -11,7 +11,7 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 public class EndKeyword : StandardContext, IKeywordContext
 {
     public string KeywordName => "end";
-    protected override string FriendlyName => "'end' keyword";
+    public override string FriendlyName => "'end' keyword";
     public string Description => "Ends the current statement's body.";
     public string[] Arguments => [];
     public string? Example => null;

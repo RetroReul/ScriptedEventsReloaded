@@ -56,7 +56,7 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
         return true;
     }
 
-    protected override string FriendlyName => "'with' keyword";
+    public override string FriendlyName => "'with' keyword";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

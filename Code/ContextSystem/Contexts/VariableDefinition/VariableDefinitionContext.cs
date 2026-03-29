@@ -36,7 +36,7 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
     private (RunnableContext main, IMayReturnValueContext returner)? _returnContext = null; 
     private Func<TValue>? _parser = null;
 
-    protected override string FriendlyName => $"'{varToken.RawRep}' variable definition";
+    public override string FriendlyName => $"'{varToken.RawRep}' variable definition";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

@@ -22,7 +22,7 @@ public class RunKeyword : YieldingContext, IMayReturnValueContext
     public string MissingValueHint => _functionDefinitionContext?.MissingValueHint ?? "Function is not defined.";
     public string UndefinedReturnsHint => _functionDefinitionContext?.UndefinedReturnsHint ?? "Function is not defined.";
 
-    protected override string FriendlyName =>
+    public override string FriendlyName =>
         _functionDefinitionContext is not null
             ? $"'{_functionDefinitionContext.FunctionName}' function call"
             : "function call";

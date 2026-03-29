@@ -4,8 +4,13 @@ namespace SER.Code.TokenSystem.Tokens;
 
 public class SymbolToken : BaseToken
 {
-    public bool IsJoker => RawRep == "*";
-    public bool IsFloor => RawRep == "_";
+    public const string Joker = "*";
+    public const string Floor = "_";
+    public const string Arrow = "->";
+    
+    public bool IsJoker => RawRep == Joker;
+    public bool IsFloor => RawRep == Floor;
+    public bool IsArrow => RawRep == Arrow;
     
     protected override IParseResult InternalParse(Script scr)
     {
