@@ -176,7 +176,7 @@ public class ValuePropertyHandler(
     BaseToken baseToken, 
     IValueToken valueToken) : ValueExpressionContext.Handler
 {
-    private readonly Queue<string> _propertyNames = [];
+    private readonly List<string> _propertyNames = [];
     private string _exprRepr = baseToken.RawRep;
     private TypeOfValue _lastValueType = valueToken.PossibleValues;
 
@@ -192,9 +192,8 @@ public class ValuePropertyHandler(
         }
 
         Value current = value;
-        while (_propertyNames.Count > 0)
+        foreach (var prop in _propertyNames)
         {
-            var prop = _propertyNames.Dequeue();
             if (!current.Properties.TryGetValue(prop, out var propInfo))
             {
                 return $"{current} does not have property '{prop}'.";
@@ -236,7 +235,7 @@ public class ValuePropertyHandler(
         }
         
         found:
-        _propertyNames.Enqueue(token.RawRep);
+        _propertyNames.Add(token.RawRep);
         return TryAddTokenRes.Continue();
     }
 
