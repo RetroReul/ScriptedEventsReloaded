@@ -28,7 +28,6 @@ public static class FileSystem
             .Where(path => Path.GetFileName(path).FirstOrDefault() != '#')
             .ToArray();
         
-        //Log.Signal(RegisteredScriptPaths.JoinStrings(" "));
         
         var duplicates = RegisteredScriptPaths
             .Select(Path.GetFileNameWithoutExtension)
