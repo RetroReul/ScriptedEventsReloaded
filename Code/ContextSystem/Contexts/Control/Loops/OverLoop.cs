@@ -49,7 +49,7 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
         over &inventory
             with *item
             
-            Print "found item {ItemInfo *item type}"
+            Print "found item {*item -> type}"
         end
         # its important to remember that the variable type in "with" keyword 
         #  MUST match the value type inside the collection,

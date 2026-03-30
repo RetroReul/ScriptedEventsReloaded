@@ -5,11 +5,17 @@ using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.MethodSystem.Structures;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.MethodSystem;
 
 public static class MethodIndex
 {
+    static MethodIndex()
+    {
+        ReferencePropertyRegistry.Initialize();
+    }
+
     public static readonly Dictionary<string, Method> NameToMethodIndex = [];
     public static readonly Dictionary<FrameworkBridge.Type, List<Method>> FrameworkDependentMethods = [];
     

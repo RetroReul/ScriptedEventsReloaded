@@ -5,6 +5,7 @@ using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
 using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 
@@ -36,7 +37,7 @@ public class IntercomInfoMethod : ReturningMethod
     {
         ReturnValue = (Args.GetOption("mode")) switch
         {
-            "state" => new StaticTextValue(Intercom.State.ToString()),
+            "state" => Intercom.State.ToEnumValue(),
             "speaker" => new PlayerValue(Player.ReadyList.ToList().Where(plr => plr.ReferenceHub == Intercom._singleton._curSpeaker)),
             "cooldown" => new DurationValue(TimeSpan.FromSeconds(Intercom.State == IntercomState.Cooldown ? Intercom._singleton.RemainingTime : 0)),
             "speechtimeleft" => new DurationValue(TimeSpan.FromSeconds(Intercom.State == IntercomState.InUse ? Intercom._singleton.RemainingTime : 0)),

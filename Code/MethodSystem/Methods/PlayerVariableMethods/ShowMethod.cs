@@ -7,6 +7,7 @@ using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
@@ -36,7 +37,7 @@ public class ShowMethod : ReturningMethod<TextValue>, ICanError
         var property = Args.GetEnum<PlayerValue.PlayerProperty>("property");
 
         if (!PlayerValue.PropertyInfoMap.TryGetValue(property, out var propInfo) ||
-            propInfo is not Value.PropInfo<Player> { ReturnType: var type, Func: var handler } ||
+            propInfo is not IValueWithProperties.PropInfo<Player> { ReturnType: var type, Func: var handler } ||
             !typeof(LiteralValue).IsAssignableFrom(type.Type)) 
         {
             throw new ScriptRuntimeError(this, ErrorReasons[0]);

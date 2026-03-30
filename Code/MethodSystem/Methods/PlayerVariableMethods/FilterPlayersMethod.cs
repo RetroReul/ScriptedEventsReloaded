@@ -4,6 +4,7 @@ using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
@@ -24,7 +25,7 @@ public class FilterPlayersMethod : ReturningMethod<PlayerValue>
         var playersToFilter = Args.GetPlayers("players to filter");
         var playerProperty = Args.GetEnum<PlayerValue.PlayerProperty>("player property");
         var desiredValue = Args.GetAnyValue("desired value");
-        var handler = ((Value.PropInfo<Player>)PlayerValue.PropertyInfoMap[playerProperty]).Func;
+        var handler = ((IValueWithProperties.PropInfo<Player>)PlayerValue.PropertyInfoMap[playerProperty]).Func;
 
         ReturnValue = new(playersToFilter.Where(p => handler(p) == desiredValue));
     }

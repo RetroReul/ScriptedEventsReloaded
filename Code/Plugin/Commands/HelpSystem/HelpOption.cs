@@ -6,8 +6,7 @@ public enum HelpOption
     Variables,
     Enums,
     Events,
-    RefResMethods,
-    PlayerProperty,
+    Properties,
     Flags,
     Keywords
 }
