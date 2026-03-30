@@ -15,7 +15,6 @@ public static class HelpInfoStorage
         typeof(DoorName),
         typeof(ItemType),
         typeof(ElevatorGroup),
-        typeof(CustomCommandFlag.ConsoleType),
-        typeof(PlayerValue.PlayerProperty)
+        typeof(CustomCommandFlag.ConsoleType)
     ];
 }

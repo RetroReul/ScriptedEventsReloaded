@@ -10,6 +10,7 @@ using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ContextSystem.Contexts;
 
@@ -194,7 +195,22 @@ public class ValuePropertyHandler(
         Value current = value;
         foreach (var prop in _propertyNames)
         {
-            if (!current.Properties.TryGetValue(prop, out var propInfo))
+            if (current is not IValueWithProperties propVal)
+            {
+                return $"{current} does not have any properties.";
+            }
+            
+            Console.WriteLine(propVal.Properties.Select(kvp => $"{kvp.Key} -> {kvp.Value.ReturnType}").JoinStrings(", "));
+            
+            IValueWithProperties.PropInfo? propInfo;
+            if (propVal.Properties is IValueWithProperties.IDynamicPropertyDictionary dynamicDict)
+            {
+                if (!dynamicDict.TryGetValue(prop, out propInfo))
+                {
+                    return $"{current} does not have property '{prop}'.";
+                }
+            }
+            else if (!propVal.Properties.TryGetValue(prop, out propInfo))
             {
                 return $"{current} does not have property '{prop}'.";
             }
@@ -223,7 +239,24 @@ public class ValuePropertyHandler(
         {
             foreach (var type in types)
             {
-                if (Value.GetPropertiesOfValue(type).TryGetValue(token.RawRep, out var property))
+                if (type == typeof(ReferenceValue))
+                {
+                    _exprRepr += $" {token.RawRep}";
+                    _lastValueType = new UnknownTypeOfValue();
+                    goto found;
+                }
+
+                var props = Value.GetPropertiesOfValue(type);
+                if (props is IValueWithProperties.IDynamicPropertyDictionary dynamicDict)
+                {
+                    if (dynamicDict.TryGetValue(token.RawRep, out var dynamicProp))
+                    {
+                        _exprRepr += $" {token.RawRep}";
+                        _lastValueType = dynamicProp.ReturnType;
+                        goto found;
+                    }
+                }
+                else if (props?.TryGetValue(token.RawRep, out var property) is true)
                 {
                     _exprRepr += $" {token.RawRep}";
                     _lastValueType = property.ReturnType;

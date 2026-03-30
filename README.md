@@ -97,7 +97,7 @@ forever
     over {@potatoCarrier inventory}
         with *item
 
-        if {ItemInfo *item type} isnt "GunA7"
+        if {*item -> type} isnt "GunA7"
             continue
         end
 

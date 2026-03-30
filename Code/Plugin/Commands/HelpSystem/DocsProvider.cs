@@ -15,6 +15,7 @@ using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.Plugin.Commands.Interfaces;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.PropertySystem;
 using SER.Code.VariableSystem;
 using SER.Code.VariableSystem.Variables;
 
@@ -28,17 +29,21 @@ public static class DocsProvider
         [HelpOption.Variables] = GetVariableList,
         [HelpOption.Enums] = GetEnumHelpPage,
         [HelpOption.Events] = GetEventsHelpPage,
-        [HelpOption.RefResMethods] = GetReferenceResolvingMethodsHelpPage,
-        [HelpOption.PlayerProperty] = GetPlayerInfoAccessorsHelpPage,
+        [HelpOption.Properties] = GetPropertiesHelpPage,
         [HelpOption.Flags] = GetFlagHelpPage,
         [HelpOption.Keywords] = GetKeywordHelpPage
     };
 
-    public static bool GetGeneralOutput(string arg, out string response)
+    public static bool GetGeneralOutput(ArraySegment<string> args, out string response)
     {
-        arg = arg.ToLower();
+        var arg = args.Array[args.Offset].ToLower();
         if (Enum.TryParse(arg, true, out HelpOption option))
         {
+            if (option == HelpOption.Properties && args.Count > 1)
+            {
+                return GetPropertiesForType(args.Array[args.Offset + 1], out response);
+            }
+            
             if (!GeneralOptions.TryGetValue(option, out var func))
             {
                 throw new AndrzejFuckedUpException($"Option {option} was not added to the help system.");
@@ -46,6 +51,11 @@ public static class DocsProvider
             
             response = func();
             return true;
+        }
+        
+        if (arg == "properties" && args.Count > 1)
+        {
+            return GetPropertiesForType(args.Array[args.Offset + 1], out response);
         }
         
         var keyword = KeywordToken.KeywordContextTypes
@@ -296,28 +306,6 @@ public static class DocsProvider
               """;
     }
     
-    public static string GetReferenceResolvingMethodsHelpPage()
-    {
-        var referenceResolvingMethods = MethodIndex.GetMethods()
-            .Where(m => m is IReferenceResolvingMethod)
-            .Select(m => (m.Name, ReferenceType: ((IReferenceResolvingMethod)m).ResolvesReference));
-        
-        var sb = new StringBuilder();
-        foreach (var method in referenceResolvingMethods)
-        {
-            sb.AppendLine($"{method.ReferenceType.AccurateName} ref -> {method.Name} method");
-        }
-        
-        return
-            $"""
-             Reference resolving methods are methods that help you extract information from a given reference.
-             This help option is just here to make it easier to find said methods.
-             
-             Here are all reference resolving methods:
-             {sb}
-             """;
-    }
-
     public static string GetEventsHelpPage()
     {
         var sb = new StringBuilder();
@@ -513,18 +501,6 @@ public static class DocsProvider
                 sb.AppendLine($"Returns a {typeReturn}.");
                 break;
             }
-            case IReturningMethod<CollectionValue>:
-                sb.AppendLine();
-                sb.AppendLine("Returns a collection of values.");
-                break;
-            case IReturningMethod<PlayerValue>:
-                sb.AppendLine();
-                sb.AppendLine("Returns a player value.");
-                break;
-            case IReferenceReturningMethod refMethod:
-                sb.AppendLine();
-                sb.AppendLine($"Returns a reference to {refMethod.ReturnType.AccurateName} object.");
-                break;
             case IReturningMethod ret:
             {
                 string typeReturn;
@@ -532,13 +508,13 @@ public static class DocsProvider
                 {
                     typeReturn = returnTypes
                         .Select(Value.GetFriendlyName)
-                        .JoinStrings(" or ") + " value";
+                        .JoinStrings(" or ");
                 }
                 else
                 {
                     typeReturn = "value depending on your input";
                 }
-                
+
                 sb.AppendLine();
                 sb.AppendLine($"This method returns a {typeReturn}, which can be saved or used directly. ");
                 break;
@@ -593,26 +569,175 @@ public static class DocsProvider
         return sb.ToString();
     }
 
-    public static string GetPlayerInfoAccessorsHelpPage()
+    public static string GetPropertiesHelpPage()
     {
-        StringBuilder sb = new();
-        var properties = PlayerValue.PropertyInfoMap;
-        foreach (var (property, info) in properties.Select(kvp => (kvp.Key, kvp.Value)))
-        {
-            sb.Append($"{property.ToString().LowerFirst()} -> {info.ReturnType}");
-            sb.Append(info.Description is not null ? $" | {info.Description}\n" : "\n");
-        }
+        var registeredTypes = ReferencePropertyRegistry.GetRegisteredTypes()
+            .Select(t => $"> {t.Name}")
+            .JoinStrings("\n");
+
+        var playerPropsList = GetTopProperties(new PlayerValue().Properties, "player");
+        var collectionPropsList = GetTopProperties(new CollectionValue().Properties, "collection");
+        var numberPropsList = GetTopProperties(new NumberValue().Properties, "number");
+        var textPropsList = GetTopProperties(new StaticTextValue().Properties, "text");
+        var boolPropsList = GetTopProperties(new BoolValue().Properties, "bool");
+        var colorPropsList = GetTopProperties(new ColorValue().Properties, "color");
+        var durationPropsList = GetTopProperties(new DurationValue().Properties, "duration");
 
         return
             $$"""
-            In order for you to get information about a player, you need to use a special syntax involving expressions.
+            Properties allow you to access internal data of SER values and C# objects using the '->' operator.
             
-            This syntax works as follows: {@plr property}
-            > @plr: is a player variable with exactly 1 player stored in it
-            > property: is a property of the player we want to get information about (its a {{nameof(PlayerValue.PlayerProperty)}} enum)
+            Syntax:
+            $hp = @player -> hp               - Accesses 'hp' property of a player variable.
+            $type = *item -> type             - Accesses 'type' property of a reference variable.
+            $key = *json -> someKey            - Accesses 'someKey' from a JSON object.
+            $isPrefab = *item -> !isPrefab    - Unsafe access to a C# member using '!' prefix.
             
-            Here is a list of all available properties and what they return:
-            {{sb}}
+            Print {@sender -> name}           - You can use {} brackets to contain the expression into a single argument.
+            
+            if {@sender -> role} is "ClassD"  - Or use {} when in a condition.
+            
+            --- Basic SER value properties ---
+            
+            PlayerValue:
+            - {{playerPropsList}}
+            
+            CollectionValue:
+            - {{collectionPropsList}}
+
+            NumberValue:
+            - {{numberPropsList}}
+
+            TextValue:
+            - {{textPropsList}}
+            
+            BoolValue:
+            - {{boolPropsList}}
+            
+            ColorValue:
+            - {{colorPropsList}}
+            
+            DurationValue:
+            - {{durationPropsList}}
+            
+            --- Registered C# objects ---
+            Use 'serhelp properties <objectName>' to see available properties for these types:
+            {{registeredTypes}}
             """;
+    }
+
+    private static string GetTopProperties(IReadOnlyDictionary<string, IValueWithProperties.PropInfo> props, string option)
+    {
+        var list = props.Keys.OrderBy(k => k).Take(5).JoinStrings(", ");
+        if (props.Count > 5) list += $", etc. (see 'serhelp properties {option}' for full list)";
+        return list;
+    }
+
+    public static bool GetPropertiesForType(string typeName, out string response)
+    {
+        IReadOnlyDictionary<string, IValueWithProperties.PropInfo> props;
+        string actualName;
+
+        if (typeName.Equals("player", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new PlayerValue().Properties;
+            actualName = "PlayerValue";
+        }
+        else if (typeName.Equals("collection", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new CollectionValue().Properties;
+            actualName = "CollectionValue";
+        }
+        else if (typeName.Equals("number", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new NumberValue().Properties;
+            actualName = "NumberValue";
+        }
+        else if (typeName.Equals("text", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new StaticTextValue().Properties;
+            actualName = "TextValue";
+        }
+        else if (typeName.Equals("bool", StringComparison.OrdinalIgnoreCase) || typeName.Equals("boolean", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new BoolValue().Properties;
+            actualName = "BoolValue";
+        }
+        else if (typeName.Equals("color", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new ColorValue().Properties;
+            actualName = "ColorValue";
+        }
+        else if (typeName.Equals("duration", StringComparison.OrdinalIgnoreCase))
+        {
+            props = new DurationValue().Properties;
+            actualName = "DurationValue";
+        }
+        else
+        {
+            var type = ReferencePropertyRegistry.GetRegisteredTypes()
+                .FirstOrDefault(t => t.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+
+            if (type == null)
+            {
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    var name = assembly.GetName().Name;
+                    if (name.StartsWith("UnityEngine") || name.StartsWith("Exiled") || name.StartsWith("LabApi") ||
+                        name.StartsWith("NorthwoodLib") || name.StartsWith("PluginAPI") || name.StartsWith("Mirror") ||
+                        name.StartsWith("SER"))
+                    {
+                        try
+                        {
+                            type = assembly.GetTypes()
+                                .FirstOrDefault(t => t.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+                        }
+                        catch (ReflectionTypeLoadException e)
+                        {
+                            type = e.Types.FirstOrDefault(t => t != null && t.Name.Equals(typeName, StringComparison.OrdinalIgnoreCase));
+                        }
+                        catch
+                        {
+                            // Ignore other reflection errors
+                        }
+
+                        if (type != null) break;
+                    }
+                }
+            }
+
+            if (type == null)
+            {
+                response = $"Unknown object type: {typeName}";
+                return false;
+            }
+
+            props = ReferencePropertyRegistry.GetProperties(type);
+            actualName = type.Name;
+        }
+
+        var sb = new StringBuilder($"--- Properties for {actualName} ---\n");
+        var sortedProps = props.OrderBy(kvp => kvp.Key).ToList();
+        var normalProps = sortedProps.Where(p => !p.Value.IsUnsafe).ToList();
+        var unsafeProps = sortedProps.Where(p => p.Value.IsUnsafe).ToList();
+
+        foreach (var (name, info) in normalProps)
+        {
+            var returnTypeFriendlyName = info.ReturnType.ToString();
+            sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
+        }
+
+        if (unsafeProps.Count > 0)
+        {
+            sb.AppendLine("\n--- Unsafe Properties (Automatic discovery) ---");
+            foreach (var (name, info) in unsafeProps)
+            {
+                var returnTypeFriendlyName = info.ReturnType.ToString();
+                sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
+            }
+        }
+
+        response = sb.ToString();
+        return true;
     }
 }

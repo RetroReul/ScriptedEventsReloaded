@@ -2,6 +2,7 @@
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 
@@ -42,7 +43,7 @@ public class TimeInfoMethod : LiteralValueReturningMethod
             "hour" => new NumberValue(DateTime.Now.Hour),
             "month" => new NumberValue(DateTime.Now.Month),
             "year" => new NumberValue(DateTime.Now.Year),
-            "dayofweek" => new StaticTextValue(DateTime.Now.DayOfWeek.ToString()),
+            "dayofweek" => DateTime.Now.DayOfWeek.ToEnumValue(),
             "dayofweeknumber" => (uint)DateTime.Now.DayOfWeek == 0
                 ? new NumberValue(7)
                 : new NumberValue((uint)DateTime.Now.DayOfWeek),

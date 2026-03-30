@@ -1,17 +1,20 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
 [UsedImplicitly]
-public class ReferenceValue(object? value) : Value
+public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
 {
     [UsedImplicitly]
     public ReferenceValue() : this(null) {}
 
     public bool IsValid => value is not null;
     public object Value => value ?? throw new CustomScriptRuntimeError("Value of reference is invalid.");
+
+    public virtual Type ReferenceType => value?.GetType() ?? typeof(object);
 
     public override bool EqualCondition(Value other)
     {
@@ -28,8 +31,9 @@ public class ReferenceValue(object? value) : Value
     {
         return $"<{Value.GetType().AccurateName} reference | {Value.GetHashCode()}>";
     }
-    
-    public override Dictionary<string, PropInfo> Properties => [];
+
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => 
+        ReferencePropertyRegistry.GetProperties(ReferenceType);
 }
 
 [UsedImplicitly]
@@ -39,6 +43,8 @@ public class ReferenceValue<T>(T? value) : ReferenceValue(value)
     public ReferenceValue() : this(default) {}
 
     public new T Value => (T) base.Value;
+
+    public override Type ReferenceType => typeof(T);
 
     [UsedImplicitly]
     public new static string FriendlyName = $"reference to {typeof(T).AccurateName} object";

@@ -1,8 +1,11 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
-public class NumberValue(decimal value) : LiteralValue<decimal>(value)
+public class NumberValue(decimal value) : LiteralValue<decimal>(value), IValueWithProperties
 {
     [UsedImplicitly]
     public NumberValue() : this(0m) {}
@@ -21,6 +24,18 @@ public class NumberValue(decimal value) : LiteralValue<decimal>(value)
     
     [UsedImplicitly]
     public new static string FriendlyName = "number value";
-    
-    public override Dictionary<string, PropInfo> Properties => [];
+
+    private class Prop<T>(Func<NumberValue, T> handler, string? description)
+        : IValueWithProperties.PropInfo<NumberValue, T>(handler, description) where T : Value;
+
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    {
+        ["abs"] = new Prop<NumberValue>(n => Math.Abs(n.Value), "Absolute value of the number"),
+        ["round"] = new Prop<NumberValue>(n => Math.Round(n.Value), "Rounded value of the number"),
+        ["floor"] = new Prop<NumberValue>(n => Math.Floor(n.Value), "Floor value of the number"),
+        ["ceil"] = new Prop<NumberValue>(n => Math.Ceiling(n.Value), "Ceiling value of the number"),
+        ["isEven"] = new Prop<BoolValue>(n => n.Value % 2 == 0, "Whether the number is even"),
+        ["isOdd"] = new Prop<BoolValue>(n => n.Value % 2 != 0, "Whether the number is odd"),
+        ["sign"] = new Prop<NumberValue>(n => (decimal)Math.Sign(n.Value), "Sign of the number (-1, 0, or 1)")
+    };
 }

@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
+using SER.Code.Extensions;
+using SER.Code.ValueSystem.PropertySystem;
 using UnityEngine;
 
 namespace SER.Code.ValueSystem;
 
 [UsedImplicitly]
-public class ColorValue(Color color) : LiteralValue<Color>(color)
+public class ColorValue(Color color) : LiteralValue<Color>(color), IValueWithProperties
 {
     [UsedImplicitly]
     public ColorValue() : this(Color.white) {}
@@ -14,5 +18,15 @@ public class ColorValue(Color color) : LiteralValue<Color>(color)
     [UsedImplicitly]
     public new static string FriendlyName = "color value";
 
-    public override Dictionary<string, PropInfo> Properties => [];
+    private class Prop<T>(Func<ColorValue, T> handler, string? description)
+        : IValueWithProperties.PropInfo<ColorValue, T>(handler, description) where T : Value;
+
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    {
+        ["r"] = new Prop<NumberValue>(c => (decimal)c.Value.r, "Red component of the color (0-1)"),
+        ["g"] = new Prop<NumberValue>(c => (decimal)c.Value.g, "Green component of the color (0-1)"),
+        ["b"] = new Prop<NumberValue>(c => (decimal)c.Value.b, "Blue component of the color (0-1)"),
+        ["a"] = new Prop<NumberValue>(c => (decimal)c.Value.a, "Alpha component of the color (0-1)"),
+        ["hex"] = new Prop<StaticTextValue>(c => c.Value.ToHex(), "Hexadecimal representation of the color")
+    };
 }

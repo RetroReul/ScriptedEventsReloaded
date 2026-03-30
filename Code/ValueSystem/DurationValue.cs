@@ -1,9 +1,12 @@
-﻿using JetBrains.Annotations;
-using StringBuilder = System.Text.StringBuilder;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using JetBrains.Annotations;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
-public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value)
+public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IValueWithProperties
 {
     [UsedImplicitly]
     public DurationValue() : this(TimeSpan.Zero) {}
@@ -55,5 +58,18 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value)
     [UsedImplicitly]
     public new static string FriendlyName = "duration value";
 
-    public override Dictionary<string, PropInfo> Properties => [];
+    private class Prop<T>(Func<DurationValue, T> handler, string? description)
+        : IValueWithProperties.PropInfo<DurationValue, T>(handler, description) where T : Value;
+
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    {
+        ["hours"] = new Prop<NumberValue>(d => d.Value.Hours, "Hours component of the duration"),
+        ["minutes"] = new Prop<NumberValue>(d => d.Value.Minutes, "Minutes component of the duration"),
+        ["seconds"] = new Prop<NumberValue>(d => d.Value.Seconds, "Seconds component of the duration"),
+        ["ms"] = new Prop<NumberValue>(d => d.Value.Milliseconds, "Milliseconds component of the duration"),
+        ["totalHours"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalHours, "Total hours in the duration"),
+        ["totalMinutes"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMinutes, "Total minutes in the duration"),
+        ["totalSeconds"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalSeconds, "Total seconds in the duration"),
+        ["totalMs"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMilliseconds, "Total milliseconds in the duration")
+    };
 }

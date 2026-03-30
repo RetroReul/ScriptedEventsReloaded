@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
@@ -9,10 +11,11 @@ using SER.Code.TokenSystem.Slices;
 using SER.Code.TokenSystem.Structures;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.ExpressionTokens;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
-public abstract class TextValue : LiteralValue<string>
+public abstract class TextValue : LiteralValue<string>, IValueWithProperties
 {
     private static readonly Regex ExpressionRegex = new(@"~?\{.*?\}", RegexOptions.Compiled);
 
@@ -66,8 +69,18 @@ public abstract class TextValue : LiteralValue<string>
             
         return value.StringRep;
     });
-    
-    public override Dictionary<string, PropInfo> Properties => [];
+
+    private class Prop<T>(Func<TextValue, T> handler, string? description)
+        : IValueWithProperties.PropInfo<TextValue, T>(handler, description) where T : Value;
+
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    {
+        ["length"] = new Prop<NumberValue>(t => t.Value.Length, "Amount of characters in the text"),
+        ["upper"] = new Prop<StaticTextValue>(t => t.Value.ToUpper(), "Upper case of the text"),
+        ["lower"] = new Prop<StaticTextValue>(t => t.Value.ToLower(), "Lower case of the text"),
+        ["trim"] = new Prop<StaticTextValue>(t => t.Value.Trim(), "Trimmed text"),
+        ["isEmpty"] = new Prop<BoolValue>(t => string.IsNullOrEmpty(t.Value), "Whether the text is empty"),
+    };
 }
 
 [UsedImplicitly]
@@ -77,7 +90,7 @@ public class DynamicTextValue(string text, Script script) : TextValue(text, scri
     public DynamicTextValue() : this(string.Empty, null!) {}
 
     [UsedImplicitly]
-    public new static string FriendlyName = "dynamic text value";
+    public new static string FriendlyName = "text value";
 }
 
 [UsedImplicitly]
@@ -92,5 +105,5 @@ public class StaticTextValue(string text) : TextValue(text, null)
     }
 
     [UsedImplicitly]
-    public new static string FriendlyName = "static text value";
+    public new static string FriendlyName = "text value";
 }

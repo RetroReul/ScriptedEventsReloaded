@@ -3,13 +3,40 @@ using System.Reflection;
 using LabApi.Features.Wrappers;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
-using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
+using SER.Code.ValueSystem.PropertySystem;
+using Newtonsoft.Json.Linq;
 
 namespace SER.Code.ValueSystem;
 
 public abstract class Value
 {
+    public static Type GuessValueType(Type t)
+    {
+        if (typeof(Value).IsAssignableFrom(t)) return t;
+        if (typeof(Enum).IsAssignableFrom(t)) return typeof(EnumValue<>).MakeGenericType(t);
+        if (t == typeof(bool)) return typeof(BoolValue);
+        if (t == typeof(byte) || t == typeof(sbyte) || t == typeof(short) || t == typeof(ushort) ||
+            t == typeof(int) || t == typeof(uint) || t == typeof(long) || t == typeof(ulong) ||
+            t == typeof(float) || t == typeof(double) || t == typeof(decimal))
+            return typeof(NumberValue);
+        if (t == typeof(string)) return typeof(TextValue);
+        if (t == typeof(TimeSpan)) return typeof(DurationValue);
+        if (typeof(Player).IsAssignableFrom(t) || typeof(IEnumerable<Player>).IsAssignableFrom(t)) return typeof(PlayerValue);
+        
+        if (typeof(IEnumerable).IsAssignableFrom(t))
+        {
+            var itemType = t.GetInterfaces()
+                .Concat([t])
+                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                ?.GetGenericArguments()[0] ?? typeof(object);
+            
+            return typeof(CollectionValue<>).MakeGenericType(GuessValueType(itemType));
+        }
+        
+        return typeof(ReferenceValue<>).MakeGenericType(t);
+    }
+
     public abstract bool EqualCondition(Value other);
     
     public abstract int HashCode { get; }
@@ -34,58 +61,73 @@ public abstract class Value
             float n                 => new NumberValue((decimal)n),
             double n                => new NumberValue((decimal)n),
             decimal n               => new NumberValue(n),
-            string s when script is not null => new DynamicTextValue(s, script),
+            string s 
+                when script != null => new DynamicTextValue(s, script),
             string s                => new StaticTextValue(s),
-            Enum e                  => new StaticTextValue(e.ToString()),
+            Enum e                  => (Value)Activator.CreateInstance(typeof(EnumValue<>).MakeGenericType(e.GetType()), e),
             TimeSpan t              => new DurationValue(t),
             Player p                => new PlayerValue(p),
             IEnumerable<Player> ps  => new PlayerValue(ps),
+            JToken t                => new ReferenceValue(t),
             IEnumerable e           => new CollectionValue(e),
             _                       => new ReferenceValue(obj),
         };
     }
-    
-    public abstract class PropInfo
-    {
-        public abstract TryGet<Value> GetValue(object obj);
-        public abstract SingleTypeOfValue ReturnType { get; }
-        public abstract string? Description { get; }
-    }
-    
-    public abstract class PropInfo<T> : PropInfo
-    {
-        public abstract Func<T, Value> Func { get; }
-    }
 
-    public class PropInfo<TIn, TOut>(Func<TIn, TOut> handler, string? description) : PropInfo<TIn> 
-        where TOut : Value
+    public static Dictionary<string, IValueWithProperties.PropInfo>? GetPropertiesOfValue(Type t)
     {
-        public override Func<TIn, Value> Func => handler;
-        public virtual Func<object, object>? Translator { get; } = null;
-
-        public override TryGet<Value> GetValue(object obj)
+        if (typeof(ReferenceValue).IsAssignableFrom(t) && t.IsGenericType)
         {
-            if (Translator is not null) obj = Translator(obj);
-            if (obj is not TIn inObj) return $"Provided value is not of type {typeof(TIn).AccurateName}";
-            return handler(inObj);
+            return ReferencePropertyRegistry.GetProperties(t.GetGenericArguments()[0]);
         }
 
-        public override SingleTypeOfValue ReturnType => new(typeof(TOut));
-        public override string? Description => description;
+        if (!typeof(IValueWithProperties).IsAssignableFrom(t)) return null;
+        return ((IValueWithProperties)t.CreateInstance<Value>()).Properties;
     }
     
-    public abstract Dictionary<string, PropInfo> Properties { get; }
-
-    public static Dictionary<string, PropInfo> GetPropertiesOfValue(Type t) => t.CreateInstance<Value>().Properties;
-
     public string FriendlyName => GetFriendlyName(GetType());
     
     public static string GetFriendlyName(Type t)
     {
-        return (string?)t
-            .GetField("FriendlyName", BindingFlags.Public | BindingFlags.Static)?
-            .GetValue(null) 
-               ?? throw new AndrzejFuckedUpException($"FriendlyName is not defined in {t.AccurateName}");
+        if (t.IsGenericType)
+        {
+            var genericType = t.GetGenericTypeDefinition();
+            if (genericType == typeof(ReferenceValue<>))
+            {
+                return $"reference to {GetFriendlyName(t.GetGenericArguments()[0])}";
+            }
+
+            if (genericType == typeof(CollectionValue<>))
+            {
+                return $"collection of {GetFriendlyName(t.GetGenericArguments()[0])}[s]";
+            }
+
+            if (genericType == typeof(EnumValue<>))
+            {
+                return $"enum value of {t.GetGenericArguments()[0].Name}";
+            }
+        }
+
+        if (typeof(Value).IsAssignableFrom(t))
+        {
+            var field = t.GetField("FriendlyName", BindingFlags.Public | BindingFlags.Static);
+            if (field != null)
+            {
+                return (string)field.GetValue(null);
+            }
+
+            if (t.BaseType != null && t.BaseType != typeof(object))
+            {
+                var baseName = GetFriendlyName(t.BaseType);
+                if (baseName != "generic value") return baseName;
+            }
+
+            return "generic value";
+        }
+
+        if (t == typeof(object)) return "generic value";
+
+        return t.AccurateName;
     }
 
     public override string ToString()

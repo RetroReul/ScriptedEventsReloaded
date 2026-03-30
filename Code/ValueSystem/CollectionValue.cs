@@ -1,13 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
-public class CollectionValue(IEnumerable value) : Value
+public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
 {
+    private static readonly Random Random = new();
+
     [UsedImplicitly]
     public CollectionValue() : this(Array.Empty<object>()) {}
 
@@ -72,8 +78,20 @@ public class CollectionValue(IEnumerable value) : Value
         CastedValues.GetEnumerableHashCode().HasErrored(out var error, out var val)
         ? throw new TosoksFuckedUpException(error)
         : val;
+    
+    private class Prop<T>(Func<CollectionValue, T> handler, string? description)
+        : IValueWithProperties.PropInfo<CollectionValue, T>(handler, description) where T : Value;
 
-    public override Dictionary<string, PropInfo> Properties => [];
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new() 
+    {
+        ["length"] = new Prop<NumberValue>(c => c.CastedValues.Length, "Amount of values in the collection"),
+        ["isEmpty"] = new Prop<BoolValue>(c => c.CastedValues.Length == 0, "Whether the collection is empty"),
+        ["first"] = new Prop<Value>(c => c.CastedValues.Length > 0 ? c.CastedValues[0] : throw new CustomScriptRuntimeError("Collection is empty"), "First value in the collection"),
+        ["last"] = new Prop<Value>(c => c.CastedValues.Length > 0 ? c.CastedValues[^1] : throw new CustomScriptRuntimeError("Collection is empty"), "Last value in the collection"),
+        ["random"] = new Prop<Value>(c => c.CastedValues.Length > 0 ? c.CastedValues[Random.Next(c.CastedValues.Length)] : throw new CustomScriptRuntimeError("Collection is empty"), "Random value from the collection"),
+        ["sum"] = new Prop<NumberValue>(c => c.CastedValues.OfType<NumberValue>().Sum(n => n.Value), "Sum of all numbers in the collection"),
+        ["average"] = new Prop<NumberValue>(c => c.CastedValues.OfType<NumberValue>().Any() ? c.CastedValues.OfType<NumberValue>().Average(n => n.Value) : 0m, "Average of all numbers in the collection")
+    };
 
     public TryGet<Value> GetAt(int index)
     {
@@ -179,4 +197,14 @@ public class CollectionValue(IEnumerable value) : Value
     {
         return $"[{string.Join(", ", CastedValues.Select(v => v.ToString()))}]";
     }
+}
+
+[UsedImplicitly]
+public class CollectionValue<T>(IEnumerable value) : CollectionValue(value)
+{
+    [UsedImplicitly]
+    public CollectionValue() : this(Array.Empty<T>()) {}
+    
+    [UsedImplicitly]
+    public new static string FriendlyName = $"collection of {typeof(T).AccurateName} objects";
 }

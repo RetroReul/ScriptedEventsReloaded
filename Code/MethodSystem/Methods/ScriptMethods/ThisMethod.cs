@@ -3,6 +3,7 @@ using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
 using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.FlagSystem;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ScriptSystem.Structures;
@@ -40,7 +41,7 @@ public class ThisMethod : ReturningMethod
             "flags" => new CollectionValue(ScriptFlagHandler.GetScriptFlags(Script.Name)
                 .Select(f => f.GetType().Name.Replace("Flag", ""))),
             "caller" => new StaticTextValue(Script.Caller?.Name ?? "none"),
-            "context" => new StaticTextValue(Script.RunReason.ToString()),
+            "context" => Script.RunReason.ToEnumValue(),
             "duration" => new DurationValue(Script.TimeRunning),
             "name" => new StaticTextValue(Script.Name),
             "path" => new StaticTextValue(FileSystem.FileSystem.GetScriptPath(Script)),

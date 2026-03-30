@@ -1,13 +1,15 @@
 ﻿using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
+using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.PlayableScps.Scp079;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
-public class PlayerValue : Value
+public class PlayerValue : Value, IValueWithProperties
 {
     public PlayerValue(Player? plr)
     {
@@ -39,8 +41,8 @@ public class PlayerValue : Value
     [UsedImplicitly]
     public new static string FriendlyName = "player value";
 
-    public override Dictionary<string, PropInfo> Properties { get; } = 
-        PropertyInfoMap.ToDictionary(pair => pair.Key.ToString().LowerFirst(), pair => pair.Value);
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = 
+        PropertyInfoMap.ToDictionary(pair => pair.Key.ToString().LowerFirst(), pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 
     public enum PlayerProperty
     {
@@ -95,21 +97,21 @@ public class PlayerValue : Value
         IsDummy,
     }
 
-    public class Info<T>(Func<Player, T> handler, string? description)
-        : PropInfo<Player, T>(handler, description) where T : Value
+    private class Info<T>(Func<Player, T> handler, string? description)
+        : IValueWithProperties.PropInfo<Player, T>(handler, description) where T : Value
     {
-        public override Func<object, object>? Translator { get; } = 
+        protected override Func<object, object>? Translator { get; } = 
             obj => obj is PlayerValue { Players.Length: 1 } val ? val.Players[0] : obj;
     }
 
-    public static readonly Dictionary<PlayerProperty, PropInfo> PropertyInfoMap = new()
+    public static readonly Dictionary<PlayerProperty, IValueWithProperties.PropInfo> PropertyInfoMap = new()
     {
         [PlayerProperty.Name] = new Info<StaticTextValue>(plr => plr.Nickname, null),
         [PlayerProperty.DisplayName] = new Info<StaticTextValue>(plr => plr.DisplayName, null),
-        [PlayerProperty.Role] = new Info<StaticTextValue>(plr => plr.Role.ToString(), $"Player role type ({nameof(RoleTypeId)} enum value)"),
+        [PlayerProperty.Role] = new Info<EnumValue<RoleTypeId>>(plr => plr.Role.ToEnumValue(), $"Player role type ({nameof(RoleTypeId)} enum value)"),
         [PlayerProperty.RoleRef] = new Info<ReferenceValue>(plr => new(plr.RoleBase), $"Reference to {nameof(PlayerRoleBase)}"),
-        [PlayerProperty.Team] = new Info<StaticTextValue>(plr => plr.Team.ToString(), $"Player team ({nameof(Team)} enum value)"),
-        [PlayerProperty.Inventory] = new Info<CollectionValue>(plr => new(plr.Inventory.UserInventory.Items.Values.Select(Item.Get).RemoveNulls()), $"A collection of references to {nameof(Item)} objects"),
+        [PlayerProperty.Team] = new Info<EnumValue<Team>>(plr => plr.Team.ToEnumValue(), $"Player team ({nameof(Team)} enum value)"),
+        [PlayerProperty.Inventory] = new Info<CollectionValue<Item>>(plr => new(plr.Inventory.UserInventory.Items.Values.Select(Item.Get).RemoveNulls()), $"A collection of references to {nameof(Item)} objects"),
         [PlayerProperty.ItemCount] = new Info<NumberValue>(plr => (decimal)plr.Inventory.UserInventory.Items.Count, null),
         [PlayerProperty.HeldItemRef] = new Info<ReferenceValue>(plr => new(plr.CurrentItem), "A reference to the item the player is holding"),
         [PlayerProperty.IsAlive] = new Info<BoolValue>(plr => plr.IsAlive, null),
@@ -137,8 +139,8 @@ public class PlayerValue : Value
         [PlayerProperty.IsGodModeEnabled] = new Info<BoolValue>(plr => plr.IsGodModeEnabled, null),
         [PlayerProperty.IsNoclipEnabled] = new Info<BoolValue>(plr => plr.IsNoclipEnabled, null),
         [PlayerProperty.Gravity] = new Info<NumberValue>(plr => -(decimal)plr.Gravity.y, null),
-        [PlayerProperty.RoleChangeReason] = new Info<StaticTextValue>(plr => plr.RoleBase.ServerSpawnReason.ToString(), null),
-        [PlayerProperty.RoleSpawnFlags] = new Info<StaticTextValue>(plr => plr.RoleBase.ServerSpawnFlags.ToString(), null),
+        [PlayerProperty.RoleChangeReason] = new Info<EnumValue<RoleChangeReason>>(plr => plr.RoleBase.ServerSpawnReason.ToEnumValue(), null),
+        [PlayerProperty.RoleSpawnFlags] = new Info<EnumValue<RoleSpawnFlags>>(plr => plr.RoleBase.ServerSpawnFlags.ToEnumValue(), null),
         [PlayerProperty.AuxiliaryPower] = new Info<NumberValue>(plr =>
         {
             if (plr.RoleBase is Scp079Role scp)
@@ -163,7 +165,7 @@ public class PlayerValue : Value
 
             return -1;
         }, "Returns player EXP if he is SCP-079, otherwise returns -1"),
-        [PlayerProperty.Emotion] = new Info<StaticTextValue>(plr => plr.Emotion.ToString(), "Current emotion (e.g. Neutral, Chad)"),
+        [PlayerProperty.Emotion] = new Info<EnumValue<EmotionPresetType>>(plr => plr.Emotion.ToEnumValue(), "Current emotion (e.g. Neutral, Chad)"),
         [PlayerProperty.MaxAuxiliaryPower] = new Info<NumberValue>(plr =>
         {
             if (plr.RoleBase is Scp079Role scp)
