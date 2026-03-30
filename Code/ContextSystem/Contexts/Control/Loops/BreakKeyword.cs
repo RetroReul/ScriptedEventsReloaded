@@ -24,7 +24,7 @@ public class BreakKeyword : StandardContext, IKeywordContext
         
         # for example:
         forever
-            Wait 1s
+            wait 1s
             
             Print "attempting to leave forever loop"
             if {Chance 20%}

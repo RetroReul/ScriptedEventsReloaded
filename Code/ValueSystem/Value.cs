@@ -6,6 +6,8 @@ using SER.Code.Extensions;
 using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem.PropertySystem;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
+using Utf8Json.Formatters;
 
 namespace SER.Code.ValueSystem;
 
@@ -15,6 +17,7 @@ public abstract class Value
     {
         if (typeof(Value).IsAssignableFrom(t)) return t;
         if (typeof(Enum).IsAssignableFrom(t)) return typeof(EnumValue<>).MakeGenericType(t);
+        if (typeof(Color).IsAssignableFrom(t)) return typeof(ColorValue);
         if (t == typeof(bool)) return typeof(BoolValue);
         if (t == typeof(byte) || t == typeof(sbyte) || t == typeof(short) || t == typeof(ushort) ||
             t == typeof(int) || t == typeof(uint) || t == typeof(long) || t == typeof(ulong) ||
@@ -70,6 +73,7 @@ public abstract class Value
             IEnumerable<Player> ps  => new PlayerValue(ps),
             JToken t                => new ReferenceValue(t),
             IEnumerable e           => new CollectionValue(e),
+            Color c                 => new ColorValue(c),
             _                       => new ReferenceValue(obj),
         };
     }

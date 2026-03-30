@@ -12,18 +12,18 @@ public class ScanScript : Example
         # scan beginning announcement
         Cassie jingle "a facility scan is commencing" "A facility scan is commencing..."
 
-        Wait 1s
-        WaitUntil ({IsCassieSpeaking} is false)
+        wait 1s
+        wait_until {IsCassieSpeaking} is false
 
         repeat 3
-            Wait 10s
+            wait 10s
             
             # scan sound
             Cassie noJingle "pitch_0.3 .G1 .G4" ""
         end
 
         # wait until cassie finishes
-        Wait 10s
+        wait 10s
 
         # results
         $cassie = "scan complete . {AmountOf @scpPlayers} scpsubjects remaining . {AmountOf @classDPlayers} class d personnel remaining . {AmountOf @scientistPlayers} scientist personnel remaining . {AmountOf @foundationForcePlayers} foundation forces remaining . {AmountOf @chaosInsurgencyPlayers} hostileforces remaining . . . . ."

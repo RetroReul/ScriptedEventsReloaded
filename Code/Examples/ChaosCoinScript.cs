@@ -75,14 +75,14 @@ public class ChaosCoinScript : Example
 
             repeat 5
                 TransitionLightColor *room #ff0000ff .5s
-                Wait .5s
+                wait .5s
                 TransitionLightColor *room #00ff00ff .5s
-                Wait .5s
+                wait .5s
                 TransitionLightColor *room #0000ffff .5s
-                Wait .5s
+                wait .5s
             end
 
-            Wait .1s
+            wait .1s
             UnlockDoor *room
             ResetLightColor *room
 
@@ -99,7 +99,7 @@ public class ChaosCoinScript : Example
 
             # waiting 15 seconds here
             repeat 15
-                Wait 1s
+                wait 1s
 
                 # every second we are checking if the role of the player changed
                 # if so, we remove the countdown and unlock the coin
@@ -124,7 +124,7 @@ public class ChaosCoinScript : Example
             Bypass @evPlayer true
 
             repeat 15
-                Wait 1s
+                wait 1s
 
                 if {@evPlayer -> role} isnt $initRole
                     ClearCountdown @evPlayer
@@ -159,7 +159,7 @@ public class ChaosCoinScript : Example
             Cassie noJingle "pitch_0.7 warning . pitch_3 XMAS_JINGLEBELLS" ""
             Broadcast @evPlayer 5s "{$baseText}Most useful cassie message sent!"
 
-            Wait 7s
+            wait 7s
             SetPlayerData @evPlayer "coin locked" false
             stop
         end

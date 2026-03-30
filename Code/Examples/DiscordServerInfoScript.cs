@@ -47,7 +47,7 @@ public class DiscordServerInfoScript : Example
         
         # update the message every 2 seconds
         forever
-            Wait 2s
+            wait 2s
         
             run SetDiscordMessage
             EditDiscordMessage $url $messageId *msg

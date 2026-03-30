@@ -24,7 +24,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
         """
         # while loop repeats its body while the provided condition is met
         while {AmountOf @all} > 0
-            Wait 1s
+            wait 1s
             Print "there are players on the server!"
         end
 
@@ -34,7 +34,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
             with $iter
             
             Print "current attempt to leave loop: {$iter}"
-            Wait 1s
+            wait 1s
         end
         """;
 
