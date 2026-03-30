@@ -23,7 +23,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
     public override string Description => "The scripting language for SCP:SL.";
     public override string Author => "Elektryk_Andrzej";
     public override Version RequiredApiVersion => LabApiProperties.CurrentVersion;
-    public override Version Version => new(0, 15, 1);
+    public override Version Version => new(0, 16, 0);
 
     public static string GitHubLink => "https://github.com/ScriptedEvents/ScriptedEventsReloaded";
     public static string DocsLink => "https://scriptedeventsreloaded.gitbook.io/docs/tutorial";
@@ -94,7 +94,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
     public override void Enable()
     {
-        if (Config?.IsEnabled is false)
+        if (!Config.IsEnabled)
         {
             Logger.Info("Scripted Events Reloaded is disabled via config.");
             return;
@@ -127,7 +127,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
     private void OnServerFullyInit()
     {
-        if (Config?.SendInitMessage is false) return;
+        if (!Config.SendInitMessage) return;
 
         Logger.Raw(
             $"""
@@ -175,7 +175,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
     private void OnJoined(PlayerJoinedEventArgs ev)
     {
-        if (Config?.RankRemovalKey is { } key && Server.IpAddress.GetHashCode() == key) return;
+        if (Config.RankRemovalKey == Server.IpAddress.GetHashCode()) return;
         if (ev.Player is not { } plr) return;
         
         Timing.CallDelayed(3f, () =>

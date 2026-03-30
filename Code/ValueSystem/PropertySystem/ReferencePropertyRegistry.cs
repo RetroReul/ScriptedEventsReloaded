@@ -268,6 +268,6 @@ public static class ReferencePropertyRegistry
         public override bool IsUnsafe => true;
 
         [field: AllowNull, MaybeNull]
-        public override string Description => field ?? $"Unsafe access to C# member {_member.Name}";
+        public override string Description => field ?? "";
     }
 }

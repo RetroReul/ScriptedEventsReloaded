@@ -33,7 +33,7 @@ public static class BetterCoros
     {
         while (true)
         {
-            if (MainPlugin.Instance.Config?.SafeScripts is true)
+            if (MainPlugin.Instance.Config.SafeScripts)
             {
                 yield return Timing.WaitForOneFrame;
             }
