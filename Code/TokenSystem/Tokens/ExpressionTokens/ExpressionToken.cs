@@ -1,5 +1,4 @@
 ﻿using SER.Code.ContextSystem.Contexts;
-using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
