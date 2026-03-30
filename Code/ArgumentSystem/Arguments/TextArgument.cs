@@ -1,13 +1,11 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
-using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.TokenSystem.Tokens.ValueTokens;
 using SER.Code.ValueSystem;
-using ZstdSharp.Unsafe;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
@@ -23,7 +21,7 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
         if (token is TextToken textToken)
         {
             return new(() => textToken.GetDynamicResolver().Invoke().OnSuccess(SpaceCheck));
-        }    
+        }
         
         if (token is not IValueToken valToken || !valToken.CapableOf<LiteralValue>(out var get))
         {
