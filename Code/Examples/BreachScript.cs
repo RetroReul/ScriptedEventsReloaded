@@ -17,7 +17,7 @@ public class BreachScript : Example
         CloseDoor HeavyContainment
         LockDoor HeavyContainment
 
-        Wait 30s
+        wait 30s
 
         Cassie jingle "Lockdown lifted ." ""
         UnlockDoor HeavyContainment

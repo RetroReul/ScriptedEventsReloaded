@@ -636,42 +636,34 @@ public static class DocsProvider
     public static bool GetPropertiesForType(string typeName, out string response)
     {
         IReadOnlyDictionary<string, IValueWithProperties.PropInfo> props;
-        string actualName;
-
+        
         if (typeName.Equals("player", StringComparison.OrdinalIgnoreCase))
         {
             props = new PlayerValue().Properties;
-            actualName = "PlayerValue";
         }
         else if (typeName.Equals("collection", StringComparison.OrdinalIgnoreCase))
         {
             props = new CollectionValue().Properties;
-            actualName = "CollectionValue";
         }
         else if (typeName.Equals("number", StringComparison.OrdinalIgnoreCase))
         {
             props = new NumberValue().Properties;
-            actualName = "NumberValue";
         }
         else if (typeName.Equals("text", StringComparison.OrdinalIgnoreCase))
         {
             props = new StaticTextValue().Properties;
-            actualName = "TextValue";
         }
         else if (typeName.Equals("bool", StringComparison.OrdinalIgnoreCase) || typeName.Equals("boolean", StringComparison.OrdinalIgnoreCase))
         {
             props = new BoolValue().Properties;
-            actualName = "BoolValue";
         }
         else if (typeName.Equals("color", StringComparison.OrdinalIgnoreCase))
         {
             props = new ColorValue().Properties;
-            actualName = "ColorValue";
         }
         else if (typeName.Equals("duration", StringComparison.OrdinalIgnoreCase))
         {
             props = new DurationValue().Properties;
-            actualName = "DurationValue";
         }
         else
         {
@@ -683,9 +675,8 @@ public static class DocsProvider
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     var name = assembly.GetName().Name;
-                    if (name.StartsWith("UnityEngine") || name.StartsWith("Exiled") || name.StartsWith("LabApi") ||
-                        name.StartsWith("NorthwoodLib") || name.StartsWith("PluginAPI") || name.StartsWith("Mirror") ||
-                        name.StartsWith("SER"))
+                    if (name.StartsWith("UnityEngine") || name.StartsWith("LabApi") || name.StartsWith("NorthwoodLib") 
+                        || name.StartsWith("PluginAPI") || name.StartsWith("Mirror") || name.StartsWith("SER"))
                     {
                         try
                         {
@@ -713,10 +704,9 @@ public static class DocsProvider
             }
 
             props = ReferencePropertyRegistry.GetProperties(type);
-            actualName = type.Name;
         }
 
-        var sb = new StringBuilder($"--- Properties for {actualName} ---\n");
+        var sb = new StringBuilder($"--- Properties for {typeName} value ---\n");
         var sortedProps = props.OrderBy(kvp => kvp.Key).ToList();
         var normalProps = sortedProps.Where(p => !p.Value.IsUnsafe).ToList();
         var unsafeProps = sortedProps.Where(p => p.Value.IsUnsafe).ToList();

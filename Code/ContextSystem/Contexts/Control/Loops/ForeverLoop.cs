@@ -4,7 +4,6 @@ using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods;
-using SER.Code.MethodSystem.Methods.WaitingMethods;
 using SER.Code.Plugin;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.ValueSystem;
@@ -22,12 +21,12 @@ public class ForeverLoop : LoopContextWithSingleIterationVariable<NumberValue>, 
         $$"""
         # {{Description}}
         # it can be interrupted only when the script is stopped, when "break" keyword is used, or the server restarts
-        # it's VERY IMPORTANT to use yielding methods like "{{Method.GetFriendlyName(typeof(WaitMethod))}}"
+        # it's VERY IMPORTANT to use yielding methods like "wait"
         #  or else YOUR SERVER MAY CRASH!!!
         
         # this will send an ad every 2 minutes
         forever
-            Wait 2m
+            wait 2m
             Broadcast * 10s "Join our discord server! {{MainPlugin.DiscordLink}}"
         end
         
@@ -37,7 +36,7 @@ public class ForeverLoop : LoopContextWithSingleIterationVariable<NumberValue>, 
         forever
             with $iter
             
-            Wait 1s
+            wait 1s
             Print "current iteration: {$iter}"
         end
         """;

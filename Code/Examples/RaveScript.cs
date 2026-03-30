@@ -28,17 +28,17 @@ public class RaveScript : Example
         # changing colors for the room
         repeat 20
             TransitionLightColor *room #ff0000ff $duration
-            Wait $duration
+            wait $duration
             
             TransitionLightColor *room #00ff00ff $duration
-            Wait $duration
+            wait $duration
             
             TransitionLightColor *room #0000ffff $duration
-            Wait $duration
+            wait $duration
         end
         
         # reset color to default
-        Wait 1ms
+        wait 1ms
         ResetLightColor *room
         """;
 }

@@ -12,7 +12,7 @@ public class HotPotatoScript : Example
         !-- OnEvent RoundStarted
 
         forever
-            Wait 1m
+            wait 1m
 
             # Get a random player from the alive players
             @potatoCarrier = LimitPlayers @alivePlayers 1
@@ -25,7 +25,7 @@ public class HotPotatoScript : Example
             Hint @potatoCarrier 3s "YOU HAVE THE HOT POTATO! DROP IT OR DIE!"
             GiveItem @potatoCarrier GunA7
 
-            Wait 3s
+            wait 3s
 
             # Check if they still have the item (GunA7) in their inventory
             over {@potatoCarrier -> inventory}
