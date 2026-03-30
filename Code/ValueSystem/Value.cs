@@ -61,9 +61,11 @@ public abstract class Value
         where TOut : Value
     {
         public override Func<TIn, Value> Func => handler;
-        
+        public virtual Func<object, object>? Translator { get; } = null;
+
         public override TryGet<Value> GetValue(object obj)
         {
+            if (Translator is not null) obj = Translator(obj);
             if (obj is not TIn inObj) return $"Provided value is not of type {typeof(TIn).AccurateName}";
             return handler(inObj);
         }

@@ -95,8 +95,12 @@ public class PlayerValue : Value
         IsDummy,
     }
 
-    public class Info<T>(Func<Player, T> handler, string? description) 
-        : PropInfo<Player, T>(handler, description) where T : Value;
+    public class Info<T>(Func<Player, T> handler, string? description)
+        : PropInfo<Player, T>(handler, description) where T : Value
+    {
+        public override Func<object, object>? Translator { get; } = 
+            obj => obj is PlayerValue { Players.Length: 1 } val ? val.Players[0] : obj;
+    }
 
     public static readonly Dictionary<PlayerProperty, PropInfo> PropertyInfoMap = new()
     {
