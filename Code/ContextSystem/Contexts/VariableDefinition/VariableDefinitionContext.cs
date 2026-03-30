@@ -1,5 +1,4 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Contexts;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
@@ -74,7 +73,7 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
         if (_expression.GetValue().SuccessTryCast<TValue>().HasErrored(out var error, out var tValue))
         {
             throw new ScriptRuntimeError(this, 
-                $"Value returned by '{FriendlyName}' cannot be assigned to the '{varToken.RawRep}' variable: {error}"
+                $"Value returned by {FriendlyName} cannot be assigned to the '{varToken.RawRep}' variable: {error}"
             );
         }
 
