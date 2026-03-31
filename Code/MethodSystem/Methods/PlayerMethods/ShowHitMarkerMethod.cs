@@ -15,14 +15,20 @@ public class ShowHitMarkerMethod : SynchronousMethod
     [
         new PlayersArgument("players"),
         new FloatArgument("hitmarker size") 
-            { DefaultValue = new(1f, "default size") }
+            { DefaultValue = new(1f, "Default Size") },
+        new BoolArgument("should play audio")
+            { DefaultValue = new(true, "Hitmarker will make a noise.")},
+        new EnumArgument<HitmarkerType>("hitmarker type")
+            { DefaultValue = new(HitmarkerType.Regular, "Regular Hitmarker")}
     ];
 
     public override void Execute()
     {
         var players = Args.GetPlayers("players");
         var size = Args.GetFloat("hitmarker size");
+        var playAudio = Args.GetBool("should play audio");
+        var hitmarkerType = Args.GetEnum<HitmarkerType>("hitmarker type");
         
-        players.ForEach(plr => plr.SendHitMarker(size));
+        players.ForEach(plr => Hitmarker.SendHitmarkerDirectly(plr.ReferenceHub, size, playAudio, hitmarkerType));
     }
 }
