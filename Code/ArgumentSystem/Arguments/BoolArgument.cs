@@ -10,7 +10,7 @@ namespace SER.Code.ArgumentSystem.Arguments;
 
 public class BoolArgument(string name) : Argument(name)
 {
-    public override string InputDescription => "boolean (true or false) value";
+    public override string InputDescription => "bool (true or false) value";
 
     public bool IsFunction { get; init; } = false;
     

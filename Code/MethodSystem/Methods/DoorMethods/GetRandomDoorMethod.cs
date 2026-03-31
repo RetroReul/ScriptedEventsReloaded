@@ -3,21 +3,18 @@ using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
-using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-public class GetRandomDoorMethod : ReferenceReturningMethod
+public class GetRandomDoorMethod : ReferenceReturningMethod<Door>
 {
     public override string Description => "Returns a reference to a random door.";
     
-    public override Type ReturnType => typeof(Door);
-
     public override Argument[] ExpectedArguments { get; } = [];
     
     public override void Execute()
     {
-        ReturnValue = new ReferenceValue(Door.List.GetRandomValue()!);
+        ReturnValue = Door.List.GetRandomValue()!;
     }
 }

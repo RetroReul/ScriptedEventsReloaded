@@ -1,16 +1,19 @@
-using System;
 using JetBrains.Annotations;
+using SER.Code.Plugin.Commands.HelpSystem;
 
 namespace SER.Code.ValueSystem;
 
 [UsedImplicitly]
-public class EnumValue<T>(T value) : StaticTextValue(value.ToString()) where T : struct, Enum
+public class EnumValue<T> : TextValue where T : struct, Enum
 {
-    public T EnumValueObject { get; } = value;
-
     [UsedImplicitly]
     public EnumValue() : this(default) {}
 
+    public EnumValue(T value) : base(value.ToString(), null)
+    {
+        HelpInfoStorage.UsedEnums.Add(typeof(T));
+    }
+
     [UsedImplicitly]
-    public new static string FriendlyName = $"enum value of {typeof(T).Name}";
+    public new static string FriendlyName = $"{typeof(T).Name} enum value";
 }

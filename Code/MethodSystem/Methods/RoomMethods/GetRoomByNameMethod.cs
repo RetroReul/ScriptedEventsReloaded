@@ -7,15 +7,12 @@ using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
-using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.RoomMethods;
 
 [UsedImplicitly]
-public class GetRoomByNameMethod : ReferenceReturningMethod, IAdditionalDescription
+public class GetRoomByNameMethod : ReferenceReturningMethod<Room>, IAdditionalDescription
 {
-    public override Type ReturnType => typeof(Room);
-    
     public override string Description => "Returns a reference to a room which has the provided name.";
 
     public string AdditionalDescription =>
@@ -35,6 +32,6 @@ public class GetRoomByNameMethod : ReferenceReturningMethod, IAdditionalDescript
             throw new ScriptRuntimeError(this, $"No room found with the provided name '{roomName}'.");
         }
         
-        ReturnValue = new ReferenceValue(room);
+        ReturnValue = room;
     }
 }

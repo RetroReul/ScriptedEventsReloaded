@@ -28,7 +28,31 @@ public class FuncStatement :
     public string KeywordName => "func";
     public string Description => "Defines a function.";
     public string[] Arguments => ["[function name]"];
-    public string? Example => null;
+
+    public string? Example =>
+        """
+        func $Add with $a $b
+            return $a + $b
+        end
+
+        $sum = run $Add 5 3
+        Print $sum
+        
+        
+        func @SigmasOnly
+            return RemovePlayers * @classDPlayers
+        end
+        
+        @sigmas = run @SigmasOnly
+        Explode @sigmas
+        
+        
+        func ExplodeAll
+            Explode *
+        end
+        
+        run ExplodeAll
+        """;
 
     // gets the type of value associated with a token type of a variable prefix
     // sketchy!!

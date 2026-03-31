@@ -3,7 +3,6 @@ using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.ResultSystem;
-using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.Plugin;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.ValueSystem;
@@ -33,9 +32,7 @@ public class ForeverLoop : LoopContextWithSingleIterationVariable<NumberValue>, 
         # ========================================
         # you can also use "with" keyword to define an iteration variable
         #  which will hold the current iteration number, starting from 1
-        forever
-            with $iter
-            
+        forever with $iter
             wait 1s
             Print "current iteration: {$iter}"
         end

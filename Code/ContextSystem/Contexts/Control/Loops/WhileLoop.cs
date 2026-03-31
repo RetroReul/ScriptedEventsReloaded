@@ -30,9 +30,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
 
         # ========================================
         # you may also use a "with" keyword to define an iteration variable
-        while {Chance 90%}
-            with $iter
-            
+        while {Chance 90%} with $iter
             Print "current attempt to leave loop: {$iter}"
             wait 1s
         end

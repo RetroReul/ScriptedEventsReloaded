@@ -14,8 +14,7 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class ReturnKeyword : StandardContext, IKeywordContext
 {
-    private IValueToken? _returnValueToken;
-    private (RunnableContext main, IMayReturnValueContext returner)? _returnContext = null; 
+    private ValueExpressionContext? _expression = null;
     
     public string KeywordName => "return";
     public string Description => "Returns value when in a function.";
@@ -23,58 +22,34 @@ public class ReturnKeyword : StandardContext, IKeywordContext
     public string? Example => null;
 
     public override string FriendlyName => "'return' keyword";
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
-        if (_returnContext.HasValue)
-        {
-            return _returnContext.Value.main.TryAddToken(token);
-        }
+        if (_expression is not null) return _expression.TryAddToken(token);
         
-        switch (token)
+        _expression = new ValueExpressionContext(token, true)
         {
-            case IContextableToken contextable when
-                contextable.GetContext(Script) is { } mainContext and IMayReturnValueContext returnValueContext:
-            {
-                _returnContext = (mainContext, returnValueContext);
-                return TryAddTokenRes.Continue();
-            }
-            case IValueToken valToken:
-            {
-                _returnValueToken = valToken;
-                return TryAddTokenRes.End();
-            }
-            default:
-                return TryAddTokenRes.Error($"Expected to receive a value or method, but received '{token.RawRep}' instead.");
-        }
+            Script = token.Script
+        };
+        
+        return TryAddTokenRes.Continue();
     }
 
     public override Result VerifyCurrentState()
     {
         return Result.Assert(
-            _returnValueToken != null || _returnContext.HasValue,
+            _expression is not null,
             "Return value was not provided."
         );
     }
 
     protected override void Execute()
     {
-        Value value;
-        if (_returnContext.HasValue)
-        {
-            value = _returnContext.Value.returner.ReturnedValue
-                    ?? throw new ScriptRuntimeError(this,
-                        $"{_returnContext.Value.main} has not returned a value. " +
-                        $"{_returnContext.Value.returner.MissingValueHint}"
-                    );
-        }
-        else if (_returnValueToken!.Value().HasErrored(out var error, out value!))
+        if (_expression!.GetValue().HasErrored(out var error, out var value))
         {
             throw new ScriptRuntimeError(this, error);
         }
-        
+
         ParentContext?.SendControlMessage(new Return(value));
     }
 }

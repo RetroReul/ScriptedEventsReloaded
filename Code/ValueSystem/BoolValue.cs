@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
@@ -23,7 +21,7 @@ public class BoolValue(bool value) : LiteralValue<bool>(value), IValueWithProper
     public override string StringRep => Value.ToString().ToLower();
 
     [UsedImplicitly]
-    public new static string FriendlyName = "boolean (true/false) value";
+    public new static string FriendlyName = "bool value";
 
     private class Prop<T>(Func<BoolValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<BoolValue, T>(handler, description) where T : Value;

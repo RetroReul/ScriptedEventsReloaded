@@ -1,4 +1,5 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
+using SER.Code.ContextSystem.Contexts;
 using SER.Code.ContextSystem.Contexts.Control;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.Extensions;
@@ -138,21 +139,80 @@ public static class Contexter
         
         if (firstToken is not IContextableToken contextable)
         {
-            return $"'{firstToken.RawRep}' is not a valid way to start a line. Perhaps you made a typo?";
+            return rs + $"'{firstToken.RawRep}' is not a valid way to start a line. Perhaps you made a typo?";
         }
 
         var context = contextable.GetContext(scr);
         if (context is null) return context;
-
-        foreach (var token in tokens.Skip(1))
+        
+        bool endLineContexting = false;
+        for (var index = 1; index < tokens.Length; index++)
         {
-            if (HandleCurrentContext(token, context, out var endLineContexting).HasErrored(out var errorMsg))
-                return rs + errorMsg;
+            var token = tokens[index];
+            rs = $"Cannot add token {token} to {context}";
+            if (AttemptsInlineWithKeyword(token, context))
+            {
+                if (HandleInlineWithKeyword(tokens.Skip(index), context, scr).HasErrored(out var error))
+                {
+                    return rs + error;
+                }
+                
+                break;
+            }
+            
+            if (token is CommentToken)
+            {
+                return context;
+            }
 
+            if (HandleCurrentContext(token, context, out endLineContexting).HasErrored(out var errorMsg))
+                return rs + errorMsg;
+            
             if (endLineContexting) break;
         }
 
         return context;
+    }
+
+    private static bool AttemptsInlineWithKeyword(BaseToken token, Context currentContext)
+    {
+        return token is IContextableToken contextable
+            && contextable.GetContext(token.Script) is WithKeyword
+            && currentContext is StatementContext;
+    }
+    
+    private static Result HandleInlineWithKeyword(IEnumerable<BaseToken> enumTokens, RunnableContext context, Script scr)
+    {
+        var tokens = enumTokens.ToArray();
+        
+        if (tokens.First() is not IContextableToken contextable2
+            || contextable2.GetContext(scr) is not WithKeyword
+            || context is not StatementContext statement)
+        {
+            return $"{context.FriendlyName} does not accept {tokens.First()}";
+        }
+
+        if (ContextLine(tokens, null, scr).HasErrored(out var contextError, out var contextResult))
+        {
+            return contextError;
+        }
+
+        if (contextResult is not WithKeyword with)
+        {
+            return $"{contextResult.FriendlyName} does not accept {tokens.First()}";
+        }
+        
+        if (with.AcceptStatement(statement).HasErrored(out var acceptError))
+        {
+            return acceptError;
+        }
+
+        if (with.VerifyCurrentState().HasErrored(out var verifyError))
+        {
+            return verifyError;
+        }
+
+        return true;
     }
 
     private static Result HandleCurrentContext(BaseToken token, RunnableContext context, out bool endLineContexting)

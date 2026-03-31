@@ -38,17 +38,13 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
         # additionally, "over" loop can tell you which item is currently being iterated over
         # this is usually known as a "for each" loop in other languages
         # this can be done using "with" keyword and naming a temporary variable:
-        over @all
-            with @plr
-            
+        over @all with @plr
             Print "found player {@plr -> name}"
         end
         
         # this also works for collections:
         &inventory = @sender -> inventory
-        over &inventory
-            with *item
-            
+        over &inventory with *item
             Print "found item {*item -> type}"
         end
         # its important to remember that the variable type in "with" keyword 
@@ -58,9 +54,7 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
         # ========================================
         # "with" can also define a second variable, which will hold the index of the current item
         # this is a number value starting at 1, and incrementing by 1 for each iteration
-        over @all
-            with @plr $index
-            
+        over @all with @plr $index
             Print "found player #{$index}: {@plr -> name}"
         end
         """;

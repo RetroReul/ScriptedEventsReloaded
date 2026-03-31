@@ -1,5 +1,4 @@
-﻿using System;
-using SER.Code.ValueSystem;
+﻿using SER.Code.ValueSystem;
 
 namespace SER.Code.Extensions;
 

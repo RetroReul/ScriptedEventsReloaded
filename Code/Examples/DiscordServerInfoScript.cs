@@ -19,9 +19,7 @@ public class DiscordServerInfoScript : Example
             $text = "There are {AmountOf @all} players on the server"
             
             # list each player
-            over @all
-                with @plr
-                
+            over @all with @plr
                 # <br> creates a new line
                 $text = JoinText $text "<br>- {@plr -> name}"
             end
@@ -34,7 +32,7 @@ public class DiscordServerInfoScript : Example
             PopVariable local *embed
         end
         
-        if {TextLength $url} is 0
+        if {$url -> length} is 0
             Error "Script '{This name}' cannot run, because the webhook URL was not set!"
             stop
         end

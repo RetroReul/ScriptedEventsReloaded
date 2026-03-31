@@ -5,6 +5,8 @@
 /// </summary>
 public struct Safe<T>
 {
+    public Safe(T value) => Value = value;
+    
     private readonly bool _set;
 
     public T Value

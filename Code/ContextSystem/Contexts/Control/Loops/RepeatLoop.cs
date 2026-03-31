@@ -33,8 +33,7 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
         
         # ========================================
         # you can also define a variable which will hold the current iteration number, starting from 1
-        repeat 10
-            with $iter
+        repeat 10 with $iter
             
             Print "current iteration: {$iter}"
         end

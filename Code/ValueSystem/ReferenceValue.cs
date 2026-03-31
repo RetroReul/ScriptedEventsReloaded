@@ -46,6 +46,11 @@ public class ReferenceValue<T>(T? value) : ReferenceValue(value)
 
     public override Type ReferenceType => typeof(T);
 
+    public static implicit operator ReferenceValue<T>(T? value)
+    {
+        return new(value);
+    }
+
     [UsedImplicitly]
     public new static string FriendlyName = $"reference to {typeof(T).AccurateName} object";
 }

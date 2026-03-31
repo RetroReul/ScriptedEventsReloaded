@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using SER.Code.Exceptions;
+using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
 
@@ -8,6 +9,11 @@ public abstract class LiteralValue : Value
 {
     private readonly Func<object>? _valueGetter;
     
+    private static Type[]? _subclasses;
+    public static Type[] Subclasses => _subclasses ??= typeof(LiteralValue).Assembly.GetTypes()
+        .Where(t => t.IsClass && t is { IsAbstract: false, IsGenericTypeDefinition: false } && typeof(LiteralValue).IsAssignableFrom(t) && typeof(IValueWithProperties).IsAssignableFrom(t))
+        .ToArray();
+
     /// <summary>
     /// Initiates a new literal value.
     /// </summary>
