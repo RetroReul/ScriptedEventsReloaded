@@ -42,7 +42,7 @@ public class InteractableToyEventFlag : Flag
         Variable[] variables =
         [
             new PlayerVariable("evPlayer", new PlayerValue(player)),
-            new ReferenceVariable("evToy", new ReferenceValue(interactableToy))
+            new ReferenceVariable("evToy", new ReferenceValue<InteractableToy>(interactableToy))
         ];
         
         foreach (var scriptName in ScriptsBoundToEvent)

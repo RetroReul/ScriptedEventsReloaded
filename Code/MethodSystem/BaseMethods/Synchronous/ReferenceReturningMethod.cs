@@ -17,6 +17,6 @@ public abstract class ReferenceReturningMethod<T> : ReferenceReturningMethod
 
     protected new T ReturnValue
     {
-        set => base.ReturnValue = new ReferenceValue(value);
+        set => base.ReturnValue = new ReferenceValue<T>(value);
     }
 }

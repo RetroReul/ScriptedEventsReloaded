@@ -36,7 +36,7 @@ public static class DocsProvider
 
     public static bool GetGeneralOutput(ArraySegment<string> args, out string response)
     {
-        var arg = args.Array[args.Offset].ToLower();
+        var arg = args.Array?[args.Offset].ToLower() ?? throw new Exception("argument provided in invalid format");
         if (Enum.TryParse(arg, true, out HelpOption option))
         {
             if (option == HelpOption.Properties && args.Count > 1)
@@ -676,7 +676,8 @@ public static class DocsProvider
                 {
                     var name = assembly.GetName().Name;
                     if (name.StartsWith("UnityEngine") || name.StartsWith("LabApi") || name.StartsWith("NorthwoodLib") 
-                        || name.StartsWith("PluginAPI") || name.StartsWith("Mirror") || name.StartsWith("SER"))
+                        || name.StartsWith("PluginAPI") || name.StartsWith("Mirror") || name.StartsWith("SER")
+                        || name.StartsWith("Assembly-CSharp"))
                     {
                         try
                         {
@@ -706,27 +707,28 @@ public static class DocsProvider
             props = ReferencePropertyRegistry.GetProperties(type);
         }
 
-        var sb = new StringBuilder($"--- Properties for {typeName} value ---\n");
+        var sb = new StringBuilder($"> Properties for {typeName} value\n");
         var sortedProps = props.OrderBy(kvp => kvp.Key).ToList();
         var normalProps = sortedProps.Where(p => !p.Value.IsUnsafe).ToList();
         var unsafeProps = sortedProps.Where(p => p.Value.IsUnsafe).ToList();
-
-        foreach (var (name, info) in normalProps)
+        
+        sb.AppendLine("\n--- Base properties ---");
+        foreach (var (name, info) in unsafeProps)
         {
             var returnTypeFriendlyName = info.ReturnType.ToString();
             sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
         }
 
-        if (unsafeProps.Count > 0)
+        if (normalProps.Count > 0)
         {
-            sb.AppendLine("\n--- Unsafe Properties (Automatic discovery) ---");
-            foreach (var (name, info) in unsafeProps)
+            sb.AppendLine("\n--- Custom SER properties ---");
+            foreach (var (name, info) in normalProps)
             {
                 var returnTypeFriendlyName = info.ReturnType.ToString();
                 sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
             }
         }
-
+        
         response = sb.ToString();
         return true;
     }

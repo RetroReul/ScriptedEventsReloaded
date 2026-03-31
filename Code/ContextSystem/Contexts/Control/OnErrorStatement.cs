@@ -29,9 +29,8 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
             Print "Hello, world!"
             # ^ won't get executed because 'attempt' skips the remaining code
             # inside of it if an error was made
-        on_error
-            with $message $type $stackTrace
             
+        on_error with $message $type $stackTrace
             # this will print the error message
             Print "Error: {$message}"
             

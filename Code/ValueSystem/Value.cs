@@ -7,7 +7,6 @@ using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem.PropertySystem;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-using Utf8Json.Formatters;
 
 namespace SER.Code.ValueSystem;
 
@@ -71,10 +70,10 @@ public abstract class Value
             TimeSpan t              => new DurationValue(t),
             Player p                => new PlayerValue(p),
             IEnumerable<Player> ps  => new PlayerValue(ps),
-            JToken t                => new ReferenceValue(t),
-            IEnumerable e           => new CollectionValue(e),
+            JToken t                => new ReferenceValue<JToken>(t),
+            IEnumerable e           => (Value)Activator.CreateInstance(GuessValueType(obj.GetType()), e),
             Color c                 => new ColorValue(c),
-            _                       => new ReferenceValue(obj),
+            _                       => (Value)Activator.CreateInstance(typeof(ReferenceValue<>).MakeGenericType(obj.GetType()), obj),
         };
     }
 

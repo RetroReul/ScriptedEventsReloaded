@@ -13,8 +13,8 @@ public class BreakKeyword : StandardContext, IKeywordContext
     public string KeywordName => "break";
     
     public string Description => 
-        "Makes a given loop (that the 'break' keyword is inside) act as it has completely ended its execution " +
-        "(\"breaks\" free from the loop)";
+        "Makes a given loop or function (that the 'break' keyword is inside) act as it has completely ended its execution " +
+        "(\"breaks\" free from the loop/function)";
     
     public string[] Arguments => [];
 
@@ -31,6 +31,16 @@ public class BreakKeyword : StandardContext, IKeywordContext
                 break
             end
         end
+        
+        func Test
+            if {Chance 20%}
+                break
+            end
+            
+            Print "this will not run because the 'break' keyword was used"
+        end
+        
+        run Test
         """;
 
     public override string FriendlyName => "'break' keyword";

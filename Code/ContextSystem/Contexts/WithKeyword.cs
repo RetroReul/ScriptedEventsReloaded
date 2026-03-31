@@ -2,6 +2,7 @@
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
@@ -12,7 +13,7 @@ namespace SER.Code.ContextSystem.Contexts;
 public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext, IRequirePreviousStatementContext
 {
     private readonly List<VariableToken> _variables = [];
-    private IAcceptOptionalVariableDefinitionsContext _receiver = null!;
+    private Safe<IAcceptOptionalVariableDefinitionsContext> _receiver;
     
     public string KeywordName => "with";
 
@@ -24,9 +25,14 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
     public string Example =>
         """
         # CORRECT
-        over @all
+        over @all with @plr
+            Print {@plr -> name}
+        end
+        
+        # CORRECT - with can be on its own line
+        over @all 
             with @plr
-
+            
             Print {@plr -> name}
         end
 
@@ -52,7 +58,7 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
             return $"{context} does not accept variable definitions.";
         }
 
-        _receiver = receiver;
+        _receiver = new(receiver);
         return true;
     }
 
@@ -72,7 +78,7 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
     public override Result VerifyCurrentState()
     {
         Result err = "The statement above does not accept provided variables.";
-        if (_receiver.SetOptionalVariables(_variables.ToArray()).HasErrored(out var error))
+        if (_receiver.Value.SetOptionalVariables(_variables.ToArray()).HasErrored(out var error))
         {
             return err + error;
         }

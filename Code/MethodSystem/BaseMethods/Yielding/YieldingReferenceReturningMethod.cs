@@ -17,6 +17,6 @@ public abstract class YieldingReferenceReturningMethod<T> : YieldingReferenceRet
 
     protected new T ReturnValue
     {
-        set => base.ReturnValue = new ReferenceValue(value);
+        set => base.ReturnValue = new ReferenceValue<T>(value);
     }
 }

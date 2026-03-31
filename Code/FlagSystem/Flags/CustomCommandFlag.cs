@@ -376,7 +376,7 @@ public class CustomCommandFlag : Flag
             script.AddLocalVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
         }
 
-        script.AddLocalVariable(new ReferenceVariable("command", new ReferenceValue(cmd)));
+        script.AddLocalVariable(new ReferenceVariable("command", new ReferenceValue<CustomCommand>(cmd)));
         script.Run(RunReason.CustomCommand);
         return true;
     }

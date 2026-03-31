@@ -46,7 +46,7 @@ public class ValueExpressionContext : AdditionalContext
             {
                 _handler = new MethodHandler(methodToken, allowsYielding, initial.Script);
             }
-            else if (initial is KeywordToken { RawRep: "run"} )
+            else if (initial is RunFunctionToken)
             {
                 _handler = new FunctionCallHandler(initial.Script);
             }
@@ -245,8 +245,25 @@ public class ValuePropertyHandler(
                     _lastValueType = new UnknownTypeOfValue();
                     goto found;
                 }
-
+                
                 var props = Value.GetPropertiesOfValue(type);
+                if (props == null && type == typeof(LiteralValue))
+                {
+                    foreach (var subType in LiteralValue.Subclasses)
+                    {
+                        var subProps = Value.GetPropertiesOfValue(subType);
+                        if (subProps?.TryGetValue(token.RawRep, out var subProp) is true)
+                        {
+                            _exprRepr += $" {token.RawRep}";
+                            _lastValueType = subProp.ReturnType;
+                            goto found;
+                        }
+                    }
+
+                    _exprRepr += $" {token.RawRep}";
+                    _lastValueType = new UnknownTypeOfValue();
+                    goto found;
+                }
                 if (props is IValueWithProperties.IDynamicPropertyDictionary dynamicDict)
                 {
                     if (dynamicDict.TryGetValue(token.RawRep, out var dynamicProp))
@@ -264,7 +281,7 @@ public class ValuePropertyHandler(
                 }
             }
             
-            return TryAddTokenRes.Error($"'{token.RawRep}' is not a valid property of '{_exprRepr}' value.");
+            return TryAddTokenRes.Error($"'{token.RawRep}' is not a valid property of {_lastValueType}.");
         }
         
         found:
