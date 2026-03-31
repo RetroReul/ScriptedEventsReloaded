@@ -41,7 +41,7 @@ public class CreateRagdollMethod : SynchronousMethod, ICanError
             { DefaultValue = new(1f, null) },
         new AnyValueArgument("damage handler")
         {
-            DefaultValue = new(new CustomReasonDamageHandler(""), "Damage reason will be blank"),
+            DefaultValue = new(new ReferenceValue<CustomReasonDamageHandler>(new(" ")), "Damage reason will be blank"),
             Description = $"Accepts a {nameof(TextValue)} or a {nameof(DamageHandlerBase)} reference."
         },
     ];
