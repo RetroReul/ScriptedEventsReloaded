@@ -35,17 +35,17 @@ public class ToyInfoMethod : ReturningMethod<NumberValue>
 
         ReturnValue = Args.GetOption("property") switch
         {
-            "netid" => toy.Base.netId,
-            "positionx" => (decimal)toy.Position.x,
-            "positiony" => (decimal)toy.Position.y,
-            "positionz" => (decimal)toy.Position.z,
-            "rotationx" => (decimal)toy.Rotation.eulerAngles.x,
-            "rotationy" => (decimal)toy.Rotation.eulerAngles.y,
-            "rotationz" => (decimal)toy.Rotation.eulerAngles.z,
-            "scalex" => (decimal)toy.Scale.x,
-            "scaley" => (decimal)toy.Scale.y,
-            "scalez" => (decimal)toy.Scale.z,
-            _ => throw new TosoksFuckedUpException("out of order")
+            "netid"     =>           toy.Base.netId,
+            "positionx" => (decimal) toy.Position.x,
+            "positiony" => (decimal) toy.Position.y,
+            "positionz" => (decimal) toy.Position.z,
+            "rotationx" => (decimal) toy.Rotation.eulerAngles.x,
+            "rotationy" => (decimal) toy.Rotation.eulerAngles.y,
+            "rotationz" => (decimal) toy.Rotation.eulerAngles.z,
+            "scalex"    => (decimal) toy.Scale.x,
+            "scaley"    => (decimal) toy.Scale.y,
+            "scalez"    => (decimal) toy.Scale.z,
+            _           => throw new TosoksFuckedUpException("out of order")
         };
     }
 }
