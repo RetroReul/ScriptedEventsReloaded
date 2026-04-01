@@ -156,6 +156,10 @@ public static class ReferencePropertyRegistry
         
         Register<Door, NumberValue>("remainingHealth", d => new NumberValue(d is BreakableDoor bDoor ? (decimal)bDoor.Health : -1), "The remaining health of the door");
         Register<Door, NumberValue>("maxHealth", d => new NumberValue(d is BreakableDoor bDoor ? (decimal)bDoor.MaxHealth : -1), "The maximum health of the door");
+        Register<Door, BoolValue>("isGate", d => d is Gate, "Is door a gate?");
+        Register<Door, BoolValue>("isBreakable", d => d is BreakableDoor, "Is door breakable?");
+        Register<Door, BoolValue>("isCheckpoint", d => d is CheckpointDoor, "Is door breakable?");
+        
         
         Register<Pickup, NumberValue>("positionX", p => new NumberValue((decimal)p.Position.x), "The X position of the pickup");
         Register<Pickup, NumberValue>("positionY", p => new NumberValue((decimal)p.Position.y), "The Y position of the pickup");
