@@ -1,5 +1,4 @@
 using JetBrains.Annotations;
-using LabApi.Features.Wrappers;
 using MapGeneration.Distributors;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
@@ -14,7 +13,7 @@ public class PryGateMethod : SynchronousMethod
 
     public override Argument[] ExpectedArguments =>
     [
-        new DoorArgument("gate"),
+        new GateArgument("gate"),
         new BoolArgument("should play effects")
         {
             DefaultValue = new(false, "does not play button effects"),
@@ -24,10 +23,8 @@ public class PryGateMethod : SynchronousMethod
     
     public override void Execute()
     {
-        var door = Args.GetDoor("gate");
+        var gate = Args.GetGate("gate");
         var playEffects = Args.GetBool("should play effects");
-
-        if (door is not Gate gate) return;
 
         if (gate.IsOpened || gate.ExactState != 0f || gate.Base.IsBeingPried) return;
         
