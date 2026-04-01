@@ -160,6 +160,11 @@ public class ProvidedArguments(Method method)
         return GetValue<Door, DoorArgument>(argName);
     }
 
+    public Gate GetGate(string argName)
+    {
+        return GetValue<Gate, GateArgument>(argName);
+    }
+
     public TimeSpan? GetNullableDuration(string argName)
     {
         return GetValueNullableStruct<TimeSpan, DurationArgument>(argName);

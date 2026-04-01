@@ -7,13 +7,13 @@ using SER.Code.Helpers;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.Structures;
 
-namespace SER.Code.MethodSystem.Methods.PlayerMethods;
+namespace SER.Code.MethodSystem.Methods.EffectMethods;
 
 [UsedImplicitly]
 public class GiveEffectMethod : SynchronousMethod, IDependOnFramework
 {
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;
-    
+
     public override string Description => "Adds a provided effect to a player.";
 
     public override Argument[] ExpectedArguments =>
