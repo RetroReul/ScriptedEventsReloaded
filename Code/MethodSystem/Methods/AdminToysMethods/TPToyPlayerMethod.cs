@@ -19,7 +19,10 @@ public class TPToyPlayerMethod : SynchronousMethod, IAdditionalDescription
     [
         new ReferenceArgument<AdminToy>("toy reference"),
         new PlayerArgument("player to teleport toy to"),
-        new BoolArgument("align toy rotation to player?"),
+        new BoolArgument("align toy rotation to player?")
+        {
+            DefaultValue = new(false, null)
+        },
     ];
 
     public override void Execute()
