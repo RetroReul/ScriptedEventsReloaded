@@ -79,13 +79,18 @@ public abstract class Value
 
     public static Dictionary<string, IValueWithProperties.PropInfo>? GetPropertiesOfValue(Type t)
     {
-        if (typeof(ReferenceValue).IsAssignableFrom(t) && t.IsGenericType)
+        if (!typeof(IValueWithProperties).IsAssignableFrom(t)) return null;
+        
+        if (t == typeof(TextValue))
+        {
+            t = typeof(StaticTextValue);
+        }
+        else if (typeof(ReferenceValue).IsAssignableFrom(t) && t.IsGenericType)
         {
             return ReferencePropertyRegistry.GetProperties(t.GetGenericArguments()[0]);
         }
-
-        if (!typeof(IValueWithProperties).IsAssignableFrom(t)) return null;
-        return ((IValueWithProperties)t.CreateInstance<Value>()).Properties;
+        
+        return t.CreateInstance<IValueWithProperties>().Properties;
     }
     
     public string FriendlyName => GetFriendlyName(GetType());
