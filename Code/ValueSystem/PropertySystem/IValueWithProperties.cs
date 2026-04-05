@@ -10,7 +10,7 @@ public interface IValueWithProperties
         public abstract TryGet<Value> GetValue(object obj);
         public abstract SingleTypeOfValue ReturnType { get; }
         public abstract string? Description { get; }
-        public virtual bool IsUnsafe => false;
+        public virtual bool IsReflected => false;
     }
     
     public abstract class PropInfo<T> : PropInfo
