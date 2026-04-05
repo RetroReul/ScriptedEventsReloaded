@@ -47,46 +47,27 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
     
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
-        switch (token)
+        if (token is not IValueToken valToken || !valToken.CapableOf<NumberValue>(out var getNumber))
         {
-            case NumberToken numberToken:
-            {
-                if (numberToken.Value < 0)
-                {
-                    return TryAddTokenRes.Error(
-                        $"Value '{numberToken.Value}' cannot be negative.");
-                }
-                
-                _repeatCount = (uint)numberToken.Value;
-                return TryAddTokenRes.End();
-            }
-            
-            case IValueToken valToken:
-            {
-                if (!valToken.CapableOf<NumberValue>(out var getNumber))
-                {
-                    return TryAddTokenRes.Error($"Value '{token.RawRep}' returns a value, but.");   
-                }
-                
-                _repeatCountExpression = () =>
-                {
-                    if (getNumber().HasErrored(out var error, out var value))
-                    {
-                        return error;
-                    }
-
-                    if (value.Value < 0)
-                    {
-                        return $"Value '{value}' cannot be negative.";
-                    }
-
-                    return (uint)value.Value;
-                };
-                return TryAddTokenRes.End();
-            }
+            return TryAddTokenRes.Error($"Value '{token.RawRep}' cannot be interpreted as a number.");
         }
 
-        return TryAddTokenRes.Error($"Value '{token.RawRep}' cannot be interpreted as a number.");
+        _repeatCountExpression = () =>
+        {
+            if (getNumber().HasErrored(out var error, out var value))
+            {
+                return error;
+            }
+
+            if (value.Value < 0)
+            {
+                return $"Value '{value}' cannot be negative.";
+            }
+
+            return (uint)value.Value;
+        };
+        
+        return TryAddTokenRes.End();
     }
 
     public override Result VerifyCurrentState()
