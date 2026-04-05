@@ -709,20 +709,20 @@ public static class DocsProvider
 
         var sb = new StringBuilder($"> Properties for {typeName} value\n");
         var sortedProps = props.OrderBy(kvp => kvp.Key).ToList();
-        var normalProps = sortedProps.Where(p => !p.Value.IsUnsafe).ToList();
-        var unsafeProps = sortedProps.Where(p => p.Value.IsUnsafe).ToList();
+        var custom = sortedProps.Where(p => !p.Value.IsReflected).ToList();
+        var reflected = sortedProps.Where(p => p.Value.IsReflected).ToList();
         
         sb.AppendLine("\n--- Base properties ---");
-        foreach (var (name, info) in unsafeProps)
+        foreach (var (name, info) in reflected)
         {
             var returnTypeFriendlyName = info.ReturnType.ToString();
             sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
         }
 
-        if (normalProps.Count > 0)
+        if (custom.Count > 0)
         {
             sb.AppendLine("\n--- Custom SER properties ---");
-            foreach (var (name, info) in normalProps)
+            foreach (var (name, info) in custom)
             {
                 var returnTypeFriendlyName = info.ReturnType.ToString();
                 sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
