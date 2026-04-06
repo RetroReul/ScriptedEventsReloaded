@@ -548,14 +548,14 @@ public static class DocsProvider
             if (argument.DefaultValue is { } defVal)
             {
                 sb.AppendLine($" - Default value/behavior: {defVal.StringRep ?? defVal.Value?.ToString() ?? "<unknown>"}");
-                sb.AppendLine("   (if needed, you can skip providing this argument by using '_' character)");
+                sb.AppendLine("   (you can skip providing this argument by using '_' character)");
             }
 
             if (argument.ConsumesRemainingValues)
             {
                 sb.AppendLine(
                     " - This argument consumes all remaining values; this means that every value provided AFTER " +
-                    "this one will ALSO count towards this argument's values.");
+                    "this one will also count towards THIS argument's values.");
             }
         }
 
@@ -590,8 +590,7 @@ public static class DocsProvider
             Syntax:
             $hp = @player -> hp               - Accesses 'hp' property of a player variable.
             $type = *item -> type             - Accesses 'type' property of a reference variable.
-            $key = *json -> someKey            - Accesses 'someKey' from a JSON object.
-            $isPrefab = *item -> !isPrefab    - Unsafe access to a C# member using '!' prefix.
+            $key = *json -> someKey           - Accesses 'someKey' from a JSON object.
             
             Print {@sender -> name}           - You can use {} brackets to contain the expression into a single argument.
             
