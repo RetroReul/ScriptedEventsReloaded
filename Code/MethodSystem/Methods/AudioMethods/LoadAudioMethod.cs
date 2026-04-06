@@ -13,7 +13,10 @@ public class LoadAudioMethod : SynchronousMethod, IAdditionalDescription, ICanEr
     public override string Description => "Loads an audio file into the audio player.";
 
     public string AdditionalDescription =>
-        "SER is using 'AudioPlayerApi' to manage audio. If the method errors, the logs will be displayed by AudioPlayerApi, not SER.";
+        """
+        SER is using 'AudioPlayerApi' to manage audio. If the method errors, the logs will be displayed by AudioPlayerApi, not SER.
+        Your .ogg file MUST BE of 48000hz, mono channel and of medium quality - higher quality causes stutters.
+        """;
 
     public string[] ErrorReasons =>
     [
@@ -24,18 +27,24 @@ public class LoadAudioMethod : SynchronousMethod, IAdditionalDescription, ICanEr
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new TextArgument("file path"),
+        new TextArgument("file path")
+        {
+            Description = 
+                "This path starts at the main SER folder. " +
+                "If your file is in [.. -> Scripted Events Reloaded -> audio.ogg] path, then the path will be 'audio.ogg'. " +
+                "If your file is deeper, like [.. -> Scripted Events Reloaded -> subfolder -> audio.ogg], then the path will be 'subfolder/audio.ogg'." 
+        },
         new TextArgument("clip name")
         {
-            Description = "You will be using this name to refer to this path."
+            Description = "This will be the name of the audio clip. Refer to this name when attempting to play audio."
         }
     ];
 
     public override void Execute()
     {
         if (!AudioClipStorage.LoadClip(
-            Args.GetText("file path"), 
+            Path.Combine(FileSystem.FileSystem.MainDirPath, Args.GetText("file path")), 
             Args.GetText("clip name")
-        )) throw new ScriptRuntimeError(this, "Audio has failed to load. Check the ");
+        )) throw new ScriptRuntimeError(this, "Audio has failed to load. Check the console for more info.");
     }
 }
