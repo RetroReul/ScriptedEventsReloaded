@@ -34,6 +34,8 @@ public class ReturnKeyword : StandardContext, IKeywordContext
 
     public override Result VerifyCurrentState()
     {
+        if (_expression is not null) return _expression.VerifyCurrentState();
+        
         return Result.Assert(
             _expression is not null,
             "Return value was not provided."
