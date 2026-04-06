@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 using CommandSystem;
+using LabApi.Events.Arguments.Interfaces;
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.Exceptions;
@@ -291,6 +292,7 @@ public static class DocsProvider
     public static string GetEventInfo(EventInfo ev)
     {
         var variables = EventSystem.EventHandler.GetMimicVariables(ev);
+        var cancellable = typeof(ICancellableEvent).IsAssignableFrom(ev.EventHandlerType.GetGenericArguments().FirstOrDefault());
         var msg = variables.Count > 0 
             ? variables.Aggregate(
                 "This event has the following variables attached to it:\n", 
@@ -301,6 +303,8 @@ public static class DocsProvider
         return 
              $"""
               Event {ev.Name} is a part of {ev.DeclaringType?.Name ?? "unknown event group"}.
+              
+              Is cancellable? {cancellable}
               
               {msg}
               """;
