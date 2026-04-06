@@ -159,6 +159,11 @@ public static class Contexter
                 
                 break;
             }
+
+            if (endLineContexting)
+            {
+                break;
+            }
             
             if (token is CommentToken)
             {
@@ -167,8 +172,6 @@ public static class Contexter
 
             if (HandleCurrentContext(token, context, out endLineContexting).HasErrored(out var errorMsg))
                 return rs + errorMsg;
-            
-            if (endLineContexting) break;
         }
 
         return context;
