@@ -21,15 +21,15 @@ public class WaitKeyword : YieldingContext, IKeywordContext
 
     public virtual string[] Arguments => ["<duration>"];
 
-    public virtual string? Example => 
-        """
-        # wait for 5 seconds
-        wait 5s
-        
-        # Waits using a variable
-        $duration = 10s
-        wait $duration
-        """;
+    public virtual string? Example => SER.Code.Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+                                      """
+                                      # wait for 5 seconds
+                                      wait 5s
+                                      
+                                      # Waits using a variable
+                                      $duration = 10s
+                                      wait $duration
+                                      """;
 
     public override string FriendlyName => $"'{KeywordName}' keyword";
 

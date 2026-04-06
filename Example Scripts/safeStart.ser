@@ -1,0 +1,9 @@
+!-- OnEvent RoundStarted
+
+if {AmountOf @all} isnt 1
+    stop
+end
+
+Print "SER enabled roundlock!"
+Broadcast @all 10s "<color=green>SER enabled roundlock!"
+RoundLock true

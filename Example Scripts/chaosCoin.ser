@@ -1,14 +1,3 @@
-﻿using JetBrains.Annotations;
-
-namespace SER.Code.Examples;
-
-[UsedImplicitly]
-public class ChaosCoinScript : Example
-{
-    public override string Name => "chaosCoin";
-
-    public override string Content =>
-"""
 !-- OnEvent FlippingCoin
 
 # formats of broadcasts, used to not repeat the same things in different broadcasts
@@ -196,5 +185,3 @@ if $effect is 9
     Broadcast @evPlayer 5s "{$baseText}You have swapped places with {@swapPlayer name}"
     stop
 end
-""";
-}

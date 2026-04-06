@@ -14,8 +14,12 @@ public class LoadAudioMethod : SynchronousMethod, IAdditionalDescription, ICanEr
 
     public string AdditionalDescription =>
         """
-        SER is using 'AudioPlayerApi' to manage audio. If the method errors, the logs will be displayed by AudioPlayerApi, not SER.
-        Your .ogg file MUST BE of 48000hz, mono channel and of medium quality - higher quality causes stutters.
+        SER is using 'AudioPlayerApi' to manage audio. 
+        This method does not error using SER's system, most audio errors will be logged by AudioPlayerApi to the console.
+        Your .ogg file MUST BE:
+        - 48kHz
+        - single (mono) channel
+        - medium quality
         """;
 
     public string[] ErrorReasons =>

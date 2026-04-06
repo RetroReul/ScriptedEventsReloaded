@@ -5,7 +5,6 @@ using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.ValueTokens;
 using SER.Code.ValueSystem;
-using Random = UnityEngine.Random;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
@@ -33,7 +32,7 @@ public class FloatArgument : Argument
             if (_minValue.HasValue && _maxValue.HasValue)
             {
                 return $"A number which is at least {_minValue} and most {_maxValue} e.g. " +
-                       $"{Math.Round(Random.Range(_minValue.Value, _maxValue.Value), 2)}";
+                       $"{Math.Round((double)new Random().Next((int)_minValue.Value, (int)_maxValue.Value + 1))}";
             }
 
             if (_minValue.HasValue)
@@ -44,7 +43,7 @@ public class FloatArgument : Argument
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (_maxValue.HasValue)
             {
-                return $"A number which is at most {_maxValue} e.g. {_maxValue - 2f}";
+                return $"A number which is at most {_maxValue} e.g. {_minValue + 2f}";
             }
 
             return "Any number e.g. 2.5";

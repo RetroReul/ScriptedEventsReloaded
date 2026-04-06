@@ -103,28 +103,15 @@ public static class FileSystem
 
     public static void GenerateExamples()
     {
-        List<(string, string)> examples = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => typeof(Example).IsAssignableFrom(t) && !t.IsAbstract)
-            .Select(t => t.CreateInstance<Example>())
-            .Select(t => (t.Name, t.Content))
-            .Cast<(string, string)>()
-            .ToList();
-
-        examples.AddRange(Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => typeof(IKeywordContext).IsAssignableFrom(t) && !t.IsAbstract)
-            .Select(Activator.CreateInstance)
-            .Cast<IKeywordContext>()
-            .Where(k => k.Example != null)
-            .Select(k => ($"{k.KeywordName}KeywordExample", k.Example))
-            .Cast<(string, string)>()
-        );
+        var examples = Example.GetAllExamples();
 
         var exampleDir = Directory.CreateDirectory(Path.Combine(MainDirPath, "Example Scripts"));
-        foreach (var (name, content) in examples)
+        foreach (var kvp in examples)
         {
-            var path = Path.Combine(exampleDir.FullName, $"{name}.txt");
+            var path = Path.Combine(exampleDir.FullName, $"{kvp.Key}.ser");
+            if (File.Exists(path)) continue;
             using var sw = File.CreateText(path);
-            sw.Write(content);
+            sw.Write(kvp.Value);
         }
     }
 }

@@ -1,0 +1,21 @@
+func $Add with $a $b
+    return $a + $b
+end
+
+$sum = run $Add 5 3
+Print $sum
+
+
+func @SigmasOnly
+    return RemovePlayers * @classDPlayers
+end
+
+@sigmas = run @SigmasOnly
+Explode @sigmas
+
+
+func ExplodeAll
+    Explode *
+end
+
+run ExplodeAll

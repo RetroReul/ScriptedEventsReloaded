@@ -1,0 +1,12 @@
+!-- CustomCommand breach
+-- availableFor Server RemoteAdmin
+
+Cassie jingle "Containment breach detected . All heavy containment doors locked ." ""
+
+CloseDoor HeavyContainment
+LockDoor HeavyContainment
+
+wait 30s
+
+Cassie jingle "Lockdown lifted ." ""
+UnlockDoor HeavyContainment

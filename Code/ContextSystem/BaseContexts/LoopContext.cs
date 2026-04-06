@@ -15,13 +15,13 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
     
     protected abstract string? Usage { get; }
 
-    public string Example =>
-        $"""
-         {Usage}
-         
-         # ========================================
-         # "break" and "continue" keywords work as usual and you are free to use them inside "{KeywordName}" loops
-         """;
+    public string Example => SER.Code.Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+                             $"""
+                              {Usage}
+                              
+                              # ========================================
+                              # "break" and "continue" keywords work as usual and you are free to use them inside "{KeywordName}" loops
+                              """;
 
     protected bool ReceivedContinue;
     protected bool ReceivedBreak;

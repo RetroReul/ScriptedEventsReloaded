@@ -53,7 +53,7 @@ public static class Contexter
         Stack<StatementContext> statementStack, 
         List<RunnableContext> contexts
     ) {
-        Result rs = $"Invalid context {context}";
+        Result rs = $"Invalid {context}";
 
         Log.Debug($"Trying to add context {context}");
         

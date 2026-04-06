@@ -20,11 +20,11 @@ public class WaitUntilKeyword : YieldingContext, IKeywordContext
 
     public virtual string[] Arguments => ["<condition...>"];
 
-    public virtual string? Example => 
-        """
-        # wait until there are no players on the server
-        wait_until {AmountOf @all} is 0
-        """;
+    public virtual string? Example => SER.Code.Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+                                      """
+                                      # wait until there are no players on the server
+                                      wait_until {AmountOf @all} is 0
+                                      """;
 
     public override string FriendlyName => $"'{KeywordName}' keyword";
 

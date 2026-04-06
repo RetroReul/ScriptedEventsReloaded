@@ -95,6 +95,7 @@
         <Content Include=".gitignore" />
         <Content Include="README.md" />
         <None Include="THIRD_PARTY_LICENSES.txt" CopyToOutputDirectory="Always" />
+        <EmbeddedResource Include="Example Scripts\*.ser" />
     </ItemGroup>
 
     <!-- ignore warnings about mismatch between versions of core libs
@@ -118,6 +119,7 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Code\" />
+      <Folder Include="Example Scripts\" />
     </ItemGroup>
 
     <!-- embedding dependencies into SER.dll -->
@@ -147,6 +149,7 @@
             <Using Namespace="System" />
             <Using Namespace="System.IO" />
             <Using Namespace="System.Reflection" />
+            <Using Namespace="System.Collections.Generic" />
             <Code Type="Fragment" Language="cs">
                 <![CDATA[
           #nullable enable annotations
@@ -241,6 +244,7 @@
                   }
     
                   Log.LogMessage(MessageImportance.High, ">>> Validation Passed.");
+                  
                   return true;
               }
           }
