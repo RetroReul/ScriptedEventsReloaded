@@ -1,7 +1,7 @@
 ![VERSION](https://img.shields.io/github/v/release/ScriptedEvents/ScriptedEventsReloaded?include_prereleases&logo=gitbook&style=for-the-badge)
 ![COMMITS](https://img.shields.io/github/commit-activity/m/ScriptedEvents/ScriptedEventsReloaded?logo=git&style=for-the-badge)
 [![DISCORD](https://img.shields.io/discord/1060274824330620979?label=Discord&logo=discord&style=for-the-badge)](https://discord.gg/3j54zBnbbD)
-![scriptedeventslogo.png](scriptedeventslogo.png)
+<img alt="scriptedeventslogo.png" height="300" src="scriptedeventslogo.png"/>
 
 
 # What is `Scripted Events Reloaded`?
@@ -26,12 +26,12 @@ All you need to get started is a text editor and a server!
 > https://scriptedeventsreloaded.gitbook.io/docs/tutorial
 
 # Examples
-(these scripts may be outdated, use them as a general overview)
+(these scripts may be outdated, check the `Example Scripts` folder for the latest example scripts)
 ### Welcome message
 ```
 !-- OnEvent Joined
 
-Broadcast @evPlayer 10s "Welcome to the server {@evPlayer name}!"
+Broadcast @evPlayer 10s "Welcome to the server {@evPlayer -> name}!"
 ```
 ### Coin on kill
 ```
@@ -42,6 +42,7 @@ if {VarExists @evAttacker} is false
     stop
 end
 
+# give the attacker a coin
 GiveItem @evAttacker Coin
 ```
 ### VIP broadcast command
@@ -55,7 +56,7 @@ GiveItem @evAttacker Coin
 -- cooldown 2m
 
 # send the broadcast to all players
-Broadcast @all 10s "{@sender name} used VIP broadcast<br>{$message}"
+Broadcast @all 10s "{@sender -> name} used VIP broadcast<br>{$message}"
 ```
 ### Heal random SCP
 ```
@@ -65,13 +66,13 @@ Broadcast @all 10s "{@sender name} used VIP broadcast<br>{$message}"
 -- cooldown 10s
 
 # dont allow SCPs to use this command
-if {@sender team} is "SCPs"
+if {@sender -> team} is "SCPs"
     stop
 end
 
 @randomScp = LimitPlayers @scpPlayers 1
 Heal @randomScp 50
-Broadcast @randomScp 4s "You were healed by {@sender name}!"
+Broadcast @randomScp 4s "You were healed by {@sender -> name}!"
 ```
 ### Hot Potato event
 ```
@@ -94,16 +95,15 @@ forever
     Wait 3s
 
     # Check if they still have the item (GunA7) in their inventory
-    over {@potatoCarrier inventory}
-        with *item
-
+    over {@potatoCarrier inventory} with *item
+    
         if {*item -> type} isnt "GunA7"
             continue
         end
 
         AdvDestroyItem *item
         Explode @potatoCarrier
-        Broadcast @all 5s "{@potatoCarrier name} failed the Hot Potato!"
+        Broadcast @all 5s "{@potatoCarrier -> name} failed the Hot Potato!"
         stop
     end
         
