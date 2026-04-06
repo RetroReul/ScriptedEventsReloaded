@@ -1,26 +1,25 @@
-using System.Reflection;
+using Exiled.API.Enums;
+using Exiled.API.Features;
 using JetBrains.Annotations;
-using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
-using SER.Code.Extensions;
+using SER.Code.Helpers;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.MethodSystem.Structures;
 
 namespace SER.Code.MethodSystem.Methods.EffectMethods;
 
 [UsedImplicitly]
-public class ClearEffectMethod : SynchronousMethod
+public class ClearExiledEffectMethod : SynchronousMethod, IDependOnFramework
 {
-    private static readonly MethodInfo DisableEffectMethod = 
-        typeof(Player).GetMethod("DisableEffect", [])
-        ?? throw new Exception("Could not find EnableEffect method for Player");
+    public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;
     
     public override string Description => "Removes the provided status effect from players.";
 
     public override Argument[] ExpectedArguments =>
     [
         new PlayersArgument("players"),
-        new EffectTypeArgument("effect")
+        new EnumArgument<EffectType>("effect type")
         {
             DefaultValue = new(null, "Removes all status effects")
         }
@@ -29,23 +28,13 @@ public class ClearEffectMethod : SynchronousMethod
     public override void Execute()
     {
         var players = Args.GetPlayers("players");
-        var effectType = Args.GetEffectType("effect").MaybeNull();
-
-        var disableEffect = DisableEffectMethod.MakeGenericMethod(effectType);
+        var effectType = Args.GetNullableEnum<EffectType>("effect type");
         
-        if (effectType is null)
-        {
+        if (effectType.HasValue)
             foreach (var plr in players)
-            {
-                plr.DisableAllEffects();
-            }
-        }
+                Player.Get(plr).DisableEffect(effectType.Value);
         else
-        {
             foreach (var plr in players)
-            {
-                disableEffect.Invoke(plr, null);
-            }
-        }
+                Player.Get(plr).DisableAllEffects();
     }
 }

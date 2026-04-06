@@ -228,6 +228,11 @@ public class ProvidedArguments(Method method)
         return GetValue<string, OptionsArgument>(argName).ToLower();
     }
 
+    public Type GetEffectType(string argName)
+    {
+        return GetValue<Type, EffectTypeArgument>(argName);
+    }
+
     public CollectionVariable GetCollectionVariable(string argName)
     {
         return GetValue<CollectionVariable, CollectionVariableArgument>(argName);

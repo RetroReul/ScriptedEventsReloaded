@@ -1,25 +1,25 @@
-using System.Reflection;
+﻿using Exiled.API.Enums;
+using Exiled.API.Features;
 using JetBrains.Annotations;
-using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.Helpers;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.MethodSystem.Structures;
 
 namespace SER.Code.MethodSystem.Methods.EffectMethods;
 
 [UsedImplicitly]
-public class GiveEffectMethod : SynchronousMethod
+public class GiveExiledEffectMethod : SynchronousMethod, IDependOnFramework
 {
-    private static readonly MethodInfo EnableEffectMethod = 
-        typeof(Player).GetMethod("EnableEffect", [typeof(byte), typeof(float), typeof(bool)])
-        ?? throw new Exception("Could not find EnableEffect method for Player");
+    public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;
 
-    public override string Description => "Adds a provided effect for specified players.";
+    public override string Description => "Adds a provided effect to a player.";
 
-    public override Argument[] ExpectedArguments { get; } =
+    public override Argument[] ExpectedArguments =>
     [
         new PlayersArgument("players"),
-        new EffectTypeArgument("effect"),
+        new EnumArgument<EffectType>("effect type"),
         new DurationArgument("duration")
         {
             DefaultValue = new(TimeSpan.Zero, "infinite")
@@ -37,16 +37,14 @@ public class GiveEffectMethod : SynchronousMethod
     public override void Execute()
     {
         var players = Args.GetPlayers("players");
-        var effectType = Args.GetEffectType("effect");
+        var effectType = Args.GetEnum<EffectType>("effect type");
         var duration = (float)Args.GetDuration("duration").TotalSeconds;
         var intensity = (byte)Args.GetInt("intensity");
         var addDurationIfActive = Args.GetBool("add duration if active");
-        
-        var method = EnableEffectMethod.MakeGenericMethod(effectType);
-        
+
         foreach (var plr in players)
         {
-            method.Invoke(plr, [intensity, duration, addDurationIfActive]);
+            Player.Get(plr).EnableEffect(effectType, intensity, duration, addDurationIfActive);
         }
     }
 }
