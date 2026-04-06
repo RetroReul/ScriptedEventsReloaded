@@ -112,7 +112,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         fBridge.Load();
         SendLogo();
 
-        Events.ServerEvents.WaitingForPlayers += OnServerFullyInit;
+        Events.ServerEvents.WaitingForPlayers += () => OnServerFullyInit(fBridge);
         Events.ServerEvents.RoundRestarted += Disable;
         Events.PlayerEvents.Joined += OnJoined;
 
@@ -125,7 +125,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         SetPlayerDataMethod.PlayerData.Clear();
     }
 
-    private void OnServerFullyInit()
+    private void OnServerFullyInit(FrameworkBridge frameworkBridge)
     {
         if (!Config.SendInitMessage) return;
 
@@ -140,6 +140,8 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
              """,
             ConsoleColor.Cyan
         );
+
+        Timing.CallDelayed(2f, frameworkBridge.Finish);
     }
 
     private static void SendLogo()

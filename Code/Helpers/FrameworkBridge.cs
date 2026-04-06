@@ -34,17 +34,17 @@ public class FrameworkBridge
         {
             _handles.Add(Timing.RunCoroutine(Await(framework)));
         }
+    }
 
-        Timing.CallDelayed(3f, () =>
-        {
-            Timing.KillCoroutines(_handles.ToArray());
-            _handles.Clear();
-            Logger.Info(Found.Count == 0
-                ? "No supported framework was found, no additional methods were added."
-                : $"SER has added methods for {Found.Count} supported framework(s): " +
-                  $"{Found.Select(f => f.Type.ToString()).JoinStrings(", ")}"
-            );
-        });
+    public void Finish()
+    {
+        Timing.KillCoroutines(_handles.ToArray());
+        _handles.Clear();
+        Logger.Info(Found.Count == 0
+            ? "No supported framework was found, no additional methods were added."
+            : $"SER has added methods for {Found.Count} supported framework(s): " +
+              $"{Found.Select(f => f.Type.ToString()).JoinStrings(", ")}"
+        );
     }
 
     private IEnumerator<float> Await(Framework framework)
