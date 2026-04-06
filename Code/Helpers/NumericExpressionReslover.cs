@@ -57,7 +57,7 @@ public static class NumericExpressionReslover
             }
         }
         
-        var expression = new Expression(sb.ToString(), EvaluateOptions.None);
+        var expression = new Expression(sb.ToString());
 
         // Now we have the expression string and a variables dictionary.
         return new CompiledExpression(
