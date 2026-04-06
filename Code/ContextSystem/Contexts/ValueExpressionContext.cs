@@ -42,21 +42,20 @@ public class ValueExpressionContext : AdditionalContext
         _initial = initial;
         try
         {
-            if (initial is MethodToken methodToken)
+            switch (initial)
             {
-                _handler = new MethodHandler(methodToken, allowsYielding, initial.Script);
-            }
-            else if (initial is RunFunctionToken)
-            {
-                _handler = new FunctionCallHandler(initial.Script);
-            }
-            else if (initial is not IValueToken valToken)
-            {
-                _error = $"{initial} is not a valid way to get a value.";
-            }
-            else
-            {
-                _initialValueToken = valToken;
+                case MethodToken methodToken:
+                    _handler = new MethodHandler(methodToken, allowsYielding, initial.Script);
+                    break;
+                case RunFunctionToken:
+                    _handler = new FunctionCallHandler(initial.Script);
+                    break;
+                case IValueToken valToken:
+                    _initialValueToken = valToken;
+                    break;
+                default:
+                    _error = $"{initial} is not a valid way to get a value.";
+                    break;
             }
         }
         catch (Exception e)
@@ -356,14 +355,13 @@ public class FunctionCallHandler(Script scr) : ValueExpressionContext.Handler
     {
         if (_func is null)
         {
-            if (scr.DefinedFunctions.TryGetValue(token.RawRep, out var func))
-            {
-                _func = func;
-            }
-            else
+            if (!scr.DefinedFunctions.TryGetValue(token.RawRep, out var func))
             {
                 return TryAddTokenRes.Error($"Function '{token.RawRep}' is not defined.");
             }
+            
+            _func = func;
+            return TryAddTokenRes.Continue();
         }
         
         if (token is IValueToken valToken)
