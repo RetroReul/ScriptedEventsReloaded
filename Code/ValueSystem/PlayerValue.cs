@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using CustomPlayerEffects;
+using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
 using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
@@ -67,6 +68,8 @@ public class PlayerValue : Value, IValueWithProperties
         HumeShield,
         MaxHumeShield,
         HumeShieldRegenRate,
+        Effects,
+        EffectReferences,
         GroupName,
         PositionX,
         PositionY,
@@ -94,7 +97,7 @@ public class PlayerValue : Value, IValueWithProperties
         RelativeY,
         RelativeZ,
         IsNpc,
-        IsDummy,
+        IsDummy
     }
 
     private class Info<T>(Func<Player, T> handler, string? description)
@@ -126,6 +129,8 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.HumeShield] = new Info<NumberValue>(plr => (decimal)plr.HumeShield, null),
         [PlayerProperty.MaxHumeShield] = new Info<NumberValue>(plr => (decimal)plr.MaxHumeShield, null),
         [PlayerProperty.HumeShieldRegenRate] = new Info<NumberValue>(plr => (decimal)plr.HumeShieldRegenRate, null),
+        [PlayerProperty.Effects] = new Info<CollectionValue<TextValue>>(plr => new(plr.ActiveEffects.Select(e => e.GetType().Name.ToStaticTextValue())), "Collection of names of active effects"),
+        [PlayerProperty.EffectReferences] = new Info<CollectionValue<ReferenceValue<StatusEffectBase>>>(plr => new(plr.ActiveEffects), "Collection of references of active effects"),
         [PlayerProperty.GroupName] = new Info<StaticTextValue>(plr => plr.GroupName, "The name of the group (like admin or vip)"),
         [PlayerProperty.PositionX] = new Info<NumberValue>(plr => (decimal)plr.Position.x, null),
         [PlayerProperty.PositionY] = new Info<NumberValue>(plr => (decimal)plr.Position.y, null),
