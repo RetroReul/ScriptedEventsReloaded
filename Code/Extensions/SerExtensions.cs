@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using System.Diagnostics.CodeAnalysis;
+using LabApi.Features.Wrappers;
 using SER.Code.Exceptions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
@@ -40,14 +41,14 @@ public static class SerExtensions
         return $"{valueRep}{value.FriendlyTypeName()} is not a {typeof(TOut).FriendlyTypeName()}";
     }
 
-    public static bool CanReturn<T>(this BaseToken token, out Func<TryGet<T>> get) where T : Value
+    public static bool CanReturn<T>(this BaseToken token, [NotNullWhen(true)] out Func<TryGet<T>>? get) where T : Value
     {
         get = null!;
         if (token is not IValueToken valToken) return false;
         return valToken.CapableOf(out get);
     }
     
-    public static bool CapableOf<T>(this IValueToken valToken, out Func<TryGet<T>> get) where T : Value
+    public static bool CapableOf<T>(this IValueToken valToken, [NotNullWhen(true)] out Func<TryGet<T>>? get) where T : Value
     {
         get = valToken.TryGet<T>;
         
