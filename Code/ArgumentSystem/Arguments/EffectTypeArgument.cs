@@ -34,7 +34,7 @@ public class EffectTypeArgument(string name) : Argument(name)
             return type;
         }
 
-        if (token is not IValueToken valToken || !valToken.CapableOf<LiteralValue>(out var get))
+        if (!token.CanReturn<LiteralValue>(out var get))
         {
             return error;
         }
