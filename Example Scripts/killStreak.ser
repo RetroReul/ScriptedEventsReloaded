@@ -3,7 +3,7 @@
 if {VarExists @evAttacker} is true
     # increment killer's streak
     if {HasPlayerData @evAttacker "streak"}
-        $new = ({GetPlayerData @evAttacker "streak"} + 1)
+        $new = {GetPlayerData @evAttacker "streak"} + 1
     else
         $new = 1
     end
