@@ -37,14 +37,15 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
     [Flags]
     public enum Contribution : ushort
     {
-        ProjectManager = 1 << 8,
-        CodeContributor = 1 << 7,
-        QualityAssurance = 1 << 6,
+        ProjectManager = 1 << 9,
+        CodeContributor = 1 << 8,
+        QualityAssurance = 1 << 7,
+        SponsorWithTooMuchMoney = 1 << 6,
         Sponsor = 1 << 5,
         Betatester = 1 << 4,
         EarlyAdopter = 1 << 3,
         TechSupport = 1 << 2,
-        LegacyDeveloper = 1 << 1
+        LegacyDev = 1 << 1
     }
 
     public static Contributor[] Contributors =>
@@ -65,21 +66,21 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
             "76561198859902154@steam"
         ),
         new(
-            "RetroReul",
-            Contribution.CodeContributor
+            "Luke", 
+            Contribution.SponsorWithTooMuchMoney | Contribution.Betatester,
+            "76561197961020347@steam"
         ),
         new(
-            "Krzysiu Wojownik", 
-            Contribution.QualityAssurance | Contribution.CodeContributor
+            "RetroReul",
+            Contribution.CodeContributor
         ),
         new(
             "Jraylor", 
             Contribution.Sponsor
         ),
         new(
-            "Luke", 
-            Contribution.Sponsor | Contribution.Betatester,
-            "76561197961020347@steam"
+            "Krzysiu Wojownik", 
+            Contribution.QualityAssurance | Contribution.CodeContributor
         ),
         new(
             "Raging Tornado", 
@@ -87,7 +88,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         ),
         new(
             "Thunder", 
-            Contribution.LegacyDeveloper, 
+            Contribution.LegacyDev, 
             "76561198199188486@steam"
         )
     ];
