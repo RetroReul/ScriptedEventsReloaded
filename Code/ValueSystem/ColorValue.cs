@@ -26,4 +26,6 @@ public class ColorValue(Color color) : LiteralValue<Color>(color), IValueWithPro
         ["a"] = new Prop<NumberValue>(c => (decimal)c.Value.a, "Alpha component of the color (0-1)"),
         ["hex"] = new Prop<StaticTextValue>(c => c.Value.ToHex(), "Hexadecimal representation of the color")
     };
+    
+    public static implicit operator ColorValue(Color color) => new(color);
 }

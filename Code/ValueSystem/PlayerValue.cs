@@ -221,7 +221,7 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.IsGrounded] = new Info<BoolValue>(plr => plr.ReferenceHub.IsGrounded(), null),
         [PlayerProperty.Stamina] = new Info<NumberValue>(plr => (decimal)plr.StaminaRemaining, "Returns the player's remaining stamina."),
         [PlayerProperty.MovementState] = new Info<TextValue>(plr => plr.RoleBase is IFpcRole currentRole ? currentRole.FpcModule.CurrentMovementState.ToString().ToStaticTextValue() : new("None"), "Returns the player's movement state or 'None' if the player is not a first-person role."),
-        [PlayerProperty.RoleColor] = new Info<StaticTextValue>(plr => plr.RoleBase.RoleColor.ToHex().ToStaticTextValue(), "Returns the hex value of the player's role color."),
+        [PlayerProperty.RoleColor] = new Info<ColorValue>(plr => plr.RoleBase.RoleColor, "Returns the hex value of the player's role color."),
         [PlayerProperty.LifeId] = new Info<NumberValue>(plr => plr.LifeId, null),
         [PlayerProperty.UnitId] = new Info<NumberValue>(plr => (decimal)plr.UnitId, null),
         [PlayerProperty.Unit] = new Info<TextValue>(plr => NamingRulesManager.ClientFetchReceived(plr.Team, plr.UnitId).ToStaticTextValue(), "Returns the player's unit (e.g FOXTROT-03) if player is NTF or Facility Guard, otherwise returns an empty text value."),
