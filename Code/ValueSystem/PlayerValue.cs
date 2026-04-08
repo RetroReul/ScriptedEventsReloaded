@@ -2,8 +2,10 @@
 using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using PlayerRoles;
+using PlayerRoles.FirstPersonControl;
 using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.PlayableScps.Scp079;
+using Respawning.NamingRules;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.ValueSystem.PropertySystem;
@@ -97,7 +99,17 @@ public class PlayerValue : Value, IValueWithProperties
         RelativeY,
         RelativeZ,
         IsNpc,
-        IsDummy
+        IsDummy,
+        IsSpeaking,
+        IsSpectatable,
+        IsJumping,
+        IsGrounded,
+        Stamina,
+        MovementState,
+        RoleColor,
+        LifeId,
+        UnitId,
+        Unit,
     }
 
     private class Info<T>(Func<Player, T> handler, string? description)
@@ -202,6 +214,16 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.RelativeY] = new Info<NumberValue>(plr => (decimal)plr.RelativeRoomPosition().y, "Returns the player's y relative to the current room or 0 if in no room"),
         [PlayerProperty.RelativeZ] = new Info<NumberValue>(plr => (decimal)plr.RelativeRoomPosition().z, "Returns the player's z relative to the current room or 0 if in no room"),
         [PlayerProperty.IsNpc] = new Info<BoolValue>(plr => plr.IsNpc, "True if it's a player without any client connected to it"),
-        [PlayerProperty.IsDummy] = new Info<BoolValue>(plr => plr.IsDummy, null)
+        [PlayerProperty.IsDummy] = new Info<BoolValue>(plr => plr.IsDummy, null),
+        [PlayerProperty.IsSpeaking] = new Info<BoolValue>(plr => plr.IsSpeaking, null),
+        [PlayerProperty.IsSpectatable] = new Info<BoolValue>(plr => plr.IsSpectatable, null),
+        [PlayerProperty.IsJumping] = new Info<BoolValue>(plr => plr.RoleBase is IFpcRole currentRole && currentRole.FpcModule.Motor.JumpController.IsJumping, null),
+        [PlayerProperty.IsGrounded] = new Info<BoolValue>(plr => plr.ReferenceHub.IsGrounded(), null),
+        [PlayerProperty.Stamina] = new Info<NumberValue>(plr => (decimal)plr.StaminaRemaining, "Returns the player's remaining stamina."),
+        [PlayerProperty.MovementState] = new Info<TextValue>(plr => plr.RoleBase is IFpcRole currentRole ? currentRole.FpcModule.CurrentMovementState.ToString().ToStaticTextValue() : new("None"), "Returns the player's movement state or 'None' if the player is not a first-person role."),
+        [PlayerProperty.RoleColor] = new Info<StaticTextValue>(plr => plr.RoleBase.RoleColor.ToHex().ToStaticTextValue(), "Returns the hex value of the player's role color."),
+        [PlayerProperty.LifeId] = new Info<NumberValue>(plr => plr.LifeId, null),
+        [PlayerProperty.UnitId] = new Info<NumberValue>(plr => (decimal)plr.UnitId, null),
+        [PlayerProperty.Unit] = new Info<TextValue>(plr => NamingRulesManager.ClientFetchReceived(plr.Team, plr.UnitId).ToStaticTextValue(), "Returns the player's unit (e.g FOXTROT-03) if player is NTF or Facility Guard, otherwise returns an empty text value."),
     };
 }
