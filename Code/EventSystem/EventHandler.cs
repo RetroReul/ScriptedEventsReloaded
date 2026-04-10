@@ -40,19 +40,22 @@ public static class EventHandler
         DisabledEvents.Clear();
     }
 
-    internal static void DisableEvent(string evName, ScriptName scriptName)
+    internal static Result DisableEvent(string evName, ScriptName scriptName)
     {
         DisabledEvents.Add(evName);
-        ConnectEvent(evName, scriptName, false);
+        return ConnectEvent(evName, scriptName, false);
     }
 
-    internal static void EnableEvent(string evName, bool unsubscribe = false)
+    internal static bool EnableEvent(string evName, bool unsubscribe = false)
     {
         DisabledEvents.Remove(evName);
         if (unsubscribe && UnsubscribeActions.TryGetValue(evName, out var action))
         {
             action();
+            return true;
         }
+
+        return false;
     }
     
     internal static Result ConnectEvent(string evName, ScriptName scriptName, bool allowNonArg = true) 

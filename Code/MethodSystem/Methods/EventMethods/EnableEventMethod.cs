@@ -2,12 +2,14 @@
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.MethodSystem.MethodDescriptors;
+using SER.Code.ValueSystem;
 using EventHandler = SER.Code.EventSystem.EventHandler;
 
 namespace SER.Code.MethodSystem.Methods.EventMethods;
 
 [UsedImplicitly]
-public class EnableEventMethod : SynchronousMethod
+public class EnableEventMethod : ReturningMethod<BoolValue>, IAdditionalDescription
 {
     public override string Description => "Enables the provided event to run after being disabled.";
 
@@ -18,6 +20,8 @@ public class EnableEventMethod : SynchronousMethod
     
     public override void Execute()
     {
-        EventHandler.EnableEvent(Args.GetText("eventName"));
+        ReturnValue = EventHandler.EnableEvent(Args.GetText("eventName"));
     }
+
+    public string AdditionalDescription => "Returns true if the event was enabled, false if no event of this name was ever disabled.";
 }
