@@ -1,0 +1,32 @@
+using JetBrains.Annotations;
+using LabApi.Features.Enums;
+using LabApi.Features.Wrappers;
+using MapGeneration;
+using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.Extensions;
+using SER.Code.Helpers.ResultSystem;
+using SER.Code.TokenSystem.Tokens;
+using SER.Code.ValueSystem;
+
+namespace SER.Code.ArgumentSystem.Arguments;
+
+public class GeneratorsArgument(string name) : EnumHandlingArgument(name)
+{
+    public override string InputDescription => $"reference to {nameof(Generator)} or * for every generator";
+
+    [UsedImplicitly]
+    public DynamicTryGet<Generator[]> GetConvertSolution(BaseToken token)
+    {
+        if (token is SymbolToken { IsJoker: true })
+        {
+            return new(() => Generator.List.ToArray());
+        }
+
+        if (!token.CanReturn<ReferenceValue<Generator>>(out var func))
+        {
+            return "Value is not a valid reference to a generator.";
+        }
+
+        return new(() => func().OnSuccess(x => new[] { x.Value }));
+    }
+}
