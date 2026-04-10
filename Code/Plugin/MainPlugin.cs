@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using LabApi.Events.Arguments.PlayerEvents;
+using LabApi.Events.CustomHandlers;
 using LabApi.Features;
 using LabApi.Features.Console;
 using LabApi.Features.Wrappers;
@@ -119,7 +120,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         Events.PlayerEvents.Joined += OnJoined;
 
         FileSystem.FileSystem.Initialize();
-        _ = new TeslaRuleHandler();
+        CustomHandlersManager.RegisterEventsHandler(new TeslaRuleHandler());
     }
 
     public override void Disable()

@@ -17,7 +17,7 @@ public class TeslaRuleHandler : CustomEventsHandler
         IgnoredPlayerIds.Clear();
     }
 
-    public override void OnPlayerTriggeringTesla(PlayerTriggeringTeslaEventArgs ev)
+    public override void OnPlayerIdlingTesla(PlayerIdlingTeslaEventArgs ev)
     {
         if (ev.Player is not {} plr) return;
         if (
