@@ -9,6 +9,7 @@ using SER.Code.FlagSystem.Flags;
 using SER.Code.Helpers;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
+using SER.Code.MethodSystem.Methods.TeslaRuleMethds;
 using SER.Code.ScriptSystem;
 using SER.Code.VariableSystem;
 using EventHandler = SER.Code.EventSystem.EventHandler;
@@ -118,12 +119,14 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         Events.PlayerEvents.Joined += OnJoined;
 
         FileSystem.FileSystem.Initialize();
+        _ = new TeslaRuleHandler();
     }
 
     public override void Disable()
     {
         Script.StopAll();
         SetPlayerDataMethod.PlayerData.Clear();
+        TeslaRuleHandler.ResetAll();
     }
 
     private void OnServerFullyInit(FrameworkBridge frameworkBridge)
