@@ -23,6 +23,11 @@ namespace SER.Code.ArgumentSystem;
 public class ProvidedArguments(Method method)
 {
     private Dictionary<(string name, Type type), List<DynamicTryGet>> ArgumentValues { get; } = [];
+
+    public Generator[] GetGenerators(string argName)
+    {
+        return GetValue<Generator[], GeneratorsArgument>(argName);
+    }
     
     public T GetVariable<T>(string argName) where T : Variable
     {

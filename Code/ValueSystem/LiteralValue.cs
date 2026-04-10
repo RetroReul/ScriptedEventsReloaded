@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using SER.Code.Exceptions;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
@@ -44,6 +45,19 @@ public abstract class LiteralValue : Value
     }
 
     public override int HashCode => Value.GetHashCode();
+
+    public override TryGet<object> ToCSharpObject(Type targetType)
+    {
+        if (targetType.IsInstanceOfType(Value)) return Value;
+        try
+        {
+            return Convert.ChangeType(Value, targetType);
+        }
+        catch
+        {
+            return $"Cannot convert {Value.GetType().Name} to {targetType.Name}";
+        }
+    }
     
     [UsedImplicitly]
     public new static string FriendlyName = "literal value";

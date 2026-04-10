@@ -8,7 +8,7 @@ using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using Newtonsoft.Json.Linq;
 
-using Result = SER.Code.MethodSystem.Structures.Result;
+using MethodResult = SER.Code.MethodSystem.Structures.Result;
 
 namespace SER.Code.ValueSystem.PropertySystem;
 
@@ -177,9 +177,9 @@ public static class ReferencePropertyRegistry
         Register<RespawnWave, NumberValue>("influence", w => new NumberValue((decimal)FactionInfluenceManager.Get(w.Faction)), "Faction influence");
         Register<RespawnWave, DurationValue>("timeLeft", w => new DurationValue(TimeSpan.FromSeconds(w.TimeLeft)), "Time left for wave");
 
-        Register<Result, BoolValue>("success", r => new BoolValue(r.Success), "Whether the parsing was successful");
-        Register<Result, BoolValue>("failed", r => new BoolValue(!r.Success), "Whether the parsing has failed");
-        Register<Result, Value>("value", r => r.Value ?? new StaticTextValue("null"), "The value that got parsed");
+        Register<MethodResult, BoolValue>("success", r => new BoolValue(r.Success), "Whether the parsing was successful");
+        Register<MethodResult, BoolValue>("failed", r => new BoolValue(!r.Success), "Whether the parsing has failed");
+        Register<MethodResult, Value>("value", r => r.Value ?? new StaticTextValue("null"), "The value that got parsed");
 
         Register<JObject, Value>("value", obj => Value.Parse(obj, null), "The value of the JSON object");
         
@@ -210,6 +210,7 @@ public static class ReferencePropertyRegistry
         private readonly Type _ownerType;
         private readonly MemberInfo _member;
         private readonly Type _guessedValueType;
+        private readonly Type _memberType;
 
         public UnsafeReferencePropInfo(Type ownerType, MemberInfo member, string? description)
         {
@@ -217,13 +218,19 @@ public static class ReferencePropertyRegistry
             _member = member;
             Description = description!;
 
-            Type memberType = member switch
+            _memberType = member switch
             {
                 PropertyInfo prop => prop.PropertyType,
                 FieldInfo field => field.FieldType,
                 _ => typeof(object)
             };
-            _guessedValueType = Value.GuessValueType(memberType);
+            _guessedValueType = Value.GuessValueType(_memberType);
+            IsSettable = member switch
+            {
+                PropertyInfo prop => prop.CanWrite,
+                FieldInfo field => !field.IsInitOnly && !field.IsLiteral,
+                _ => false
+            };
         }
 
         public override TryGet<Value> GetValue(object obj)
@@ -257,8 +264,40 @@ public static class ReferencePropertyRegistry
             }
         }
 
+        public override Result SetValue(object obj, Value value)
+        {
+            if (!IsSettable) return "Property is read-only.";
+
+            object? target = obj switch
+            {
+                ReferenceValue refVal => refVal.Value,
+                PlayerValue { Players.Length: 1 } plrVal => plrVal.Players[0],
+                _ => obj
+            };
+
+            if (target == null) return "Reference is null";
+            if (!_ownerType.IsInstanceOfType(target)) 
+                return $"Object is not of type {_ownerType.AccurateName}";
+
+            var conversionResult = value.ToCSharpObject(_memberType);
+            if (conversionResult.HasErrored(out var error, out var convertedValue))
+                return error;
+
+            try
+            {
+                if (_member is PropertyInfo prop) prop.SetValue(target, convertedValue);
+                else if (_member is FieldInfo field) field.SetValue(target, convertedValue);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return $"Failed to set property {_member.Name}: {e.Message}";
+            }
+        }
+
         public override SingleTypeOfValue ReturnType => new(_guessedValueType);
         public override bool IsReflected => true;
+        public override bool IsSettable { get; }
 
         [field: AllowNull, MaybeNull]
         public override string Description => field ?? "";

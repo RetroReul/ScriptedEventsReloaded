@@ -9,8 +9,13 @@ namespace SER.Code.ArgumentSystem.Arguments;
 
 public class LooseReferenceArgument(string name, Type type) : Argument(name)
 {
-    private readonly string _validInput = $"a reference to {type.AccurateName} object.";
-    public override string InputDescription => _validInput;
+    // rider optimization :tf:
+    protected string ValidInput
+    {
+        get => $"a reference to {field} object.";
+    } = type != typeof(object) ? type.AccurateName : "any";
+
+    public override string InputDescription => ValidInput;
 
     [UsedImplicitly]
     public virtual DynamicTryGet<object> GetConvertSolution(BaseToken token)
@@ -30,14 +35,13 @@ public class LooseReferenceArgument(string name, Type type) : Argument(name)
             return value.Value;
         }
         
-        return $"The {value} reference is not {_validInput}";
+        return $"The {value} reference is not {ValidInput}";
     }
 }
 
 
 public class ReferenceArgument<TValue>(string name) : LooseReferenceArgument(name, typeof(TValue))
 {
-    private static readonly string ValidInput = $"a reference to {typeof(TValue).AccurateName} object.";
     public override string InputDescription => ValidInput;
 
     [UsedImplicitly]
@@ -58,6 +62,6 @@ public class ReferenceArgument<TValue>(string name) : LooseReferenceArgument(nam
             return tValue;
         }
         
-        return $"The {value} reference is not {ValidInput}";
+        return $"The {value} reference is not valid {typeof(TValue).AccurateName} object";
     }
 }

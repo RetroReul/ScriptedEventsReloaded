@@ -602,25 +602,25 @@ public static class DocsProvider
             
             --- Basic SER value properties ---
             
-            PlayerValue:
+            Player:
             - {{playerPropsList}}
             
-            CollectionValue:
+            Collection:
             - {{collectionPropsList}}
 
-            NumberValue:
+            Number:
             - {{numberPropsList}}
 
-            TextValue:
+            Text:
             - {{textPropsList}}
             
-            BoolValue:
+            Bool:
             - {{boolPropsList}}
             
-            ColorValue:
+            Color:
             - {{colorPropsList}}
             
-            DurationValue:
+            Duration:
             - {{durationPropsList}}
             
             --- Registered C# objects ---
@@ -714,12 +714,14 @@ public static class DocsProvider
         var sortedProps = props.OrderBy(kvp => kvp.Key).ToList();
         var custom = sortedProps.Where(p => !p.Value.IsReflected).ToList();
         var reflected = sortedProps.Where(p => p.Value.IsReflected).ToList();
-        
-        sb.AppendLine("\n--- Base properties ---");
-        foreach (var (name, info) in reflected)
+
+        if (reflected.Count > 0)
         {
-            var returnTypeFriendlyName = info.ReturnType.ToString();
-            sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
+            sb.AppendLine("\n--- Base properties ---");
+            foreach (var (name, info) in reflected)
+            {
+                sb.AppendLine(GetTypeInfo(name, info));
+            }
         }
 
         if (custom.Count > 0)
@@ -727,12 +729,20 @@ public static class DocsProvider
             sb.AppendLine("\n--- Custom SER properties ---");
             foreach (var (name, info) in custom)
             {
-                var returnTypeFriendlyName = info.ReturnType.ToString();
-                sb.AppendLine($"> {name} ({returnTypeFriendlyName}){(string.IsNullOrEmpty(info.Description) ? "" : $" - {info.Description}")}");
+                sb.AppendLine(GetTypeInfo(name, info));
             }
         }
         
         response = sb.ToString();
         return true;
+
+        string GetTypeInfo(string name, IValueWithProperties.PropInfo info)
+        {
+            var returnTypeFriendlyName = info.ReturnType.ToString();
+            return $"> {name} " +
+                   $"({returnTypeFriendlyName}) " +
+                   $"{(info.IsSettable ? "[settable] " : "")}" +
+                   $"{(string.IsNullOrEmpty(info.Description) ? "" : $"- {info.Description}")}";
+        }
     }
 }

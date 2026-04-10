@@ -8,6 +8,7 @@ using PlayerRoles.PlayableScps.Scp079;
 using Respawning.NamingRules;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
@@ -226,4 +227,19 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.UnitId] = new Info<NumberValue>(plr => (decimal)plr.UnitId, null),
         [PlayerProperty.Unit] = new Info<TextValue>(plr => NamingRulesManager.ClientFetchReceived(plr.Team, plr.UnitId).ToStaticTextValue(), "Returns the player's unit (e.g FOXTROT-03) if player is NTF or Facility Guard, otherwise returns an empty text value."),
     };
+
+    public override TryGet<object> ToCSharpObject(Type targetType)
+    {
+        if (targetType == typeof(Player))
+        {
+            if (Players.Length == 1) return Players[0];
+            return "Target requires exactly one player, but multiple or none were provided.";
+        }
+
+        if (targetType.IsAssignableFrom(typeof(Player[]))) return TryGet<object>.Success(Players);
+        if (targetType.IsAssignableFrom(typeof(List<Player>))) return TryGet<object>.Success(Players.ToList());
+        if (targetType.IsAssignableFrom(typeof(IEnumerable<Player>))) return TryGet<object>.Success(Players.AsEnumerable());
+
+        return $"Cannot convert players to {targetType.Name}";
+    }
 }

@@ -18,7 +18,7 @@ public class VoteOptionMethod : ReferenceReturningMethod<VoteOptionMethod.VoteOp
     
     public override Argument[] ExpectedArguments { get; } =
     [
-        new TextArgument("option", allowsSpaces: false)
+        new TextArgument("option", false)
         {
             Description = "This will be the command for voting AND the result of the vote, if it wins."
         },

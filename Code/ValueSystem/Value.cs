@@ -3,6 +3,7 @@ using System.Reflection;
 using LabApi.Features.Wrappers;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem.PropertySystem;
 using Newtonsoft.Json.Linq;
@@ -42,6 +43,8 @@ public abstract class Value
     public abstract bool EqualCondition(Value other);
     
     public abstract int HashCode { get; }
+
+    public abstract TryGet<object> ToCSharpObject(Type targetType);
 
     public static Value Parse(object obj, Script? script)
     {

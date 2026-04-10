@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem;
 using SER.Code.TokenSystem.Slices;
@@ -79,6 +80,17 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
         ["trim"] = new Prop<StaticTextValue>(t => t.Value.Trim(), "Trimmed text"),
         ["isEmpty"] = new Prop<BoolValue>(t => string.IsNullOrEmpty(t.Value), "Whether the text is empty"),
     };
+
+    public override TryGet<object> ToCSharpObject(Type targetType)
+    {
+        if (targetType.IsInstanceOfType(Value)) return Value;
+        if (targetType.IsEnum)
+        {
+            try { return Enum.Parse(targetType, Value, true); }
+            catch { return $"Cannot parse '{Value}' as {targetType.Name}"; }
+        }
+        return base.ToCSharpObject(targetType);
+    }
 }
 
 [UsedImplicitly]

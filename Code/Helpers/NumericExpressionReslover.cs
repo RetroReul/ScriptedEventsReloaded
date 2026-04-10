@@ -147,6 +147,7 @@ public static class NumericExpressionReslover
                 AppendRaw(token.RawRep);
                 return true;
             }
+            case { RawRep: "=" }:
             case { RawRep: "is" }:
             {
                 AppendRaw("==");

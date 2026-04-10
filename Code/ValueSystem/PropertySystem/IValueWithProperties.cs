@@ -8,9 +8,11 @@ public interface IValueWithProperties
     public abstract class PropInfo
     {
         public abstract TryGet<Value> GetValue(object obj);
+        public virtual Result SetValue(object obj, Value value) => "This property is read-only.";
         public abstract SingleTypeOfValue ReturnType { get; }
         public abstract string? Description { get; }
         public virtual bool IsReflected => false;
+        public virtual bool IsSettable => false;
     }
     
     public abstract class PropInfo<T> : PropInfo

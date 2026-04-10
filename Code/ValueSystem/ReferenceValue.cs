@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem.PropertySystem;
 
 namespace SER.Code.ValueSystem;
@@ -24,6 +25,12 @@ public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
 
     public override int HashCode => Value.GetHashCode();
 
+    public override TryGet<object> ToCSharpObject(Type targetType)
+    {
+        if (targetType.IsInstanceOfType(Value)) return Value;
+        return $"Cannot convert reference to {Value.GetType().Name} to {targetType.Name}";
+    }
+    
     [UsedImplicitly]
     public new static string FriendlyName = "reference value";
 

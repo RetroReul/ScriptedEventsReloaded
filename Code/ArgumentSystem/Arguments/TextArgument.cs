@@ -9,25 +9,25 @@ using SER.Code.ValueSystem;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
-public class TextArgument(string name, bool needsQuotes = true, bool allowsSpaces = true) : Argument(name)
+public class TextArgument(string name, bool allowsSpaces = true) : Argument(name)
 {
-    public override string InputDescription => "Any text e.g. \"Hello, World!\""
-        + (!needsQuotes ? " (it can be without the quotes)" : "")
-        + (!allowsSpaces ? " but it CANNOT contain spaces!" : "");
+    public override string InputDescription => allowsSpaces
+        ? "Any text e.g. \"Hello, World!\""
+        : "Text with no spaces and no quotes e.g. someOption";
 
     [UsedImplicitly]
     public DynamicTryGet<string> GetConvertSolution(BaseToken token)
     {
         if (token is TextToken textToken)
         {
-            return new(() => textToken.GetDynamicResolver().Invoke().OnSuccess(SpaceCheck));
+            return new(() => textToken.GetDynamicResolver().Invoke());
         }
         
         if (token is not IValueToken valToken || !valToken.CapableOf<LiteralValue>(out var get))
         {
-            if (!needsQuotes)
+            if (!allowsSpaces)
             {
-                return SpaceCheck(token.GetBestTextRepresentation(null));
+                return token.GetBestTextRepresentation(null).AsSuccess();
             }
             
             return DynamicTryGet.Error("Value cannot represent text.");
@@ -35,19 +35,10 @@ public class TextArgument(string name, bool needsQuotes = true, bool allowsSpace
         
         if (valToken.IsConstant)
         {
-            return get().OnSuccess(v => SpaceCheck(v.StringRep));
+            return get().OnSuccess(v => v.StringRep);
         }
 
-        return new(() => get().OnSuccess(v => SpaceCheck(v.StringRep)));
+        return new(() => get().OnSuccess(v => v.StringRep));
         
-        TryGet<string> SpaceCheck(string value)
-        {
-            if (!allowsSpaces && value.Any(char.IsWhiteSpace))
-            {
-                return "Value contains spaces, which are not allowed".AsError();
-            }
-            
-            return value.AsSuccess();
-        }
     }
 }

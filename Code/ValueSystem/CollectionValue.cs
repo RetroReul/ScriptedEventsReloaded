@@ -194,6 +194,45 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
     {
         return $"[{string.Join(", ", CastedValues.Select(v => v.ToString()))}]";
     }
+
+    public override TryGet<object> ToCSharpObject(Type targetType)
+    {
+        if (targetType.IsInstanceOfType(value)) return TryGet<object>.Success(value);
+
+        Type? elementType = null;
+        if (targetType.IsArray)
+        {
+            elementType = targetType.GetElementType();
+        }
+        else if (targetType.IsGenericType && (targetType.GetGenericTypeDefinition() == typeof(IEnumerable<>) || 
+                                              targetType.GetGenericTypeDefinition() == typeof(List<>) ||
+                                              targetType.GetGenericTypeDefinition() == typeof(IList<>) ||
+                                              targetType.GetGenericTypeDefinition() == typeof(ICollection<>)))
+        {
+            elementType = targetType.GetGenericArguments()[0];
+        }
+
+        if (elementType == null) return $"Cannot convert collection to {targetType.Name}";
+
+        var listType = typeof(List<>).MakeGenericType(elementType);
+        var list = (IList)Activator.CreateInstance(listType);
+
+        foreach (var val in CastedValues)
+        {
+            var converted = val.ToCSharpObject(elementType);
+            if (converted.HasErrored(out var error, out var obj)) return error;
+            list.Add(obj);
+        }
+
+        if (targetType.IsArray)
+        {
+            var array = Array.CreateInstance(elementType, list.Count);
+            list.CopyTo(array, 0);
+            return TryGet<object>.Success(array);
+        }
+
+        return TryGet<object>.Success(list);
+    }
 }
 
 [UsedImplicitly]
