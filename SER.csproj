@@ -119,7 +119,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Code\" />
-      <Folder Include="Example Scripts\" />
     </ItemGroup>
 
     <!-- embedding dependencies into SER.dll -->
