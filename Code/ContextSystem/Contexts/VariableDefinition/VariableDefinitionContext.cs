@@ -21,14 +21,14 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
     where TValue    : Value
     where TVariable : Variable<TValue>
 {
-    private bool _equalSignSet = false;
-    private ValueExpressionContext? _expression = null;
+    protected bool EqualSignSet = false;
+    protected ValueExpressionContext? Expression = null;
 
     public override string FriendlyName => $"'{varToken.RawRep}' variable definition";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
-        if (!_equalSignSet)
+        if (!EqualSignSet)
         {
             if (token is not SymbolToken { RawRep: "=" })
             {
@@ -36,13 +36,13 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
                     "After a variable, an equals sign is expected to set a value to said variable.");
             }
             
-            _equalSignSet = true;
+            EqualSignSet = true;
             return TryAddTokenRes.Continue();
         }
 
-        if (_expression == null)
+        if (Expression == null)
         {
-            _expression = new ValueExpressionContext(token, true)
+            Expression = new ValueExpressionContext(token, true)
             {
                 Script = Script,
                 ParentContext = this
@@ -50,27 +50,27 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
             return TryAddTokenRes.Continue();
         }
 
-        return _expression.TryAddToken(token);
+        return Expression.TryAddToken(token);
     }
 
     public override Result VerifyCurrentState()
     {
-        if (!_equalSignSet) return $"Value for variable '{varToken.RawRep}' was not provided (missing equals sign).";
-        if (_expression is null) return $"Value for variable '{varToken.RawRep}' was not provided.";
-        return _expression.VerifyCurrentState();
+        if (!EqualSignSet) return $"Value for variable '{varToken.RawRep}' was not provided (missing equals sign).";
+        if (Expression is null) return $"Value for variable '{varToken.RawRep}' was not provided.";
+        return Expression.VerifyCurrentState();
     }
 
     protected override IEnumerator<float> Execute()
     {
-        if (_expression is null) throw new AndrzejFuckedUpException();
+        if (Expression is null) throw new AndrzejFuckedUpException();
 
-        var coro = _expression.Run();
+        var coro = Expression.Run();
         while (coro.MoveNext())
         {
             yield return coro.Current;
         }
 
-        if (_expression.GetValue().SuccessTryCast<TValue>().HasErrored(out var error, out var tValue))
+        if (Expression.GetValue().SuccessTryCast<TValue>().HasErrored(out var error, out var tValue))
         {
             throw new ScriptRuntimeError(this, 
                 $"Value returned by {FriendlyName} cannot be assigned to the '{varToken.RawRep}' variable: {error}"

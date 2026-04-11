@@ -176,120 +176,17 @@ public class ValuePropertyHandler(
     BaseToken baseToken, 
     IValueToken valueToken) : ValueExpressionContext.Handler
 {
-    private readonly List<string> _propertyNames = [];
-    private string _exprRepr = baseToken.RawRep;
-    private TypeOfValue _lastValueType = valueToken.PossibleValues;
+    private readonly PropertyAccess _propertyAccess = new(baseToken, valueToken);
 
     public override string FriendlyName => "property access";
-    public override TypeOfValue PossibleValues => _lastValueType;
+    public override TypeOfValue PossibleValues => _propertyAccess.PossibleValues;
 
-    public override TryGet<Value> GetReturnValue()
-    {
-        if (valueToken.Value().HasErrored(out var error, out var value))
-        {
-            return $"Failed to get value from '{_exprRepr}'".AsError()
-                   + error.AsError();
-        }
+    public override TryGet<Value> GetReturnValue() => _propertyAccess.ResolveValue();
 
-        Value current = value;
-        foreach (var prop in _propertyNames)
-        {
-            if (current is not IValueWithProperties propVal)
-            {
-                return $"{current} does not have any properties.";
-            }
-            
-            Console.WriteLine(propVal.Properties.Select(kvp => $"{kvp.Key} -> {kvp.Value.ReturnType}").JoinStrings(", "));
-            
-            IValueWithProperties.PropInfo? propInfo;
-            if (propVal.Properties is IValueWithProperties.IDynamicPropertyDictionary dynamicDict)
-            {
-                if (!dynamicDict.TryGetValue(prop, out propInfo))
-                {
-                    return $"{current} does not have property '{prop}'.";
-                }
-            }
-            else if (!propVal.Properties.TryGetValue(prop, out propInfo))
-            {
-                return $"{current} does not have property '{prop}'.";
-            }
-            
-            if (propInfo.GetValue(current).HasErrored(out var fetchError, out var fetchedValue))
-            {
-                return fetchError;
-            }
-            
-            current = fetchedValue;
-        }
-        
-        return current;
-    }
-
-    public override TryAddTokenRes TryAddToken(BaseToken token)
-    {
-        if (token is SymbolToken { IsArrow: true })
-        {
-            _exprRepr += $" {token.RawRep}";
-            return TryAddTokenRes.Continue();
-        }
-        
-        // type verification
-        if (_lastValueType.AreKnown(out var types))
-        {
-            foreach (var type in types)
-            {
-                if (type == typeof(ReferenceValue))
-                {
-                    _exprRepr += $" {token.RawRep}";
-                    _lastValueType = new UnknownTypeOfValue();
-                    goto found;
-                }
-                
-                var props = Value.GetPropertiesOfValue(type);
-                if (props == null && type == typeof(LiteralValue))
-                {
-                    foreach (var subType in LiteralValue.Subclasses)
-                    {
-                        var subProps = Value.GetPropertiesOfValue(subType);
-                        if (subProps?.TryGetValue(token.RawRep, out var subProp) is true)
-                        {
-                            _exprRepr += $" {token.RawRep}";
-                            _lastValueType = subProp.ReturnType;
-                            goto found;
-                        }
-                    }
-
-                    _exprRepr += $" {token.RawRep}";
-                    _lastValueType = new UnknownTypeOfValue();
-                    goto found;
-                }
-                if (props is IValueWithProperties.IDynamicPropertyDictionary dynamicDict)
-                {
-                    if (dynamicDict.TryGetValue(token.RawRep, out var dynamicProp))
-                    {
-                        _exprRepr += $" {token.RawRep}";
-                        _lastValueType = dynamicProp.ReturnType;
-                        goto found;
-                    }
-                }
-                else if (props?.TryGetValue(token.RawRep, out var property) is true)
-                {
-                    _exprRepr += $" {token.RawRep}";
-                    _lastValueType = property.ReturnType;
-                    goto found;
-                }
-            }
-            
-            return TryAddTokenRes.Error($"'{token.RawRep}' is not a valid property of {_lastValueType}.");
-        }
-        
-        found:
-        _propertyNames.Add(token.RawRep);
-        return TryAddTokenRes.Continue();
-    }
+    public override TryAddTokenRes TryAddToken(BaseToken token) => _propertyAccess.TryAddToken(token);
 
     public override Result VerifyCurrentState() => Result.Assert(
-        _propertyNames.Count > 0, 
+        _propertyAccess.PropertyCount > 0, 
         $"The '{SymbolToken.Arrow}' operator was used, but no property to be accessed was specified."
     );
 
