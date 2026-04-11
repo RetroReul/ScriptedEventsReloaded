@@ -4,6 +4,7 @@ using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Structures;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.Other;
 using SER.Code.VariableSystem.Bases;
 
 namespace SER.Code.TokenSystem.Tokens.VariableTokens;

@@ -5,7 +5,7 @@ using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
-namespace SER.Code.ContextSystem.Contexts.Control.Loops;
+namespace SER.Code.ContextSystem.Contexts.Control;
 
 [UsedImplicitly]
 public class BreakKeyword : StandardContext, IKeywordContext

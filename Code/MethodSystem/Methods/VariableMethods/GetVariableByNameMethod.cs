@@ -7,6 +7,7 @@ using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.TokenSystem;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.Other;
 using SER.Code.VariableSystem;
 using SER.Code.VariableSystem.Bases;
 

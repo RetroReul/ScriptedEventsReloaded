@@ -1,10 +1,13 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ValueSystem.PropertySystem;
+using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 public class BoolValue(bool value) : LiteralValue<bool>(value), IValueWithProperties
 {
+    public override ValueType ValType => ValueType.Bool;
+
     [UsedImplicitly]
     public BoolValue() : this(false) {}
 
@@ -30,6 +33,7 @@ public class BoolValue(bool value) : LiteralValue<bool>(value), IValueWithProper
     {
         ["not"] = new Prop<BoolValue>(b => !b.Value, "Inverted boolean value"),
         ["asNumber"] = new Prop<NumberValue>(b => b.Value ? 1m : 0m, "Converts boolean to number (1 for true, 0 for false)"),
-        ["asString"] = new Prop<StaticTextValue>(b => b.Value.ToString().ToLower(), "Converts boolean to string ('true' or 'false')")
+        ["asString"] = new Prop<StaticTextValue>(b => b.Value.ToString().ToLower(), "Converts boolean to string ('true' or 'false')"),
+        ["valType"] = new Prop<EnumValue<ValueType>>(b => new EnumValue<ValueType>(b.ValType), "The type of the value")
     };
 }

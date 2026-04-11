@@ -3,12 +3,15 @@ using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem.PropertySystem;
+using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 [UsedImplicitly]
 public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
 {
+    public override ValueType ValType => ValueType.Reference;
+
     [UsedImplicitly]
     public ReferenceValue() : this(null) {}
 
@@ -40,7 +43,11 @@ public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
     }
 
     public Dictionary<string, IValueWithProperties.PropInfo> Properties => 
-        ReferencePropertyRegistry.GetProperties(ReferenceType);
+        ReferencePropertyRegistry.GetProperties(ReferenceType)
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase)
+            .Append(new KeyValuePair<string, IValueWithProperties.PropInfo>("valType", 
+                new IValueWithProperties.PropInfo<ReferenceValue, EnumValue<ValueType>>(v => new EnumValue<ValueType>(v.ValType), "The type of the value")))
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 }
 
 [UsedImplicitly]

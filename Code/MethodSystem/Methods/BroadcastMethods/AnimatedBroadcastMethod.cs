@@ -15,7 +15,12 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
     public override Argument[] ExpectedArguments { get; } =
     [
         new DurationArgument("duration"),
-        new TextArgument("content")
+        new TextArgument("content"),
+        new IntArgument("line break length")
+        {
+            Description = "How many characters are needed to make a new line",
+            DefaultValue = new(60, null)
+        }
     ];
     
     public override void Execute()
@@ -25,7 +30,7 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
         Announcer.Clear();
         Announcer.Message(
             $"$SLEEP_{duration} .", 
-            Helper.FormatToCassieCentralScreenSubtitles(content, true), 
+            Helper.FormatToCassieCentralScreenSubtitles(content, Args.GetInt("line break length")), 
             false,
             696969,
             0
@@ -39,7 +44,7 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
 
 public static class Helper
 {
-    public static string FormatToRawCassieSubtitles(string text, bool addWaits)
+    public static string FormatToRawCassieSubtitles(string text, int lineBreakLength)
     {
         var result = "";
         var index = 72;
@@ -58,9 +63,9 @@ public static class Helper
             var parts = new List<string>();
     
             // Split long lines
-            if (len > 80)
+            if (len > lineBreakLength)
             {
-                SplitLongLine(line, parts);
+                SplitLongLine(line, parts, lineBreakLength);
             }
             else
             {
@@ -101,7 +106,7 @@ public static class Helper
         return len;
     }
     
-    private static void SplitLongLine(string line, List<string> parts)
+    private static void SplitLongLine(string line, List<string> parts, int lineBreakLength)
     {
         int? lastUnusedSpaceIndex = null;
         
@@ -109,7 +114,7 @@ public static class Helper
         {
             if (!char.IsWhiteSpace(line[i])) continue;
 
-            if (i <= 50)
+            if (i <= lineBreakLength)
             {
                 lastUnusedSpaceIndex = i;
                 continue;
@@ -120,9 +125,9 @@ public static class Helper
             parts.Add(leftPart);
             
             var rightPart = line[(lastAvailableSpaceIndex + 1)..].Trim();
-            if (CalculateTextLength(rightPart) > 80)
+            if (CalculateTextLength(rightPart) > lineBreakLength)
             {
-                SplitLongLine(rightPart, parts);
+                SplitLongLine(rightPart, parts, lineBreakLength);
             }
             else
             {
@@ -137,21 +142,20 @@ public static class Helper
     
     private static string FormatLine(string text, int index)
     {
-        const string waitReplacement = "<cspace=0em><size=0>.........................</size></cspace>";
-        return $"<voffset={index}em>{text.Replace("[wait]", waitReplacement)}</voffset>\\n";
+        return $"<voffset={index}em>{text}</voffset>\\n";
     }
 
-    public static string FormatToCassieCentralScreenSubtitles(string text, bool addWaits)
+    public static string FormatToCassieCentralScreenSubtitles(string text, int lineBreakLength)
     {
         return
-            @"<line-height=2800>\n</line-height></size><align=center><size=30><line-height=0%>\n"
-            + FormatToRawCassieSubtitles(text, addWaits);
+            @"<line-height=2700>\n</line-height></size><align=center><size=30><line-height=0%>\n"
+            + FormatToRawCassieSubtitles(text, lineBreakLength);
     }
 
-    public static string FormatToCassieSpeechSubtitles(string text, bool addWaits)
-    {
-        return @"<line-height=3500>\n</line-height></size><align=left><size=25><line-height=0%>\n"
-               + FormatToRawCassieSubtitles(text, addWaits);
-    }
+    // public static string FormatToCassieSpeechSubtitles(string text, bool addWaits)
+    // {
+    //     return @"<line-height=3500>\n</line-height></size><align=left><size=25><line-height=0%>\n"
+    //            + FormatToRawCassieSubtitles(text);
+    // }
 }
 

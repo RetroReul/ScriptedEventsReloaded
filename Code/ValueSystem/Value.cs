@@ -8,11 +8,14 @@ using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem.PropertySystem;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 public abstract class Value
 {
+    public abstract ValueType ValType { get; }
+    
     public static Type GuessValueType(Type t)
     {
         if (typeof(Value).IsAssignableFrom(t)) return t;

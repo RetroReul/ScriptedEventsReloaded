@@ -1,10 +1,13 @@
 ﻿using JetBrains.Annotations;
 using SER.Code.ValueSystem.PropertySystem;
+using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 public class NumberValue(decimal value) : LiteralValue<decimal>(value), IValueWithProperties
 {
+    public override ValueType ValType => ValueType.Number;
+
     [UsedImplicitly]
     public NumberValue() : this(0m) {}
 
@@ -34,6 +37,7 @@ public class NumberValue(decimal value) : LiteralValue<decimal>(value), IValueWi
         ["ceil"] = new Prop<NumberValue>(n => Math.Ceiling(n.Value), "Ceiling value of the number"),
         ["isEven"] = new Prop<BoolValue>(n => n.Value % 2 == 0, "Whether the number is even"),
         ["isOdd"] = new Prop<BoolValue>(n => n.Value % 2 != 0, "Whether the number is odd"),
-        ["sign"] = new Prop<NumberValue>(n => (decimal)Math.Sign(n.Value), "Sign of the number (-1, 0, or 1)")
+        ["sign"] = new Prop<NumberValue>(n => (decimal)Math.Sign(n.Value), "Sign of the number (-1, 0, or 1)"),
+        ["valType"] = new Prop<EnumValue<ValueType>>(n => new EnumValue<ValueType>(n.ValType), "The type of the value")
     };
 }

@@ -1,11 +1,14 @@
 ﻿using System.Text;
 using JetBrains.Annotations;
 using SER.Code.ValueSystem.PropertySystem;
+using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IValueWithProperties
 {
+    public override ValueType ValType => ValueType.Duration;
+
     [UsedImplicitly]
     public DurationValue() : this(TimeSpan.Zero) {}
 
@@ -68,6 +71,7 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IVal
         ["totalHours"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalHours, "Total hours in the duration"),
         ["totalMinutes"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMinutes, "Total minutes in the duration"),
         ["totalSeconds"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalSeconds, "Total seconds in the duration"),
-        ["totalMilliseconds"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMilliseconds, "Total milliseconds in the duration")
+        ["totalMilliseconds"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMilliseconds, "Total milliseconds in the duration"),
+        ["valType"] = new Prop<EnumValue<ValueType>>(d => new EnumValue<ValueType>(d.ValType), "The type of the value")
     };
 }

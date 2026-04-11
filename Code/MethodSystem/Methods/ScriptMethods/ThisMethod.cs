@@ -8,6 +8,7 @@ using SER.Code.FlagSystem;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ScriptSystem.Structures;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.Other;
 
 namespace SER.Code.MethodSystem.Methods.ScriptMethods;
 

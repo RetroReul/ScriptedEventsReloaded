@@ -1,4 +1,4 @@
-﻿namespace SER.Code.ValueSystem;
+﻿namespace SER.Code.ValueSystem.Other;
 
 public abstract class TypeOfValue
 {

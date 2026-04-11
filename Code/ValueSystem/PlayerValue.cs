@@ -10,11 +10,14 @@ using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem.PropertySystem;
+using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 public class PlayerValue : Value, IValueWithProperties
 {
+    public override ValueType ValType => ValueType.Player;
+
     public PlayerValue(Player? plr)
     {
         Players = plr is not null
@@ -46,7 +49,10 @@ public class PlayerValue : Value, IValueWithProperties
     public new static string FriendlyName = "player value";
 
     public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = 
-        PropertyInfoMap.ToDictionary(pair => pair.Key.ToString().LowerFirst(), pair => pair.Value, StringComparer.OrdinalIgnoreCase);
+        PropertyInfoMap.ToDictionary(pair => pair.Key.ToString().LowerFirst(), pair => pair.Value, StringComparer.OrdinalIgnoreCase)
+            .Append(new KeyValuePair<string, IValueWithProperties.PropInfo>("valType", 
+                new IValueWithProperties.PropInfo<PlayerValue, EnumValue<ValueType>>(v => new EnumValue<ValueType>(v.ValType), "The type of the value")))
+            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 
     public enum PlayerProperty
     {

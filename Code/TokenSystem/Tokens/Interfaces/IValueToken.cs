@@ -1,5 +1,6 @@
 ﻿using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.Other;
 
 namespace SER.Code.TokenSystem.Tokens.Interfaces;
 
