@@ -29,7 +29,7 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
         var duration = Args.GetDuration("duration").TotalSeconds;
         Announcer.Clear();
         Announcer.Message(
-            $"$SLEEP_{duration} .", 
+            $"$SLEEP_{duration-1} .", 
             Helper.FormatToCassieCentralScreenSubtitles(content, Args.GetInt("line break length")), 
             false,
             696969,
