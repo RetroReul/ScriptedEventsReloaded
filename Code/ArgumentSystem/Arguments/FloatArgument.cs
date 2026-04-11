@@ -55,7 +55,7 @@ public class FloatArgument : Argument
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (_maxValue.HasValue)
             {
-                return $"A number which is at most {FormatNum(_maxValue.Value)} e.g. {FormatNum(_minValue.Value + 2f)}";
+                return $"A number which is at most {FormatNum(_maxValue.Value)} e.g. {FormatNum(_maxValue.Value + 1f)}";
             }
 
             return $"Any number e.g. {FormatNum(1.5)}";
