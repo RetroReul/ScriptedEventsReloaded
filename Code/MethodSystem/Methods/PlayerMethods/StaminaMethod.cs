@@ -13,16 +13,15 @@ public class StaminaMethod : SynchronousMethod
 
     public override Argument[] ExpectedArguments =>
     [
-        new OptionsArgument("options", options:
-        [
-            new("add"),
-            new("remove"),
-            new("set"),
-        ]),
+        new OptionsArgument("options", 
+            "add",
+            "remove",
+            "set"
+        ),
         new PlayersArgument("players"),
-        new FloatArgument("stamina value", 0f, 1f)
+        new FloatArgument("stamina value", 0f, 1f, true)
         {
-            Description = "Stamina is valued from 0 to 1. 0 meaning an empty stamina bar and 1 meaning a full stamina bar."
+            Description = "Stamina is valued from 0 to 100%. 0 meaning an empty stamina bar and 100% meaning a full stamina bar."
         },
         new BoolArgument("delay stamina regen")
         {

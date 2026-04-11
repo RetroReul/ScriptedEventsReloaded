@@ -12,8 +12,13 @@ public class FloatArgument : Argument
 {
     private readonly float? _minValue;
     private readonly float? _maxValue;
+    private readonly bool _preferPercent;
 
-    public FloatArgument(string name, float? minValue = null, float? maxValue = null) : base(name)
+    public FloatArgument(
+        string name,
+        float? minValue = null,
+        float? maxValue = null, 
+        bool preferPercent = false) : base(name)
     {
         if (minValue.HasValue && maxValue.HasValue && minValue.Value > maxValue.Value)
         {
@@ -23,30 +28,37 @@ public class FloatArgument : Argument
         
         _minValue = minValue;
         _maxValue = maxValue;
+        _preferPercent = preferPercent;
     }
 
+    private string FormatNum(double number)
+    {
+        if (!_preferPercent) return number.ToString();
+        return $"{number * 100}%";
+    }
+    
     public override string InputDescription
     {
         get
         {
             if (_minValue.HasValue && _maxValue.HasValue)
             {
-                return $"A number which is at least {_minValue} and most {_maxValue} e.g. " +
-                       $"{Math.Round((double)new Random().Next((int)_minValue.Value, (int)_maxValue.Value + 1))}";
+                return $"A number which is at least {FormatNum(_minValue.Value)} and most {FormatNum(_maxValue.Value)} e.g. " +
+                       $"{FormatNum(Math.Round((double)new Random().Next((int)_minValue.Value, (int)_maxValue.Value + 1)))}";
             }
 
             if (_minValue.HasValue)
             {
-                return $"A number which is at least {_minValue} e.g. {_minValue + 2f}";
+                return $"A number which is at least {FormatNum(_minValue.Value)} e.g. {FormatNum(_minValue.Value + 2f)}";
             }
 
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (_maxValue.HasValue)
             {
-                return $"A number which is at most {_maxValue} e.g. {_minValue + 2f}";
+                return $"A number which is at most {FormatNum(_maxValue.Value)} e.g. {FormatNum(_minValue.Value + 2f)}";
             }
 
-            return "Any number e.g. 2.5";
+            return $"Any number e.g. {FormatNum(1.5)}";
         }
     }
 
