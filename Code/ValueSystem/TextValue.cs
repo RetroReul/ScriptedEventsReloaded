@@ -37,37 +37,56 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
     
     [UsedImplicitly]
     public new static string FriendlyName = "text value";
-    
-    public static string ParseValue(string text, Script script) => ExpressionRegex.Replace(text, match =>
+
+    public static TryGet<ExpressionToken?> ParseExpression(string text, Script script)
     {
-        if (match.Value.StartsWith("~")) return match.Value[1..];
+        if (text.StartsWith("~")) return null as ExpressionToken;
         
-        if (Tokenizer.SliceLine(match.Value).HasErrored(out var error, out var slices))
+        if (Tokenizer.SliceLine(text).HasErrored(out var error, out var enumSlices))
         {
-            Log.ScriptWarn(script, error);
-            return "<error>";
+            return error;
         }
 
-        if (slices.FirstOrDefault() is not CollectionSlice { Type: CollectionBrackets.Curly } collection)
+        if (enumSlices.ToArray() is not [CollectionSlice { Type: CollectionBrackets.Curly } collection])
         {
-            throw new AndrzejFuckedUpException();
+            return "Parsing failed";
         }
         
         // ReSharper disable once DuplicatedSequentialIfBodies
         if (ExpressionToken.TryParse(collection, script).HasErrored(out error, out var token))
         {
-            Log.ScriptWarn(script, error);
-            return "<error>";
+            return error;
         }
 
-        if (((BaseToken)token).TryGet<LiteralValue>().HasErrored(out error, out var value))
+        return token;
+    }
+    
+    public static bool HasExpression(string text) => ExpressionRegex.IsMatch(text);
+    
+    public static string ParseValue(string text, Script script) => ExpressionRegex.Replace(text, match =>
+    {
+        if (ParseExpression(match.Value, script).HasErrored(out var error, out var token) 
+            || ((BaseToken)token).TryGet<LiteralValue>().HasErrored(out error, out var value))
         {
             Log.ScriptWarn(script, error);
             return "<error>";
         }
-            
+
         return value.StringRep;
     });
+    
+    public static Result Lint(string text, Script script)
+    {
+        foreach (var match in ExpressionRegex.Matches(text).Cast<Match>())
+        {
+            if (ParseExpression(match.Value, script).HasErrored(out var error, out var token))
+            {
+                return error;
+            }
+        }
+
+        return true;
+    }
 
     private class Prop<T>(Func<TextValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<TextValue, T>(handler, description) where T : Value;

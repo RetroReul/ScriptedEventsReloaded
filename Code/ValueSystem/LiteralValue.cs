@@ -12,7 +12,12 @@ public abstract class LiteralValue : Value
     
     private static Type[]? _subclasses;
     public static Type[] Subclasses => _subclasses ??= typeof(LiteralValue).Assembly.GetTypes()
-        .Where(t => t.IsClass && t is { IsAbstract: false, IsGenericTypeDefinition: false } && typeof(LiteralValue).IsAssignableFrom(t) && typeof(IValueWithProperties).IsAssignableFrom(t))
+        .Where(t => 
+            t.IsClass 
+            && t is { IsAbstract: false, IsGenericTypeDefinition: false } 
+            && typeof(LiteralValue).IsAssignableFrom(t) 
+            && typeof(IValueWithProperties).IsAssignableFrom(t)
+        )
         .ToArray();
 
     /// <summary>

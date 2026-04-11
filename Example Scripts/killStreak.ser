@@ -13,9 +13,9 @@ if {VarExists @evAttacker} is true
 
     # announce milestone
     if $new is 5
-        Broadcast @all 5s "{@evAttacker name} is on a KILLING SPREE (5 Kills)!"
+        Broadcast @all 5s "{@evAttacker -> name} is on a KILLING SPREE (5 Kills)!"
     elif $new is 10
-        Broadcast @all 5s "{@evAttacker name} is UNSTOPPABLE (10 Kills)!"
+        Broadcast @all 5s "{@evAttacker -> name} is UNSTOPPABLE (10 Kills)!"
     end
 end
 

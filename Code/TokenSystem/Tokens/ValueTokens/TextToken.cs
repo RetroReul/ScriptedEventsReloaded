@@ -14,7 +14,18 @@ public class TextToken : LiteralValueToken<TextValue>
         {
             return new Ignore();
         }
-        
+
+        if (!TextValue.HasExpression(Slice.Value))
+        {
+            Value = new StaticTextValue(Slice.Value);
+            return new Success();
+        }
+
+        if (TextValue.Lint(Slice.Value, scr).HasErrored(out var error))
+        {
+            return new Error(error);
+        }
+
         Value = new DynamicTextValue(Slice.Value, scr);
         return new Success();
     }

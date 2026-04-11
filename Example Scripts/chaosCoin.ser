@@ -178,10 +178,10 @@ if $effect is 9
 
     # we can teleport @swapPlayer directly to @evPlayer
     TPPlayer @swapPlayer @evPlayer 
-    Broadcast @swapPlayer 5s "{$baseText}You have swapped places with {@evPlayer name}"
+    Broadcast @swapPlayer 5s "{$baseText}You have swapped places with {@evPlayer -> name}"
 
     # because @swapPlayer is in the same place as @evPlayer, we need to use the saved values to teleport
     TPPosition @evPlayer $swapX $swapY $swapZ
-    Broadcast @evPlayer 5s "{$baseText}You have swapped places with {@swapPlayer name}"
+    Broadcast @evPlayer 5s "{$baseText}You have swapped places with {@swapPlayer -> name}"
     stop
 end
