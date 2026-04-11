@@ -9,13 +9,12 @@ using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.MethodSystem.Structures;
 using Player = Exiled.API.Features.Player;
 
-
 namespace SER.Code.MethodSystem.Methods.BroadcastMethods;
 
 [UsedImplicitly]
 public class PlayerAnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription, IDependOnFramework
 {
-    public override string Description => "Sends an animated broadcast to all players.";
+    public override string Description => "Sends an animated broadcast to specified players.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -34,8 +33,9 @@ public class PlayerAnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescr
         var content = Args.GetText("content");
         var duration = Args.GetDuration("duration").TotalSeconds;
 
-        foreach (var plr in Args.GetPlayers("players").Select(Player.Get))
+        foreach (var labPlr in Args.GetPlayers("players"))
         {
+            var plr = Player.Get(labPlr);
             plr.Connection.Send(new CassieTtsPayload(string.Empty, string.Empty, false));
             plr.MessageTranslated(
                 $"$SLEEP_{duration-1} .",
