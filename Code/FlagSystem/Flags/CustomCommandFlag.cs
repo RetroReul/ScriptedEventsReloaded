@@ -150,6 +150,34 @@ public class CustomCommandFlag : Flag
             "-- onGlobalCooldownMessage \"This command is on cooldown! You can use this command in %time% seconds\""
         ),
         new(
+            "maxUses",
+            "The maximum number of times a player can use this command.",
+            args => AddMaxUses(args, false),
+            false,
+            "-- maxUses 5"
+        ),
+        new(
+            "onMaxUsesMessage",
+            "Defines a message for when the player tries to run a command but has reached their maximum usage limit.",
+            args => AddOnMaxUsesMessage(args, false),
+            false,
+            "-- onMaxUsesMessage \"You have already used this command 5 times!\""
+        ),
+        new(
+            "globalMaxUses",
+            "The maximum number of times this command can be used globally.",
+            args => AddMaxUses(args, true),
+            false,
+            "-- globalMaxUses 10"
+        ),
+        new(
+            "onGlobalMaxUsesMessage",
+            "Defines a message for when the command has reached its global usage limit.",
+            args => AddOnMaxUsesMessage(args, true),
+            false,
+            "-- onGlobalMaxUsesMessage \"This command has reached its global usage limit!\""
+        ),
+        new(
             "arguments",
             """
             The arguments that this command expects in order to run. 
@@ -190,20 +218,33 @@ public class CustomCommandFlag : Flag
         
         foreach (var console in Command.ConsoleTypes.GetFlags())
         {
-            switch (console)
+            try
             {
-                case ConsoleType.Player:
-                    QueryProcessor.DotCommandHandler.RegisterCommand(Command);
-                    continue;
-                case ConsoleType.Server:
-                    Console.ConsoleCommandHandler.RegisterCommand(Command);
-                    continue;
-                case ConsoleType.RemoteAdmin:
-                    CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(Command);
-                    continue;
-                case ConsoleType.None:
-                default:
-                    throw new AndrzejFuckedUpException();
+                switch (console)
+                {
+                    case ConsoleType.Player:
+                        QueryProcessor.DotCommandHandler.RegisterCommand(Command);
+                        continue;
+                    case ConsoleType.Server:
+                        Console.ConsoleCommandHandler.RegisterCommand(Command);
+                        continue;
+                    case ConsoleType.RemoteAdmin:
+                        CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(Command);
+                        continue;
+                    case ConsoleType.None:
+                    default:
+                        throw new AndrzejFuckedUpException();
+                }
+            }
+            catch
+            {
+                ScriptCommands.TryGetValue(Command, out var flag);
+                
+                Log.CompileError(
+                    flag?.ScriptName ?? "Unknown script",
+                    $"Failed to register command '{Command.Command}' for {console} console. " +
+                    $"Check if there isn't a command with the same name already registered."
+                );
             }
         }
     }
@@ -282,6 +323,14 @@ public class CustomCommandFlag : Flag
         public DateTime? NextEligibleDateForGlobal;
         public string? OnGlobalCooldownMessage;
         
+        public int MaxUses = 0;
+        public readonly Dictionary<Player, int> PlayerUses = [];
+        public string? OnMaxUsesMessage;
+        
+        public int GlobalMaxUses = 0;
+        public int GlobalUses = 0;
+        public string? OnGlobalMaxUsesMessage;
+        
         public string GetHelp(ArraySegment<string> arguments)
         {
             return $"Description: {Description}\n" +
@@ -298,6 +347,16 @@ public class CustomCommandFlag : Flag
         if (sender is IPlayerExecutor { Player: { } player } && HandlePlayer(cmd, player) is { } plrErr)
         {
             return plrErr;
+        }
+
+        if (cmd.GlobalMaxUses > 0 && cmd.GlobalUses >= cmd.GlobalMaxUses)
+        {
+            if (cmd.OnGlobalMaxUsesMessage is not null)
+            {
+                return cmd.OnGlobalMaxUsesMessage;
+            }
+
+            return "This command has reached its global usage limit.";
         }
 
         if (cmd.GlobalCooldown > TimeSpan.Zero)
@@ -377,6 +436,12 @@ public class CustomCommandFlag : Flag
         }
 
         script.AddLocalVariable(new ReferenceVariable("command", new ReferenceValue<CustomCommand>(cmd)));
+        
+        if (cmd.GlobalMaxUses > 0)
+        {
+            cmd.GlobalUses++;
+        }
+        
         script.Run(RunReason.CustomCommand);
         return true;
     }
@@ -409,8 +474,27 @@ public class CustomCommandFlag : Flag
                    $"Required permissions: {cmd.NeededPermissions.JoinStrings(", ")}.";    
         }
         
+        if (cmd.MaxUses > 0)
+        {
+            cmd.PlayerUses.TryGetValue(plr, out var uses);
+            if (uses >= cmd.MaxUses)
+            {
+                if (cmd.OnMaxUsesMessage is not null)
+                {
+                    return cmd.OnMaxUsesMessage;
+                }
+
+                return "You have reached the maximum number of times you can use this command.";
+            }
+        }
+
         if (cmd.PlayerCooldown <= TimeSpan.Zero)
         {
+            if (cmd.MaxUses > 0)
+            {
+                cmd.PlayerUses.TryGetValue(plr, out var uses);
+                cmd.PlayerUses[plr] = uses + 1;
+            }
             return null;
         }
         
@@ -430,6 +514,13 @@ public class CustomCommandFlag : Flag
         }
         
         cmd.NextEligibleDateForPlayer[plr] = DateTime.UtcNow + cmd.PlayerCooldown;
+
+        if (cmd.MaxUses > 0)
+        {
+            cmd.PlayerUses.TryGetValue(plr, out var uses);
+            cmd.PlayerUses[plr] = uses + 1;
+        }
+
         return null;
     }
     
@@ -550,6 +641,44 @@ public class CustomCommandFlag : Flag
             Command.OnCooldownMessage = args.JoinStrings(" ");
         }
         
+        return true;
+    }
+
+    private Result AddMaxUses(string[] args, bool isGlobal)
+    {
+        if (args.Length != 1)
+        {
+            return "Max uses requires exactly one integer value.";
+        }
+
+        if (!int.TryParse(args[0], out var maxUses) || maxUses < 0)
+        {
+            return $"Value '{args[0]}' is not a valid positive integer.";
+        }
+
+        if (isGlobal)
+        {
+            Command.GlobalMaxUses = maxUses;
+        }
+        else
+        {
+            Command.MaxUses = maxUses;
+        }
+
+        return true;
+    }
+
+    private Result AddOnMaxUsesMessage(string[] args, bool isGlobal)
+    {
+        if (isGlobal)
+        {
+            Command.OnGlobalMaxUsesMessage = args.JoinStrings(" ");
+        }
+        else
+        {
+            Command.OnMaxUsesMessage = args.JoinStrings(" ");
+        }
+
         return true;
     }
 }
