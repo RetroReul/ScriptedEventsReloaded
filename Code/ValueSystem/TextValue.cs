@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;

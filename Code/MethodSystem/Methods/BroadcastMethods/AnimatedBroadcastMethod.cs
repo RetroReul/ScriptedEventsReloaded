@@ -40,122 +40,122 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
     public string AdditionalDescription =>
         "Uses CASSIE to make an animated broadcast - if there is CASSIE playing, it will be stopped. " +
         "Keep custom formatting to a minimum, this system is very limited.";
-}
-
-public static class Helper
-{
-    public static string FormatToRawCassieSubtitles(string text, int lineBreakLength)
-    {
-        var result = "";
-        var index = 72;
     
-        foreach (var line in text.Split('\n'))
+    public static class Helper
+    {
+        public static string FormatToRawCassieSubtitles(string text, int lineBreakLength)
         {
-            // Skip empty lines
-            if (line.Length == 0)
-            {
-                index -= 1;
-                continue;
-            }
-    
-            // Calculate actual length excluding HTML tags
-            var len = CalculateTextLength(line);
-            var parts = new List<string>();
-    
-            // Split long lines
-            if (len > lineBreakLength)
-            {
-                SplitLongLine(line, parts, lineBreakLength);
-            }
-            else
-            {
-                parts.Add(line);
-            }
-    
-            // Add all parts to result with proper formatting
-            foreach (var part in parts)
-            {
-                index -= 1;
-                result += FormatLine(part, index);
-            }
-        }
-    
-        return result;
-    }
-    
-    private static int CalculateTextLength(string line)
-    {
-        var len = 0;
-        var isTag = false;
-    
-        foreach (var c in line)
-        {
-            switch (c)
-            {
-                case '<':
-                    isTag = true;
-                    continue;
-                case '>':
-                    isTag = false;
-                    continue;
-            }
-    
-            if (!isTag) len++;
-        }
-    
-        return len;
-    }
-    
-    private static void SplitLongLine(string line, List<string> parts, int lineBreakLength)
-    {
-        int? lastUnusedSpaceIndex = null;
+            var result = "";
+            var index = 72;
         
-        for (var i = 0; i < line.Length; i++)
-        {
-            if (!char.IsWhiteSpace(line[i])) continue;
-
-            if (i <= lineBreakLength)
+            foreach (var line in text.Split('\n'))
             {
-                lastUnusedSpaceIndex = i;
-                continue;
+                // Skip empty lines
+                if (line.Length == 0)
+                {
+                    index -= 1;
+                    continue;
+                }
+        
+                // Calculate actual length excluding HTML tags
+                var len = CalculateTextLength(line);
+                var parts = new List<string>();
+        
+                // Split long lines
+                if (len > lineBreakLength)
+                {
+                    SplitLongLine(line, parts, lineBreakLength);
+                }
+                else
+                {
+                    parts.Add(line);
+                }
+        
+                // Add all parts to result with proper formatting
+                foreach (var part in parts)
+                {
+                    index -= 1;
+                    result += FormatLine(part, index);
+                }
             }
-            
-            var lastAvailableSpaceIndex = lastUnusedSpaceIndex ?? i;
-            var leftPart = line[..lastAvailableSpaceIndex].Trim();
-            parts.Add(leftPart);
-            
-            var rightPart = line[(lastAvailableSpaceIndex + 1)..].Trim();
-            if (CalculateTextLength(rightPart) > lineBreakLength)
-            {
-                SplitLongLine(rightPart, parts, lineBreakLength);
-            }
-            else
-            {
-                parts.Add(rightPart);
-            }
-            
-            return;
+        
+            return result;
         }
         
-        parts.Add(line);
-    }
-    
-    private static string FormatLine(string text, int index)
-    {
-        return $"<voffset={index}em>{text}</voffset>\\n";
-    }
+        private static int CalculateTextLength(string line)
+        {
+            var len = 0;
+            var isTag = false;
+        
+            foreach (var c in line)
+            {
+                switch (c)
+                {
+                    case '<':
+                        isTag = true;
+                        continue;
+                    case '>':
+                        isTag = false;
+                        continue;
+                }
+        
+                if (!isTag) len++;
+            }
+        
+            return len;
+        }
+        
+        private static void SplitLongLine(string line, List<string> parts, int lineBreakLength)
+        {
+            int? lastUnusedSpaceIndex = null;
+            
+            for (var i = 0; i < line.Length; i++)
+            {
+                if (!char.IsWhiteSpace(line[i])) continue;
 
-    public static string FormatToCassieCentralScreenSubtitles(string text, int lineBreakLength)
-    {
-        return
-            @"<line-height=2700>\n</line-height></size><align=center><size=30><line-height=0%>\n"
-            + FormatToRawCassieSubtitles(text, lineBreakLength);
-    }
+                if (i <= lineBreakLength)
+                {
+                    lastUnusedSpaceIndex = i;
+                    continue;
+                }
+                
+                var lastAvailableSpaceIndex = lastUnusedSpaceIndex ?? i;
+                var leftPart = line[..lastAvailableSpaceIndex].Trim();
+                parts.Add(leftPart);
+                
+                var rightPart = line[(lastAvailableSpaceIndex + 1)..].Trim();
+                if (CalculateTextLength(rightPart) > lineBreakLength)
+                {
+                    SplitLongLine(rightPart, parts, lineBreakLength);
+                }
+                else
+                {
+                    parts.Add(rightPart);
+                }
+                
+                return;
+            }
+            
+            parts.Add(line);
+        }
+        
+        private static string FormatLine(string text, int index)
+        {
+            return $"<voffset={index}em>{text}</voffset>\\n";
+        }
 
-    // public static string FormatToCassieSpeechSubtitles(string text, bool addWaits)
-    // {
-    //     return @"<line-height=3500>\n</line-height></size><align=left><size=25><line-height=0%>\n"
-    //            + FormatToRawCassieSubtitles(text);
-    // }
+        public static string FormatToCassieCentralScreenSubtitles(string text, int lineBreakLength)
+        {
+            return
+                @"<line-height=2700>\n</line-height></size><align=center><size=30><line-height=0%>\n"
+                + FormatToRawCassieSubtitles(text, lineBreakLength);
+        }
+
+        // public static string FormatToCassieSpeechSubtitles(string text, bool addWaits)
+        // {
+        //     return @"<line-height=3500>\n</line-height></size><align=left><size=25><line-height=0%>\n"
+        //            + FormatToRawCassieSubtitles(text);
+        // }
+    }
 }
 

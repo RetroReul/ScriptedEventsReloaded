@@ -5,7 +5,6 @@ using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Variables;
 using SER.Code.ValueSystem.PropertySystem;
 using SER.Code.Helpers.ResultSystem;
-using System.Collections.Generic;
 using SER.Code.Exceptions;
 
 namespace SER.Code.ContextSystem.Contexts.VariableDefinition;

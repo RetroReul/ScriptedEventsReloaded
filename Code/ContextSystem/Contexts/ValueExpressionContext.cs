@@ -1,7 +1,6 @@
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
-using SER.Code.Extensions;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods.Interfaces;
