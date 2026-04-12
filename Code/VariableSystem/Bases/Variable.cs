@@ -42,13 +42,15 @@ public abstract class Variable
     
     public static void AssertNoVariableNameCollisions(Variable newVariable, IEnumerable<Variable> existingVariables)
     {
-        if ((existingVariables as Variable[] ?? existingVariables.ToArray())
-            .Any(gv => AreSyntacticallySame(gv, newVariable)))
+        // ReSharper disable once LoopCanBeConvertedToQuery
+        foreach (var gv in existingVariables as Variable[] ?? existingVariables.ToArray())
         {
-            throw new CustomScriptRuntimeError(
-                $"Tried to create a variable '{newVariable}', " +
-                $"but there already exists a variable with the same name."
-            );
+            if (AreSyntacticallySame(gv, newVariable))
+            {
+                throw new CustomScriptRuntimeError(
+                    $"Tried to create a variable '{newVariable}', " + 
+                    $"but there already exists a variable with the same name.");
+            }
         }
     }
 }

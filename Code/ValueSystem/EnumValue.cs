@@ -1,14 +1,11 @@
 using JetBrains.Annotations;
 using SER.Code.Plugin.Commands.HelpSystem;
-using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 [UsedImplicitly]
 public class EnumValue<T> : TextValue where T : struct, Enum
 {
-    public override ValueType ValType => ValueType.Enum;
-
     [UsedImplicitly]
     public EnumValue() : this(default) {}
 
@@ -19,4 +16,6 @@ public class EnumValue<T> : TextValue where T : struct, Enum
 
     [UsedImplicitly]
     public new static string FriendlyName = $"{typeof(T).Name} enum value";
+    
+    public static implicit operator EnumValue<T>(T value) => new(value);
 }

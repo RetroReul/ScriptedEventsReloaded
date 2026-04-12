@@ -15,12 +15,5 @@ public abstract class Context
 
     public abstract Result VerifyCurrentState();
 
-    public static Context Create(Type contextType, Script scr)
-    {
-        var context = (Context)Activator.CreateInstance(contextType);
-        context.Script = scr;
-        return context;
-    }
-
     public abstract override string ToString();
 }

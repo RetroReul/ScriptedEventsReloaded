@@ -8,8 +8,6 @@ namespace SER.Code.ValueSystem;
 [UsedImplicitly]
 public class ColorValue(Color color) : LiteralValue<Color>(color), IValueWithProperties
 {
-    public override ValueType ValType => ValueType.Color;
-
     [UsedImplicitly]
     public ColorValue() : this(Color.white) {}
 
@@ -28,7 +26,7 @@ public class ColorValue(Color color) : LiteralValue<Color>(color), IValueWithPro
         ["b"] = new Prop<NumberValue>(c => (decimal)c.Value.b, "Blue component of the color (0-1)"),
         ["a"] = new Prop<NumberValue>(c => (decimal)c.Value.a, "Alpha component of the color (0-1)"),
         ["hex"] = new Prop<StaticTextValue>(c => c.Value.ToHex(), "Hexadecimal representation of the color"),
-        ["valType"] = new Prop<EnumValue<ValueType>>(c => new EnumValue<ValueType>(c.ValType), "The type of the value")
+        ["valType"] = new Prop<EnumValue<ValueType>>(_ => ValueType.Color, "The type of the value")
     };
     
     public static implicit operator ColorValue(Color color) => new(color);

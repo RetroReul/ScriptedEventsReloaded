@@ -16,8 +16,6 @@ namespace SER.Code.ValueSystem;
 
 public abstract class TextValue : LiteralValue<string>, IValueWithProperties
 {
-    public override ValueType ValType => ValueType.Text;
-
     private static readonly Regex ExpressionRegex = new(@"~?\{.*?\}", RegexOptions.Compiled);
 
     /// <summary>
@@ -100,7 +98,7 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
         ["lower"] = new Prop<StaticTextValue>(t => t.Value.ToLower(), "Lower case of the text"),
         ["trim"] = new Prop<StaticTextValue>(t => t.Value.Trim(), "Trimmed text"),
         ["isEmpty"] = new Prop<BoolValue>(t => string.IsNullOrEmpty(t.Value), "Whether the text is empty"),
-        ["valType"] = new Prop<EnumValue<ValueType>>(t => new EnumValue<ValueType>(t.ValType), "The type of the value")
+        ["valType"] = new Prop<EnumValue<ValueType>>(_ => ValueType.Text, "The type of the value")
     };
 
     public override TryGet<object> ToCSharpObject(Type targetType)

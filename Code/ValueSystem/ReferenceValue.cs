@@ -10,8 +10,6 @@ namespace SER.Code.ValueSystem;
 [UsedImplicitly]
 public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
 {
-    public override ValueType ValType => ValueType.Reference;
-
     [UsedImplicitly]
     public ReferenceValue() : this(null) {}
 
@@ -46,7 +44,7 @@ public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
         ReferencePropertyRegistry.GetProperties(ReferenceType)
             .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase)
             .Append(new KeyValuePair<string, IValueWithProperties.PropInfo>("valType", 
-                new IValueWithProperties.PropInfo<ReferenceValue, EnumValue<ValueType>>(v => new EnumValue<ValueType>(v.ValType), "The type of the value")))
+                new IValueWithProperties.PropInfo<ReferenceValue, EnumValue<ValueType>>(_ => ValueType.Reference, "The type of the value")))
             .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 }
 
@@ -66,5 +64,5 @@ public class ReferenceValue<T>(T? value) : ReferenceValue(value)
     }
 
     [UsedImplicitly]
-    public new static string FriendlyName = $"reference to {typeof(T).AccurateName} object";
+    public new static string FriendlyName = $"reference to {GetFriendlyName(typeof(T))} object";
 }

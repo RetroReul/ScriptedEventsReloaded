@@ -79,6 +79,8 @@ public class Script
     private readonly Dictionary<string, FuncStatement> _definedFunctions = [];
     public ReadOnlyDictionary<string, FuncStatement> DefinedFunctions => new(_definedFunctions);
 
+    private Action<Script>? _beforeExecutionAction;
+    
     public void Reply(string message)
     {
         Executor.Reply(message, this);
@@ -123,6 +125,21 @@ public class Script
         Content = content,
         Executor = ScriptExecutor.Get()
     };
+    
+    public static Script CreateForCallback(
+        string name, 
+        string content, 
+        ScriptExecutor executor, 
+        Action<Script>? beforeExecutionAction = null)
+    {
+        return new Script
+        {
+            Name = ScriptName.InitUnchecked(name),
+            Executor = executor,
+            Content = content,
+            _beforeExecutionAction = beforeExecutionAction
+        };;  
+    }
 
     public static int StopAll()
     {
@@ -195,11 +212,6 @@ public class Script
     /// <returns>Returns a boolean indicating whether the event is allowed.</returns>
     public bool? RunForEvent(RunReason reason, Script? caller = null)
     {
-        if (string.IsNullOrWhiteSpace(Content))
-        {
-            return null;
-        }
-        
         StartTime = DateTime.Now;
         RunReason = reason;
         Caller = caller;
@@ -209,6 +221,8 @@ public class Script
             Executor.Error(error, this);
             return null;
         }
+        
+        _beforeExecutionAction?.Invoke(this);
         
         RunningScriptsList.Add(this);
         //Profile = new Profile(this);
@@ -325,9 +339,12 @@ public class Script
 
     private IEnumerator<float> InternalExecute()
     {
-        if (Compile().HasErrored(out var err))
+        if (_contexts.Length is 0)
         {
-            throw new ScriptCompileError(err);
+            if (Compile().HasErrored(out var err))
+            {
+                throw new ScriptCompileError(err);
+            }
         }
         
         foreach (var context in _contexts)

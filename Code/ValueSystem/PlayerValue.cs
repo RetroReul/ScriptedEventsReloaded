@@ -16,8 +16,6 @@ namespace SER.Code.ValueSystem;
 
 public class PlayerValue : Value, IValueWithProperties
 {
-    public override ValueType ValType => ValueType.Player;
-
     public PlayerValue(Player? plr)
     {
         Players = plr is not null
@@ -51,7 +49,7 @@ public class PlayerValue : Value, IValueWithProperties
     public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = 
         PropertyInfoMap.ToDictionary(pair => pair.Key.ToString().LowerFirst(), pair => pair.Value, StringComparer.OrdinalIgnoreCase)
             .Append(new KeyValuePair<string, IValueWithProperties.PropInfo>("valType", 
-                new IValueWithProperties.PropInfo<PlayerValue, EnumValue<ValueType>>(v => new EnumValue<ValueType>(v.ValType), "The type of the value")))
+                new IValueWithProperties.PropInfo<PlayerValue, EnumValue<ValueType>>(_ => ValueType.Player, "The type of the value")))
             .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 
     public enum PlayerProperty

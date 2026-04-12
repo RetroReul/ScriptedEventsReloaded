@@ -9,6 +9,7 @@ using SER.Code.FileSystem.Structures;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.BaseMethods;
+using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.ScriptSystem;
 using SER.Code.ScriptSystem.Structures;
 using SER.Code.TokenSystem.Tokens;
@@ -24,6 +25,16 @@ public class ProvidedArguments(Method method)
 {
     private Dictionary<(string name, Type type), List<DynamicTryGet>> ArgumentValues { get; } = [];
 
+    public CustomRole GetCustomRole(string argName)
+    {
+        return GetValue<CustomRole, CustomRoleArgument>(argName);
+    }
+    
+    public Action<Value[]> GetCallback(string argName)
+    {
+        return GetValue<Action<Value[]>, CallbackArgument>(argName);
+    }
+    
     public Generator[] GetGenerators(string argName)
     {
         return GetValue<Generator[], GeneratorsArgument>(argName);

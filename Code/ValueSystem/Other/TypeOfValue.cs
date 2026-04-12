@@ -46,7 +46,19 @@ public class UnknownTypeOfValue() : TypeOfValue((Type?)null)
 public class SingleTypeOfValue(Type type) : TypeOfValue(type)
 {
     public readonly Type Type = type;
+
+    public bool Is(SingleTypeOfValue otherType) => otherType.Type == Type;
+    public bool Is<T>() where T : Value => Is(typeof(T));
+    
+    public bool IsSameOrHigherThan(SingleTypeOfValue otherType) => otherType.Type.IsAssignableFrom(Type);
+    public bool IsSameOrHigherThan<T>() where T : Value => IsSameOrHigherThan(typeof(T));
+    
+    public bool CanHold(SingleTypeOfValue otherType) => Type.IsAssignableFrom(otherType.Type);
+    public bool CanHold<T>() where T : Value => CanHold(typeof(T));
+    
     public override string ToString() => Value.GetFriendlyName(Type);
+    
+    public static implicit operator SingleTypeOfValue(Type type) => new(type);
 }
 
 public class TypeOfValue<T>() : SingleTypeOfValue(typeof(T))

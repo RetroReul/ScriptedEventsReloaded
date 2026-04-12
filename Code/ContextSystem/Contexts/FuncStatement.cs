@@ -23,7 +23,7 @@ public class FuncStatement :
 {
     public string FunctionName { get; private set;  } = null!;
     private bool _end = false;
-    private VariableToken[] _expectedVariables = [];
+    public VariableToken[] ExpectedVariables = [];
     private readonly List<Variable> _localVariables = [];
 
     public string KeywordName => "func";
@@ -65,9 +65,7 @@ public class FuncStatement :
                 .FirstOrDefault(pair => pair.prefix == FunctionName.FirstOrDefault())
                 .varTypeToken;
 
-            if (varTypeToken == null) return null;
-
-            return new SingleTypeOfValue(varTypeToken.CreateInstance<VariableToken>().ValueType);
+            return varTypeToken?.CreateInstance<VariableToken>().ValueType;
         }
     }
 
@@ -106,7 +104,7 @@ public class FuncStatement :
 
     public Result SetOptionalVariables(params VariableToken[] variableTokens)
     {
-        _expectedVariables = variableTokens;
+        ExpectedVariables = variableTokens;
         return true;
     }
 
@@ -115,16 +113,16 @@ public class FuncStatement :
         if (LineNum.HasValue)
             Script.CurrentLine = LineNum.Value;
 
-        if (values.Length != _expectedVariables.Length)
+        if (values.Length != ExpectedVariables.Length)
         {
             throw new ScriptRuntimeError(this, 
-                $"Provided [{values.Length}] values, but [{_expectedVariables.Length}] were expected."
+                $"Provided [{values.Length}] values, but [{ExpectedVariables.Length}] were expected."
             );
         }
 
-        foreach (var (value, variableToken) in values.Zip(_expectedVariables, (v, t) => (v, t)))
+        foreach (var (value, variableToken) in values.Zip(ExpectedVariables, (v, t) => (v, t)))
         {
-            if (!variableToken.ValueType.IsInstanceOfType(value))
+            if (value.Type.IsSameOrHigherThan(variableToken.ValueType))
             {
                 throw new ScriptRuntimeError(this, 
                     $"Provided variable '{variableToken.Name}' of type '{value.FriendlyTypeName()}' " +

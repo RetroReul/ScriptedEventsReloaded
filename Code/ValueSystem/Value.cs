@@ -7,14 +7,14 @@ using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem.PropertySystem;
 using Newtonsoft.Json.Linq;
+using SER.Code.ValueSystem.Other;
 using UnityEngine;
-using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
 public abstract class Value
 {
-    public abstract ValueType ValType { get; }
+    public SingleTypeOfValue Type => new(GetType());
     
     public static Type GuessValueType(Type t)
     {
@@ -43,6 +43,15 @@ public abstract class Value
         return typeof(ReferenceValue<>).MakeGenericType(t);
     }
 
+    public static char GetPrefixOfValue(SingleTypeOfValue value)
+    {
+        if (value.IsSameOrHigherThan<LiteralValue>()) return '$';
+        if (value.IsSameOrHigherThan<PlayerValue>()) return '@';
+        if (value.IsSameOrHigherThan<ReferenceValue>()) return '*';
+        if (value.IsSameOrHigherThan<CollectionValue>()) return '&';
+        return '?';
+    }
+    
     public abstract bool EqualCondition(Value other);
     
     public abstract int HashCode { get; }
@@ -103,25 +112,6 @@ public abstract class Value
     
     public static string GetFriendlyName(Type t)
     {
-        if (t.IsGenericType)
-        {
-            var genericType = t.GetGenericTypeDefinition();
-            if (genericType == typeof(ReferenceValue<>))
-            {
-                return $"reference to {GetFriendlyName(t.GetGenericArguments()[0])}";
-            }
-
-            if (genericType == typeof(CollectionValue<>))
-            {
-                return $"collection of {GetFriendlyName(t.GetGenericArguments()[0])}[s]";
-            }
-
-            if (genericType == typeof(EnumValue<>))
-            {
-                return $"enum value of {t.GetGenericArguments()[0].Name}";
-            }
-        }
-
         if (typeof(Value).IsAssignableFrom(t))
         {
             var field = t.GetField("FriendlyName", BindingFlags.Public | BindingFlags.Static);

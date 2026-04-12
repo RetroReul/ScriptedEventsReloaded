@@ -64,7 +64,8 @@ public static class Contexter
                 if (statementStack.Count == 0) 
                     return rs + "There is no valid statement to close with the 'end' keyword! Check if the statement you are trying to close hasn't thrown an error when compiling.".AsError();
 
-                statementStack.Pop();
+                var lastContext = statementStack.Pop();
+                lastContext.EndLine = context.LineNum;
                 return true;
             }
             case IRequirePreviousStatementContext rqsContext:

@@ -65,7 +65,7 @@ public class RunFuncMethod : SynchronousMethod, ICanError
                 throw new AndrzejFuckedUpException();
             }
             
-            if (!varToken.ValueType.IsInstanceOfType(value))
+            if (value.Type.IsSameOrHigherThan(varToken.ValueType))
             {
                 throw new ScriptRuntimeError(this, 
                     $"Function '{scriptToRun.Name}' expects argument {i + 1} to be of type " +

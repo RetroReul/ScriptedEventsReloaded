@@ -130,8 +130,8 @@ public class OverLoop : LoopContext, IAcceptOptionalVariableDefinitionsContext
         _itemIterationVariableToken = itemToken;
         
         if (variableTokens.LastOrDefault() is not {} indexToken || indexToken == itemToken) return true;
-
-        if (!indexToken.ValueType.IsAssignableFrom(typeof(NumberValue)))
+        
+        if (!indexToken.ValueType.CanHold<NumberValue>())
         {
             return $"Provided variable '{indexToken.RawRep}' cannot be used for this loop, " +
                    $"as it cannot hold a {typeof(NumberValue).FriendlyTypeName()}";

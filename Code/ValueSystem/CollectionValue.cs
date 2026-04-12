@@ -10,8 +10,6 @@ namespace SER.Code.ValueSystem;
 
 public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
 {
-    public override ValueType ValType => ValueType.Collection;
-
     private static readonly Random Random = new();
 
     [UsedImplicitly]
@@ -29,10 +27,28 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
             var types = list.Select(i => i.GetType()).Distinct().ToArray();
             if (types.Length > 1)
             {
-                throw new CustomScriptRuntimeError("Collection was detected with mixed types.");
+                var commonBase = types[0];
+                for (var i = 1; i < types.Length; i++)
+                {
+                    var t = types[i];
+                    while (commonBase != null && !commonBase.IsAssignableFrom(t))
+                    {
+                        commonBase = commonBase.BaseType;
+                    }
+                }
+
+                if (commonBase == null || commonBase == typeof(Value) || commonBase == typeof(object))
+                {
+                    throw new CustomScriptRuntimeError("Collection was detected with mixed types.");
+                }
+
+                StoredTypes = commonBase;
+            }
+            else
+            {
+                StoredTypes = types.FirstOrDefault();
             }
             
-            Type = types.FirstOrDefault();
             return field = list.ToArray();
         }
     } = null!;
@@ -42,7 +58,7 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
     /// Returns null if the collection is empty.
     /// </summary>
     /// <exception cref="ScriptRuntimeError">Collection has mixed types</exception>
-    public Type? Type
+    public Type? StoredTypes
     {
         get
         {
@@ -50,20 +66,28 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
             if (field is not null) return field;
             
             var types = CastedValues
-                .ToList()
-                .RemoveNulls()
                 .Select(i => i.GetType())
                 .Distinct()
                 .ToArray();
 
-            return types.Length switch
+            if (types.Length == 1) return field = types[0];
+
+            var commonBase = types[0];
+            for (var i = 1; i < types.Length; i++)
             {
-                > 1 => throw new CustomScriptRuntimeError("Collection was detected with mixed types."),
-                1 => field = types.First(),
-                < 1 => throw new Exception(
-                    "if you see this, the fabric of the universe is collapsing, seek shelter from the darkness"
-                )
-            };
+                var t = types[i];
+                while (commonBase != null && !commonBase.IsAssignableFrom(t))
+                {
+                    commonBase = commonBase.BaseType;
+                }
+            }
+
+            if (commonBase == null || commonBase == typeof(Value) || commonBase == typeof(object))
+            {
+                throw new CustomScriptRuntimeError("Collection was detected with mixed types.");
+            }
+
+            return field = commonBase;
         }
         private set;
     }
@@ -91,7 +115,7 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
         ["random"] = new Prop<Value>(c => c.CastedValues.Length > 0 ? c.CastedValues[Random.Next(c.CastedValues.Length)] : throw new CustomScriptRuntimeError("Collection is empty"), "Random value from the collection"),
         ["sum"] = new Prop<NumberValue>(c => c.CastedValues.OfType<NumberValue>().Sum(n => n.Value), "Sum of all numbers in the collection"),
         ["average"] = new Prop<NumberValue>(c => c.CastedValues.OfType<NumberValue>().Any() ? c.CastedValues.OfType<NumberValue>().Average(n => n.Value) : 0m, "Average of all numbers in the collection"),
-        ["valType"] = new Prop<EnumValue<ValueType>>(c => new EnumValue<ValueType>(c.ValType), "The type of the value")
+        ["valType"] = new Prop<EnumValue<ValueType>>(_ => ValueType.Collection, "The type of the value")
     };
 
     public TryGet<Value> GetAt(int index)
@@ -110,7 +134,7 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
 
     public static CollectionValue Insert(CollectionValue collection, Value value)
     {
-        if (collection.Type is not { } type)
+        if (collection.StoredTypes is not { } type)
         {
             return new CollectionValue(new[] { value });
         }
@@ -131,7 +155,7 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
     /// </summary>
     public static CollectionValue Remove(CollectionValue collection, Value value, int amountToRemove = -1)
     {
-        if (collection.Type is not { } type)
+        if (collection.StoredTypes is not { } type)
         {
             throw new CustomScriptRuntimeError("Collection is empty");
         }
@@ -167,11 +191,11 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
 
     public static CollectionValue operator +(CollectionValue lhs, CollectionValue rhs)
     {
-        if (lhs.Type != rhs.Type)
+        if (lhs.StoredTypes != rhs.StoredTypes)
         {
             throw new CustomScriptRuntimeError(
                 $"Both collections have to be of same type. " +
-                $"Provided types: {lhs.GetType().AccurateName} and {rhs.Type?.AccurateName ?? "none"}"
+                $"Provided types: {lhs.GetType().AccurateName} and {rhs.StoredTypes?.AccurateName ?? "none"}"
             );
         }
 
@@ -180,11 +204,11 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
 
     public static CollectionValue operator -(CollectionValue lhs, CollectionValue rhs)
     {
-        if (lhs.Type != rhs.Type)
+        if (lhs.StoredTypes != rhs.StoredTypes)
         {
             throw new CustomScriptRuntimeError(
                 $"Both collections have to be of same type. " +
-                $"Provided types: {lhs.Type?.AccurateName ?? "none"} and {rhs.Type?.AccurateName ?? "none"}"
+                $"Provided types: {lhs.StoredTypes?.AccurateName ?? "none"} and {rhs.StoredTypes?.AccurateName ?? "none"}"
             );
         }
 
@@ -246,5 +270,7 @@ public class CollectionValue<T>(IEnumerable value) : CollectionValue(value)
     public CollectionValue() : this(Array.Empty<T>()) {}
     
     [UsedImplicitly]
-    public new static string FriendlyName = $"collection of {typeof(T).AccurateName} objects";
+    public new static string FriendlyName = $"collection of {(typeof(T).IsSubclassOf(typeof(Value)) 
+                ? GetFriendlyName(typeof(T)) 
+                : typeof(T).AccurateName)}";
 }

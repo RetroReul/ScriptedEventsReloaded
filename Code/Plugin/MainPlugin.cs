@@ -9,6 +9,7 @@ using SER.Code.Extensions;
 using SER.Code.FlagSystem.Flags;
 using SER.Code.Helpers;
 using SER.Code.MethodSystem;
+using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
 using SER.Code.MethodSystem.Methods.TeslaRuleMethds;
 using SER.Code.ScriptSystem;
@@ -121,10 +122,12 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
         FileSystem.FileSystem.Initialize();
         CustomHandlersManager.RegisterEventsHandler(new TeslaRuleHandler());
+        CustomRole.Register();
     }
 
     public override void Disable()
     {
+        CustomRole.ResetAll();
         Script.StopAll();
         SetPlayerDataMethod.PlayerData.Clear();
         TeslaRuleHandler.ResetAll();

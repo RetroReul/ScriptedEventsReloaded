@@ -15,7 +15,7 @@ public abstract class VariableToken : BaseToken, IContextableToken
     
     public abstract Type VariableType { get; }
     
-    public abstract Type ValueType { get; }
+    public abstract SingleTypeOfValue ValueType { get; }
 
     public abstract RunnableContext? GetContext(Script scr);
 
@@ -44,7 +44,7 @@ public abstract class VariableToken<TVariable, TValue> : VariableToken, IValueTo
     public override string Name { get; protected set; } = null!;
 
     public override Type VariableType => typeof(TVariable);
-    public override Type ValueType => typeof(TValue);
+    public override SingleTypeOfValue ValueType => new(typeof(TValue));
 
     public new TryGet<TVariable> TryGetVariable()
     {

@@ -3,6 +3,7 @@ using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
+using SER.Code.ValueSystem.Other;
 using SER.Code.VariableSystem.Bases;
 
 namespace SER.Code.ContextSystem.BaseContexts;
@@ -12,6 +13,7 @@ public abstract class LoopContextWithSingleIterationVariable<TVal> :
     IAcceptOptionalVariableDefinitionsContext 
     where TVal : Value
 {
+    private readonly SingleTypeOfValue _valueType = typeof(TVal);
     private VariableToken? _iterationVariableToken;
     private Variable? _iterationVariable;
     
@@ -19,7 +21,7 @@ public abstract class LoopContextWithSingleIterationVariable<TVal> :
     {
         if (variableTokens.FirstOrDefault() is not {} varToken) return true;
 
-        if (!varToken.ValueType.IsAssignableFrom(typeof(TVal)))
+        if (!varToken.ValueType.CanHold(_valueType))
         {
             return $"Provided variable '{varToken.RawRepr}' cannot be used for this loop, " +
                    $"as it cannot hold a {typeof(TVal).FriendlyTypeName()}";
