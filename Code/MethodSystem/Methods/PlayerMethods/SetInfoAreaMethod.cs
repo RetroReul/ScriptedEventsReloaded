@@ -24,7 +24,7 @@ public class SetInfoAreaMethod : SynchronousMethod
         var players = Args.GetPlayers("players");
         PlayerInfoArea info = Args.GetRemainingArguments<object, EnumArgument<PlayerInfoArea>>("info area")
             .Cast<PlayerInfoArea>()
-            .Aggregate(PlayerInfoArea.Nickname, (a, b) => a | b);
+            .Aggregate((a, b) => a | b);
         
         players.ForEach(p => p.InfoArea = info);
     }
