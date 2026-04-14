@@ -41,8 +41,8 @@ public class CRole
         plr.SetRole(RoleType);
         
         SpawnAction?.Invoke([
-            new ReferenceValue(this),
-            new PlayerValue(plr)
+            new PlayerValue(plr),
+            new ReferenceValue(this)
         ]);
         
         plr.InfoArea |= PlayerInfoArea.CustomInfo;
@@ -71,8 +71,8 @@ public class CRole
         plr.InfoArea = (PlayerInfoArea)0xFFFF;
         
         RemoveAction?.Invoke([
-            new ReferenceValue(this),
-            new PlayerValue(plr)
+            new PlayerValue(plr),
+            new ReferenceValue(this)
         ]);
     }
     

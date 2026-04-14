@@ -1,9 +1,12 @@
+using Cassie;
 using JetBrains.Annotations;
 using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
+using Utf8Json.Internal.DoubleConversion;
+using StringBuilder = System.Text.StringBuilder;
 
 namespace SER.Code.MethodSystem.Methods.BroadcastMethods;
 
@@ -20,6 +23,11 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
         {
             Description = "How many characters are needed to make a new line",
             DefaultValue = new(60, null)
+        },
+        new DurationArgument("time per character")
+        {
+            Description = "How long each character should be displayed",
+            DefaultValue = new(null, "no applied slowdown")
         }
     ];
     
@@ -27,10 +35,17 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
     {
         var content = Args.GetText("content");
         var duration = Args.GetDuration("duration").TotalSeconds;
+        var timePerChar = Args.GetNullableDuration("time per character");
+        var lineBreakLength = Args.GetInt("line break length");
+        
         Announcer.Clear();
         Announcer.Message(
             $"$SLEEP_{duration-1} .", 
-            Helper.FormatToCassieCentralScreenSubtitles(content, Args.GetInt("line break length")), 
+            Helper.FormatToCassieCentralScreenSubtitles(
+                content, 
+                lineBreakLength,
+                timePerChar
+            ), 
             false,
             696969,
             0
@@ -43,7 +58,7 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
     
     public static class Helper
     {
-        public static string FormatToRawCassieSubtitles(string text, int lineBreakLength)
+        public static string FormatToRawCassieSubtitles(string text, int lineBreakLength, TimeSpan? timePerChar)
         {
             var result = "";
             var index = 72;
@@ -75,7 +90,7 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
                 foreach (var part in parts)
                 {
                     index -= 1;
-                    result += FormatLine(part, index);
+                    result += FormatLine(part, index, timePerChar);
                 }
             }
         
@@ -139,16 +154,43 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
             parts.Add(line);
         }
         
-        private static string FormatLine(string text, int index)
+        private static string FormatLine(string text, int index, TimeSpan? timePerChar)
         {
+            if (timePerChar is { } time)
+            {
+                var dots = new string('c', (int)Math.Round(time.TotalMilliseconds / 20, MidpointRounding.AwayFromZero));
+                StringBuilder newText = new();
+                var isTag = false;
+                foreach (var c in text)
+                {
+                    isTag = c switch
+                    {
+                        '<' => true,
+                        '>' => false,
+                        _ => isTag
+                    };
+
+                    if (!isTag)
+                    {
+                        newText.Append($"<size=0>{dots}</size>{c}");
+                    }
+                    else
+                    {
+                        newText.Append(c);
+                    }
+                }
+                
+                text = newText.ToString();
+            }
+            
             return $"<voffset={index}em>{text}</voffset>\\n";
         }
 
-        public static string FormatToCassieCentralScreenSubtitles(string text, int lineBreakLength)
+        public static string FormatToCassieCentralScreenSubtitles(string text, int lineBreakLength, TimeSpan? timePerChar)
         {
             return
                 @"<line-height=2700>\n</line-height></size><align=center><size=30><line-height=0%>\n"
-                + FormatToRawCassieSubtitles(text, lineBreakLength);
+                + FormatToRawCassieSubtitles(text, lineBreakLength, timePerChar);
         }
 
         // public static string FormatToCassieSpeechSubtitles(string text, bool addWaits)

@@ -28,8 +28,7 @@ public class PlayerValue : Value, IValueWithProperties
     {
         Players = players.ToArray();
     }
-
-    [UsedImplicitly]
+    
     public PlayerValue()
     {
         Players = [];

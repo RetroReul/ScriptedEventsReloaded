@@ -1,4 +1,5 @@
-﻿using LabApi.Features.Wrappers;
+﻿using JetBrains.Annotations;
+using LabApi.Features.Wrappers;
 using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Bases;
 
@@ -11,4 +12,7 @@ public class PlayerVariable(string name, PlayerValue value) : Variable<PlayerVal
     public override string FriendlyName => "player variable";
     public override PlayerValue Value => value;
     public Player[] Players => Value.Players;
+    
+    [UsedImplicitly]
+    public PlayerVariable() : this("temp", null!) {}
 }

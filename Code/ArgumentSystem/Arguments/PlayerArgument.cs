@@ -24,7 +24,7 @@ public class PlayerArgument(string name) : Argument(name)
 
     private TryGet<Player> DynamicSolver(PlayerVariableToken token)
     {
-        if (Script.TryGetVariable<PlayerVariable>(token.Name).HasErrored(out var error, out var variable))
+        if (token.ExactValue.HasErrored(out var error, out var variable))
         {
             return error;
         }

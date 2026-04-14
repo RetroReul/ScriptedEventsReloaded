@@ -23,6 +23,11 @@ public class PlayerAnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescr
         {
             Description = "The maximum amount of characters that can be displayed before making a new line",
             DefaultValue = new(60, null)
+        },
+        new DurationArgument("time per character")
+        {
+            Description = "How long each character should be displayed",
+            DefaultValue = new(null, "no applied slowdown")
         }
     ];
 
@@ -30,13 +35,19 @@ public class PlayerAnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescr
     {
         var content = Args.GetText("content");
         var duration = Args.GetDuration("duration").TotalSeconds;
-
+        var timePerChar = Args.GetNullableDuration("time per character");
+        var lineBreakLength = Args.GetInt("line break length");
+        
         foreach (var plr in Args.GetPlayers("players"))
         {
             plr.Connection.Send(new CassieTtsPayload(string.Empty, string.Empty, false));
             plr.SendCassieMessage(
                 $"$SLEEP_{duration-1} .",
-                AnimatedBroadcastMethod.Helper.FormatToCassieCentralScreenSubtitles(content, Args.GetInt("line break length")),
+                AnimatedBroadcastMethod.Helper.FormatToCassieCentralScreenSubtitles(
+                    content, 
+                    lineBreakLength, 
+                    timePerChar
+                ),
                 false,
                 0
             );

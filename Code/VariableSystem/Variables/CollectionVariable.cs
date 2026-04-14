@@ -1,4 +1,5 @@
-﻿using SER.Code.ValueSystem;
+﻿using JetBrains.Annotations;
+using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Bases;
 
 namespace SER.Code.VariableSystem.Variables;
@@ -9,4 +10,7 @@ public class CollectionVariable(string name, CollectionValue value) : Variable<C
     public override char Prefix => '&';
     public override string FriendlyName => "collection variable";
     public override CollectionValue Value => value;
+    
+    [UsedImplicitly]
+    public CollectionVariable() : this("temp", null!) {}
 }

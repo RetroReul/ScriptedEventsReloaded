@@ -14,12 +14,7 @@ public class CustomRoleArgument(string name) : Argument(name)
     [UsedImplicitly]
     public DynamicTryGet<CRole> GetConvertSolution(BaseToken token)
     {
-        if (token.BestDynamicTextRepr().IsStatic(out var name, out var func))
-        {
-            return Get(name);
-        }
-        
-        return new(() => Get(func()));
+        return new(() => Get(token.BestStaticTextRepr()));
 
         TryGet<CRole> Get(string n)
         {

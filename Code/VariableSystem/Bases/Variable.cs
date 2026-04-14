@@ -16,6 +16,7 @@ public abstract class Variable
     
     public abstract string FriendlyName { get; }
 
+    // todo: replace with reflected field fetch
     public static string GetFriendlyName(Type t)
     {
         return ((Variable)t.CreateInstance()).FriendlyName;
