@@ -13,11 +13,11 @@ public class SpawnWaveMethod : SynchronousMethod
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new WaveTypeArgument("wave")
+        new WaveArgument("wave")
     ];
     
     public override void Execute()
     {
-        WaveManager.Spawn(Args.GetWaveType("wave"));
+        WaveManager.Spawn(Args.GetWave("wave"));
     }
 }

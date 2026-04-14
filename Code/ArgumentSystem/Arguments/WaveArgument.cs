@@ -7,7 +7,7 @@ using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
-public class WaveTypeArgument(string name) : Argument(name)
+public class WaveArgument(string name) : Argument(name)
 {
     public static readonly Type[] WaveTypes = typeof(SpawnableWaveBase).Assembly.GetTypes()
         .Where(t => 
