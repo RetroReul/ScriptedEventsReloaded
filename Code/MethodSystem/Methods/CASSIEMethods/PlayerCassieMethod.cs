@@ -1,19 +1,15 @@
-﻿using Exiled.API.Extensions;
-using Exiled.API.Features;
+﻿
 using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
-using SER.Code.Helpers;
+using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
-using SER.Code.MethodSystem.Structures;
 
 namespace SER.Code.MethodSystem.Methods.CASSIEMethods;
 
 [UsedImplicitly]
-public class PlayerCassieMethod : SynchronousMethod, IDependOnFramework
+public class PlayerCassieMethod : SynchronousMethod
 {
-    public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Exiled;
-    
     public override string Description => "Makes a CASSIE announcement to specified players only.";
 
     public override Argument[] ExpectedArguments { get; } =
@@ -33,22 +29,17 @@ public class PlayerCassieMethod : SynchronousMethod, IDependOnFramework
     public override void Execute()
     {
         var labApiPlayers = Args.GetPlayers("players");
-        Player[] players = [];
-        for (uint i = 0; i < labApiPlayers.Length; i++)
-            players[i] = Player.Get(labApiPlayers[i]);
-        
         var isNoisy = Args.GetOption("mode") == "jingle";
         var message = Args.GetText("message");
         var subtitles = Args.GetText("subtitles");
 
-        foreach (var player in players)
+        foreach (var player in labApiPlayers)
         {
-            player.MessageTranslated(
+            player.SendCassieMessage(
                 message, 
-                subtitles, 
                 subtitles,
                 isNoisy, 
-                !string.IsNullOrWhiteSpace(subtitles)
+                1
             );
         }
     }

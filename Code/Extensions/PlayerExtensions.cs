@@ -1,8 +1,10 @@
-﻿using LabApi.Features.Wrappers;
+﻿using Cassie;
+using LabApi.Features.Wrappers;
 using PlayerRoles.PlayableScps.Scp096;
 using PlayerRoles.PlayableScps.Scp173;
 using SER.Code.Exceptions;
 using UnityEngine;
+using Utils.Networking;
 
 namespace SER.Code.Extensions;
 
@@ -11,6 +13,18 @@ public static class PlayerExtensions
     public static Vector3 RelativeRoomPosition(this Player player)
     {
         return player.Room == null ? new(0,0,0) : player.Room.Transform.InverseTransformPoint(player.Position) - new Vector3(0, player.Scale.y + 0.01f, 0);
+    }
+    
+    public static void SendCassieMessage(
+        this Player player, 
+        string message,
+        string subtitles, 
+        bool playBackground, 
+        float glitchScale)
+    {
+        CassieAnnouncement ann = new(new(message, subtitles, playBackground), glitchScale);
+        ann.OnStartedPlaying();
+        ann.Payload.SendToHubsConditionally(hub => hub == player.ReferenceHub);
     }
 
     extension(Scp173Role peanut)

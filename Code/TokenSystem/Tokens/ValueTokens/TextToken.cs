@@ -1,5 +1,4 @@
-﻿using SER.Code.Helpers.ResultSystem;
-using SER.Code.ScriptSystem;
+﻿using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Slices;
 using SER.Code.TokenSystem.Structures;
 using SER.Code.ValueSystem;
