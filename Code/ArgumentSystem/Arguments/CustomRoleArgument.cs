@@ -4,7 +4,6 @@ using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.TokenSystem.Tokens;
-using SER.Code.TokenSystem.Tokens.VariableTokens;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
@@ -13,27 +12,20 @@ public class CustomRoleArgument(string name) : Argument(name)
     public override string InputDescription => "Custom role id e.g. myCustomRole";
     
     [UsedImplicitly]
-    public DynamicTryGet<CustomRole> GetConvertSolution(BaseToken token)
+    public DynamicTryGet<CRole> GetConvertSolution(BaseToken token)
     {
-        if (CustomRole.RegisteredRoles.TryGetValue(token.GetBestTextRepresentation(Script), out var cr))
+        if (token.BestDynamicTextRepr().IsStatic(out var name, out var func))
         {
-            return cr;
+            return Get(name);
         }
+        
+        return new(() => Get(func()));
 
-        if (token is not LiteralVariableToken varToken)
+        TryGet<CRole> Get(string n)
         {
-            return $"Provided value '{token.RawRep}' is not a valid custom role id.";
+            return CRole.RegisteredRoles.TryGetValue(n, out var cr)
+                ? cr
+                : $"Provided value '{n}' is not a valid custom role id.".AsError();
         }
-
-        return new(() =>
-        {
-            if (varToken.ExactValue.HasErrored(out var error, out var value) 
-                || CustomRole.RegisteredRoles.TryGetValue(value.StringRep, out cr))
-            {
-                return $"Provided value in '{varToken.RawRep}' is not a valid custom role id.".AsError();
-            }
-
-            return cr;
-        });
     }
 }

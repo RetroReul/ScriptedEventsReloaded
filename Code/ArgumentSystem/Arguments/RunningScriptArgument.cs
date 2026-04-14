@@ -15,7 +15,7 @@ public class RunningScriptArgument(string name) : Argument(name)
     {
         return new(() =>
         {
-            var name = token.GetBestTextRepresentation(Script);
+            var name = token.BestStaticTextRepr();
             if (Script.RunningScripts.FirstOrDefault(scr => scr.Name == name) is not {} runningScript)
             {
                 return $"There is no running script named '{name}'";

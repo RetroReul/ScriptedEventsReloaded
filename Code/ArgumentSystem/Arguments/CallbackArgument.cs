@@ -4,7 +4,6 @@ using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Tokens;
-using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
 using SER.Code.ValueSystem.Other;
 using SER.Code.VariableSystem.Bases;
@@ -23,17 +22,12 @@ public class CallbackArgument(string name, params (SingleTypeOfValue type, strin
     [UsedImplicitly]
     public DynamicTryGet<Action<Value[]>> GetConvertSolution(BaseToken token)
     {
-        if (!Verify(token.GetBestTextRepresentation(Script)).HasErrored(out var error, out var script))
+        if (token.BestDynamicTextRepr().IsStatic(out var value, out var func))
         {
-            return script;
+            return Verify(value);
         }
-
-        if (token is not LiteralVariableToken varToken)
-        {
-            return error;
-        }
-
-        return new(() => varToken.ExactValue.OnSuccess(v => Verify(v.StringRep)));
+        
+        return new(() => Verify(func()));
     }
 
     private TryGet<Action<Value[]>> Verify(string name)

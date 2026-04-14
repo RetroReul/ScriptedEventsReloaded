@@ -25,9 +25,9 @@ public class ProvidedArguments(Method method)
 {
     private Dictionary<(string name, Type type), List<DynamicTryGet>> ArgumentValues { get; } = [];
 
-    public CustomRole GetCustomRole(string argName)
+    public CRole GetCustomRole(string argName)
     {
-        return GetValue<CustomRole, CustomRoleArgument>(argName);
+        return GetValue<CRole, CustomRoleArgument>(argName);
     }
     
     public Action<Value[]> GetCallback(string argName)

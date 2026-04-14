@@ -1,5 +1,4 @@
-﻿using MapGeneration;
-using SER.Code.ArgumentSystem.Arguments;
+﻿using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 
@@ -14,7 +13,7 @@ public abstract class EnumHandlingArgument(string name) : Argument(name)
     {
         foreach (var enumType in handlers.Keys)
         {
-            if (EnumArgument< /* dummy type */ RoomName>.ConvertOne(token.GetBestTextRepresentation(Script), enumType)
+            if (EnumArgument.ConvertOne(token.BestStaticTextRepr(), enumType)
                 .HasErrored(out _, out var enumValue))
             {
                 continue;

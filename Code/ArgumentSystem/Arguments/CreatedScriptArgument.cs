@@ -13,6 +13,6 @@ public class CreatedScriptArgument(string name) : Argument(name)
     [UsedImplicitly]
     public DynamicTryGet<Script> GetConvertSolution(BaseToken token)
     {
-        return new(() => Script.CreateByScriptName(token.GetBestTextRepresentation(Script), null));
+        return new(() => Script.CreateByScriptName(token.BestStaticTextRepr(), null));
     }
 }

@@ -18,27 +18,11 @@ public class TextArgument(string name, bool allowsSpaces = true) : Argument(name
     [UsedImplicitly]
     public DynamicTryGet<string> GetConvertSolution(BaseToken token)
     {
-        if (token is TextToken textToken)
+        if (token.BestDynamicTextRepr().IsStatic(out var value, out var func))
         {
-            return new(() => textToken.GetDynamicResolver().Invoke());
-        }
-        
-        if (token is not IValueToken valToken || !valToken.CapableOf<LiteralValue>(out var get))
-        {
-            if (!allowsSpaces)
-            {
-                return token.GetBestTextRepresentation(null).AsSuccess();
-            }
-            
-            return DynamicTryGet.Error("Value cannot represent text.");
-        }
-        
-        if (valToken.IsConstant)
-        {
-            return get().OnSuccess(v => v.StringRep);
+            return value.AsSuccess();
         }
 
-        return new(() => get().OnSuccess(v => v.StringRep));
-        
+        return new(() => func().AsSuccess());
     }
 }

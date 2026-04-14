@@ -7,12 +7,11 @@ using SER.Code.Exceptions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
-using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.CustomRoleMethods;
 
 [UsedImplicitly]
-public class RegisterCustomRoleMethod : SynchronousMethod, ICanError
+public class RegisterCRoleMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Registers a custom role.";
 
@@ -37,27 +36,13 @@ public class RegisterCustomRoleMethod : SynchronousMethod, ICanError
         new BoolArgument("remove role on death")
         {
             DefaultValue = new(true, null),
-        },
-        new CallbackArgument("on spawning", 
-            (typeof(ReferenceValue<CustomRole>), "role"),
-            (typeof(PlayerValue), "player"))
-        {
-            Description = "This will be called when a player is being spawned with this role.",
-            DefaultValue = new(null, "no spawning callback")
-        },
-        new CallbackArgument("on removing", 
-            (typeof(ReferenceValue<CustomRole>), "role"),
-            (typeof(PlayerValue), "player"))
-        {
-            Description = "This will be called when this role is being taken away from a player.",
-            DefaultValue = new(null, "no removing callback")
         }
     ];
 
     public override void Execute()
     {
         var id = Args.GetText("id");
-        if (CustomRole.RegisteredRoles.ContainsKey(id))
+        if (CRole.RegisteredRoles.ContainsKey(id))
         {
             throw new ScriptRuntimeError(this, $"Provided custom role id {id} is already registered.");
         }
@@ -68,16 +53,15 @@ public class RegisterCustomRoleMethod : SynchronousMethod, ICanError
             throw new ScriptRuntimeError(this, $"Display name uses an invalid format: {reason}");
         }
         
-        CustomRole.RegisteredRoles.Add(
+        CRole.RegisteredRoles.Add(
             id,
             new()
             {
+                Id = id,
                 DisplayName = displayName,
                 RoleType = Args.GetEnum<RoleTypeId>("role type"),
                 RemoveRoleOnDeath = Args.GetBool("remove role on death"),
-                SpawnInfo = Args.GetReference<CustomRoleSpawnSystem>("spawn system"),
-                SpawnAction = Args.GetCallback("on spawning"),
-                RemoveAction = Args.GetCallback("on removing")
+                SpawnInfo = Args.GetReference<CustomRoleSpawnSystem>("spawn system")
             }
         );
     }

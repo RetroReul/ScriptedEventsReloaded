@@ -13,7 +13,7 @@ namespace SER.Code.MethodSystem.Methods.CustomRoleMethods;
 [UsedImplicitly]
 public class BracketSpawnSystemMethod : ReferenceReturningMethod<CustomRoleSpawnSystem>, ICanError
 {
-    public override string Description => "Creates a bracket spawn system for a custom role.";
+    public override string Description => "Creates a spawn for a custom roles that uses ranges of available players.";
 
     public string[] ErrorReasons { get; } =
     [
@@ -55,8 +55,7 @@ public class BracketSpawnSystemMethod : ReferenceReturningMethod<CustomRoleSpawn
             // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
             foreach (var bracket in brackets)
             {
-                var covered = bracket[i];
-                if (!covered) continue;
+                if (!bracket[i]) continue;
                 
                 if (!found)
                 {

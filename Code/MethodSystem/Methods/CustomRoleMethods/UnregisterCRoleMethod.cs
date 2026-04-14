@@ -2,26 +2,22 @@ using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 
 namespace SER.Code.MethodSystem.Methods.CustomRoleMethods;
 
 [UsedImplicitly]
-public class SetCustomRoleMethod : SynchronousMethod
+public class UnregisterCRoleMethod : SynchronousMethod
 {
-    public override string Description => "Assigns a custom role to a player.";
+    public override string Description => "Unregisters a given custom role from the server.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new PlayersArgument("players"),
         new CustomRoleArgument("custom role")
     ];
     
     public override void Execute()
     {
-        var players = Args.GetPlayers("players");
-        var customRole = Args.GetCustomRole("custom role");
-        
-        foreach (var player in players)
-            customRole.AssignPlayer(player);
+        CRole.RegisteredRoles.Remove(Args.GetCustomRole("custom role").Id);
     }
 }

@@ -1,10 +1,11 @@
-﻿using SER.Code.Exceptions;
+﻿using System.Diagnostics.CodeAnalysis;
+using SER.Code.Exceptions;
 
 namespace SER.Code.Helpers.ResultSystem;
 
 public abstract class DynamicTryGet
 {
-    public Safe<bool> IsStatic { get; protected init; }
+    public bool Static { get; protected init; }
     
     public abstract Result Result { get; }
     
@@ -24,6 +25,14 @@ public class DynamicTryGet<T> : DynamicTryGet
     private readonly Func<TryGet<T>>? _tryGetFunc;
     private readonly TryGet<T>? _tryGet;
 
+    public bool IsStaticSuccess([NotNullWhen(true)] out T? value, out Func<TryGet<T>>? tryGetFunc)
+    {
+        tryGetFunc = _tryGetFunc;
+        value = default;
+        if (!Static) return false;
+        return Invoke().WasSuccessful(out value);
+    }
+    
     public override Result Result
     {
         get
@@ -57,7 +66,7 @@ public class DynamicTryGet<T> : DynamicTryGet
 
     public DynamicTryGet(T value)
     {
-        IsStatic = true;
+        Static = true;
         _tryGet = value;
     }
 
@@ -65,7 +74,7 @@ public class DynamicTryGet<T> : DynamicTryGet
     
     public DynamicTryGet(Result result)
     {
-        IsStatic = true;
+        Static = true;
         _tryGet = result;
     }
 
@@ -74,7 +83,7 @@ public class DynamicTryGet<T> : DynamicTryGet
 
     public DynamicTryGet(string error)
     {
-        IsStatic = true;
+        Static = true;
         _tryGet = error;
     }
 
@@ -83,7 +92,7 @@ public class DynamicTryGet<T> : DynamicTryGet
 
     public DynamicTryGet(TryGet<T> tryGet)
     {
-        IsStatic = true;
+        Static = true;
         _tryGet = tryGet;
     }
 
@@ -92,7 +101,7 @@ public class DynamicTryGet<T> : DynamicTryGet
 
     public DynamicTryGet(Func<TryGet<T>> tryGetFunc)
     {
-        IsStatic = false;
+        Static = false;
         _tryGetFunc = tryGetFunc;
     }
 

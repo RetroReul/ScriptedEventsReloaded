@@ -3,13 +3,29 @@ using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.Plugin.Commands.HelpSystem;
-using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
-public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
+public abstract class EnumArgument(string name) : Argument(name)
+{
+    public static TryGet<object> ConvertOne(string stringRep, Type enumType)
+    {
+        stringRep = stringRep.Trim();
+        
+        // only allow exact matches or matches with the first letter not capitalized
+        if (Enum.IsDefined(enumType, stringRep) || 
+            Enum.GetNames(enumType).Any(n => n.LowerFirst() == stringRep))
+        {
+            return Enum.Parse(enumType, stringRep, true);
+        }
+        
+        return $"Value '{stringRep}' is not a {enumType.AccurateName} enum value.";
+    }
+}
+
+public class EnumArgument<TEnum> : EnumArgument where TEnum : struct, Enum
 {
     private readonly bool _isFlag;
     
@@ -51,11 +67,11 @@ public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
         });
     }
 
-    public static TryGet<TEnum> Convert(BaseToken token, Script script, bool isFlag)
+    public static TryGet<TEnum> Convert(BaseToken token, bool isFlag)
     {
         if (!isFlag)
         {
-            if (ConvertOne(token.GetBestTextRepresentation(script), typeof(TEnum))
+            if (ConvertOne(token.BestStaticTextRepr(), typeof(TEnum))
                 .HasErrored(out var error, out var value))
             {
                 return error;
@@ -66,7 +82,7 @@ public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
 
         ulong result = 0;
         foreach (var part in token
-                     .GetBestTextRepresentation(script)
+                     .BestStaticTextRepr()
                      .Split(['|'], StringSplitOptions.RemoveEmptyEntries))
         {
             if (ConvertOne(part, typeof(TEnum)).HasErrored(out var error, out var value))
@@ -85,22 +101,8 @@ public class EnumArgument<TEnum> : Argument where TEnum : struct, Enum
         return ConvertOne(stringRep, typeof(TEnum)).OnSuccess(v => (TEnum)v);
     }
 
-    public static TryGet<object> ConvertOne(string stringRep, Type enumType)
-    {
-        stringRep = stringRep.Trim();
-        
-        // only allow exact matches or matches with the first letter not capitalized
-        if (Enum.IsDefined(enumType, stringRep) || 
-            Enum.GetNames(enumType).Any(n => n.LowerFirst() == stringRep))
-        {
-            return Enum.Parse(enumType, stringRep, true);
-        }
-        
-        return $"Value '{stringRep}' is not a {enumType.AccurateName} enum value.";
-    }
-
     private TryGet<TEnum> InternalConvert(BaseToken token)
     {
-        return Convert(token, Script, _isFlag);
+        return Convert(token, _isFlag);
     }
 }

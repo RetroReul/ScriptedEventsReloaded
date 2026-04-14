@@ -4,7 +4,6 @@ using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
-using SER.Code.ValueSystem;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
@@ -24,17 +23,12 @@ public class WaveTypeArgument(string name) : Argument(name)
     [UsedImplicitly]
     public DynamicTryGet<SpawnableWaveBase> GetConvertSolution(BaseToken token)
     {
-        if (!InternalConvert(token.GetBestTextRepresentation(Script)).HasErrored(out var error, out var type))
+        if (token.BestDynamicTextRepr().IsStatic(out var name, out var func))
         {
-            return type;
+            return InternalConvert(name);
         }
-
-        if (!token.CanReturn<LiteralValue>(out var get))
-        {
-            return error;
-        }
-
-        return new(get().OnSuccess(lVal => InternalConvert(lVal.StringRep)));
+        
+        return new(() => InternalConvert(func()));
     }
 
     private static TryGet<SpawnableWaveBase> InternalConvert(string name)

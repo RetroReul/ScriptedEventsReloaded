@@ -38,7 +38,7 @@ public static class ScriptFlagHandler
                 return;
             }
             
-            var args = tokens.Skip(2).Select(t => t.GetBestTextRepresentation(null)).ToArray();
+            var args = tokens.Skip(2).Select(t => t.BestStaticTextRepr()).ToArray();
             var prefix = tokens.FirstOrDefault();
             
             var result = prefix switch

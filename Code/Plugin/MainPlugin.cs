@@ -122,12 +122,12 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
         FileSystem.FileSystem.Initialize();
         CustomHandlersManager.RegisterEventsHandler(new TeslaRuleHandler());
-        CustomRole.Register();
+        CRole.RegisterEvents();
     }
 
     public override void Disable()
     {
-        CustomRole.ResetAll();
+        CRole.ResetAll();
         Script.StopAll();
         SetPlayerDataMethod.PlayerData.Clear();
         TeslaRuleHandler.ResetAll();

@@ -8,6 +8,8 @@ namespace SER.Code.TokenSystem.Tokens.ValueTokens;
 
 public class TextToken : LiteralValueToken<TextValue>
 {
+    public bool IsDynamic => Value is DynamicTextValue;
+    
     protected override IParseResult InternalParse(Script scr)
     {
         if (Slice is not CollectionSlice { Type: CollectionBrackets.Quotes })
@@ -28,13 +30,5 @@ public class TextToken : LiteralValueToken<TextValue>
 
         Value = new DynamicTextValue(Slice.Value, scr);
         return new Success();
-    }
-    
-    public DynamicTryGet<string> GetDynamicResolver()
-    {
-        if (Value is DynamicTextValue) 
-            return new(() => TryGet<string>.Success(Value));
-        
-        return DynamicTryGet.Success(Value.Value);
     }
 }

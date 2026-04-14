@@ -17,7 +17,7 @@ public class Database
     
     private static readonly JsonSerializerSettings Settings = new()
     {
-        TypeNameHandling = TypeNameHandling.Auto
+        TypeNameHandling = TypeNameHandling.All
     };
     
     private readonly string _path;

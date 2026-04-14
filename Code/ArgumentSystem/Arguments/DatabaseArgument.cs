@@ -13,6 +13,6 @@ public class DatabaseArgument(string name) : Argument(name)
     [UsedImplicitly]
     public DynamicTryGet<Database> GetConvertSolution(BaseToken token)
     {
-        return new(() => Database.TryGet(token.GetBestTextRepresentation(Script)));
+        return new(() => Database.TryGet(token.BestStaticTextRepr()));
     }
 }

@@ -1,18 +1,19 @@
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.Handlers;
 using LabApi.Features.Wrappers;
+using MEC;
 using PlayerRoles;
-using SER.Code.Helpers;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 
-public class CustomRole
+public class CRole
 {
-    public static readonly Dictionary<string, CustomRole> RegisteredRoles = [];
-    public static readonly Dictionary<Player, CustomRole> AssignedRoles = [];
-    public static readonly Dictionary<Player, CustomRole> LastRoles = [];
-    
+    public static readonly Dictionary<string, CRole> RegisteredRoles = [];
+    public static readonly Dictionary<Player, CRole> AssignedRoles = [];
+    public static readonly Dictionary<Player, CRole> LastRoles = [];
+
+    public required string Id;
     public required string DisplayName;
     public required RoleTypeId RoleType;
     public CustomRoleSpawnSystem? SpawnInfo;
@@ -52,21 +53,33 @@ public class CustomRole
         plr.CustomInfo = $"{plr.DisplayName}\n{DisplayName}";
     }
 
+    public static void RemoveRoleFrom(Player plr)
+    {
+        if (!AssignedRoles.TryGetValue(plr, out var role))
+        {
+            return;
+        }
+        
+        role.RemovePlayer(plr);
+    }
+
     public void RemovePlayer(Player plr)
     {
-        plr.CustomInfo = "";
-        
         AssignedRoles.Remove(plr);
+        
+        plr.CustomInfo = "";
+        plr.InfoArea = (PlayerInfoArea)0xFFFF;
+        
         RemoveAction?.Invoke([
             new ReferenceValue(this),
             new PlayerValue(plr)
         ]);
     }
     
-    public static void Register()
+    public static void RegisterEvents()
     {
         PlayerEvents.Death += OnDeath;
-        ServerEvents.RoundStarted += OnRoundStarted;
+        ServerEvents.RoundStarted += () => Timing.CallDelayed(Timing.WaitForOneFrame, OnRoundStarted);
     }
 
     private static void OnRoundStarted()
@@ -79,14 +92,12 @@ public class CustomRole
                     continue;
                 case ProceduralSpawn procedural:
                 {
-                    Log.Signal(1);
-                    var pool = Player.List.Where(p => p.Role == procedural.RoleToReplace).ToArray();
+                    var pool = Player.ReadyList.Where(p => p.Role == procedural.RoleToReplace).ToArray();
                     if (pool.Length < procedural.StartSpawningWhen)
                     {
-                        Log.Signal(2);
                         continue;
                     }
-            
+                    
                     var playersToAssign = pool
                         .Where(p => !AssignedRoles.ContainsKey(p))
                         .Where(_ => procedural.SpawnChance > new Random().NextDouble())
@@ -97,21 +108,18 @@ public class CustomRole
                     {
                         playersToAssign = playersToAssign.Take(maxAmountToSpawn).ToList();
                     }
-            
-                    Log.Signal(3);
+
                     playersToAssign.ForEach(p => role.AssignPlayer(p));
                     break;
                 }
                 case BracketSpawn bracketSpawn:
                 {
-                    Log.Signal(4);
                     var pool = Player.List.Where(p => p.Role == bracketSpawn.RoleToReplace).ToArray();
                 
                     foreach (var bracket in bracketSpawn.SpawnBrackets)
                     {
                         if (bracket.LowerBound > pool.Length || pool.Length > bracket.UpperBound)
                         {
-                            Log.Signal(5);
                             continue;
                         }
 
@@ -124,7 +132,6 @@ public class CustomRole
                             if (availablePlayers.Count <= 0) return;
                         
                             var plr = availablePlayers.PullRandomItem();
-                            Log.Signal(6);
                             role.AssignPlayer(plr);
                         }
                     }
@@ -133,8 +140,6 @@ public class CustomRole
                 }
             }
         }
-        
-        Log.Signal(7);
     }
 
     public static void OnDeath(PlayerDeathEventArgs ev)

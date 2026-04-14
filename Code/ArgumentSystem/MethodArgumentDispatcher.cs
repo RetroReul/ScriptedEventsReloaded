@@ -83,7 +83,7 @@ public class MethodArgumentDispatcher(Method method)
         var argType = arg.GetType();
         
         var evaluator = GetConverterInfo(argType).Invoke(token, arg);
-        if (!evaluator.IsStatic)
+        if (!evaluator.Static)
         {
             return new ArgumentValueInfo
             {

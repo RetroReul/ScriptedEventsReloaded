@@ -48,23 +48,34 @@ public class BaseToken
         return new Success();
     }
     
-    public string GetBestTextRepresentation(Script? script)
+    public string BestStaticTextRepr() => InternalBestTextExpr().Value;
+    
+    public DynamicGet<string> BestDynamicTextRepr() => InternalBestTextExpr();
+    
+    public DynamicGet<string> InternalBestTextExpr()
     {
         // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (this is TextToken textToken)
         {
-            return textToken.Value;
-        }
-        
-        if (this is IValueToken valueToken && valueToken.CapableOf<LiteralValue>(out var func) && script is not null)
-        {
-            if (func().WasSuccessful(out var result))
+            if (textToken.IsDynamic)
             {
-                return result.StringRep;
+                return new(() => textToken.Value);
             }
+            
+            return textToken.Value.Value;
         }
 
-        return Slice.RawRep;
+        if (this is not IValueToken valueToken || !valueToken.CapableOf<LiteralValue>(out var func))
+        {
+            return RawRep;
+        }
+
+        if (valueToken.IsConstant)
+        {
+            return func().WasSuccessful(out var value) ? value.StringRep : RawRep;
+        }
+            
+        return new(() => func().WasSuccessful(out var value) ? value.StringRep : RawRep);
     }
 
     public override string ToString()

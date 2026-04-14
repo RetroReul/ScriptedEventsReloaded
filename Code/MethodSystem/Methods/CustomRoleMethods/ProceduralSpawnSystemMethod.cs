@@ -20,7 +20,7 @@ public class ProceduralSpawnSystemMethod : ReferenceReturningMethod<CustomRoleSp
         {
             Description = "This decides which base-game role will be replaced by a custom role."
         },
-        new FloatArgument("per-player spawn chance", 0, 1)
+        new FloatArgument("per-player spawn chance", 0, 1, true)
         {
             Description = "Example: setting conversion chance to 30% means that EACH player has a 30% chance to convert."
         },

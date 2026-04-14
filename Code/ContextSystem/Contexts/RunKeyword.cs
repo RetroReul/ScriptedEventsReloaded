@@ -32,7 +32,7 @@ public class RunKeyword : YieldingContext, IMayReturnValueContext
     {
         if (_functionDefinitionContext is null)
         {
-            var name = token.GetBestTextRepresentation(Script);
+            var name = token.BestStaticTextRepr();
             if (!Script.DefinedFunctions.TryGetValue(name, out var func))
             {
                 return TryAddTokenRes.Error(
