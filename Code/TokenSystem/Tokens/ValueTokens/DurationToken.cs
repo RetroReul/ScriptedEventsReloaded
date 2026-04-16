@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem;
 
@@ -8,47 +9,53 @@ public class DurationToken : LiteralValueToken<DurationValue>
 {
     protected override IParseResult InternalParse(Script scr)
     {
-        var value = RawRep;
+        if (Parse(RawRep).HasErrored(out var error, out var value))
+        {
+            return new Error(error);
+        }
+
+        if (value is not { } timeSpan)
+        {
+            return new Ignore();
+        }
+        
+        Value = timeSpan;
+        return new Success();
+    }
+
+    public static TryGet<TimeSpan?> Parse(string value)
+    {
         if (TimeSpan.TryParse(value, CultureInfo.InvariantCulture, out var result) && result.TotalMilliseconds > 0)
         {
-            Value = result;
-            return new Success();
+            return result;
         }
 
         var unitIndex = Array.FindIndex(value.ToCharArray(), char.IsLetter);
         if (unitIndex == -1)
         {
-            return new Ignore();
+            return null as TimeSpan?;
         }
         
         string numberString = string.Join("", value.Take(unitIndex).ToArray());
         if (!double.TryParse(numberString, NumberStyles.Any, CultureInfo.InvariantCulture, out var valueAsDouble))
         {
-            return new Ignore();
+            return null as TimeSpan?;
         }
         
         if (valueAsDouble < 0)
         {
-            return new Error("Duration cannot be negative.");
+            return "Duration cannot be negative.";
         }
 
         var unit = value[unitIndex..];
-        TimeSpan? timeSpan = unit switch
+        return unit switch
         {
             "s" => TimeSpan.FromSeconds(valueAsDouble),
             "ms" => TimeSpan.FromMilliseconds(valueAsDouble),
             "m" => TimeSpan.FromMinutes(valueAsDouble),
             "h" => TimeSpan.FromHours(valueAsDouble),
             "d" => TimeSpan.FromDays(valueAsDouble),
-            _ => null
+            _ => $"Provided unit '{unit}' is not valid."
         };
-
-        if (timeSpan is null)
-        {
-            return new Error($"Provided unit {unit} is not valid.");
-        }
-
-        Value = timeSpan.Value;
-        return new Success();
     }
 }
