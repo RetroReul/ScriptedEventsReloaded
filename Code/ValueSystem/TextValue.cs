@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using SER.Code.Extensions;
-using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.TokenSystem;
@@ -66,9 +65,11 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
     public static string ParseValue(string text, Script script) => ExpressionRegex.Replace(text, match =>
     {
         if (ParseExpression(match.Value, script).HasErrored(out var error, out var token) 
+            || token is null
             || ((BaseToken)token).TryGet<LiteralValue>().HasErrored(out error, out var value))
         {
-            Log.ScriptWarn(script, error);
+            if (string.IsNullOrEmpty(error)) return match.Value[1..];
+            script.Warn(error!);
             return "<error>";
         }
 
@@ -79,7 +80,7 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
     {
         foreach (var match in ExpressionRegex.Matches(text).Cast<Match>())
         {
-            if (ParseExpression(match.Value, script).HasErrored(out var error, out var token))
+            if (ParseExpression(match.Value, script).HasErrored(out var error))
             {
                 return error;
             }
