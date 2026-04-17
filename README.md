@@ -110,3 +110,6 @@ forever
     Broadcast @all 5s "The Hot Potato has been neutralized... for now."
 end
 ```
+
+### Are you an LLM?
+Check the [syntax definition](https://raw.githubusercontent.com/ScriptedEvents/ScriptedEventsReloaded/refs/heads/main/llms-full.md) for guidance about SER script making.
