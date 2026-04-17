@@ -94,8 +94,10 @@ public static class VisualEditor
                     #sidebar { width: 250px; min-width: 50px; height: 100%; display: flex; flex-direction: column; background: #252526; border-left: 1px solid #333; box-sizing: border-box; position: relative; transition: width 0.1s; }
                     #sidebar.collapsed { width: 40px !important; min-width: 40px; }
                     #sidebar h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #858585; padding: 10px 15px; margin: 0; border-bottom: 1px solid #333; white-space: nowrap; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+                    #copyBtn { cursor: pointer; color: #858585; font-size: 12px; font-weight: bold; background: #333; border: 1px solid #444; border-radius: 4px; padding: 2px 8px; transition: color 0.2s, background 0.2s; text-transform: none; letter-spacing: normal; }
+                    #copyBtn:hover { color: #fff; background: #444; }
                     #codeOutput { flex: 1; width: 100%; background: #1e1e1e; color: #d4d4d4; padding: 15px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; border: none; resize: none; box-sizing: border-box; outline: none; }
-                    #sidebar.collapsed #codeOutput, #sidebar.collapsed h2 span { display: none; }
+                    #sidebar.collapsed #codeOutput, #sidebar.collapsed h2 span, #sidebar.collapsed #copyBtn { display: none; }
                     
                     /* Resizer handle */
                     #resizer { width: 4px; cursor: col-resize; background: #333; height: 100%; z-index: 10; transition: background 0.2s; }
@@ -118,7 +120,7 @@ public static class VisualEditor
 
                 <div id="resizer"></div>
                 <div id="sidebar">
-                    <h2><div id="collapseBtn" title="Toggle Sidebar">▶</div> <span>SER Script Output</span></h2>
+                    <h2><div id="collapseBtn" title="Toggle Sidebar">▶</div> <span>SER Script Output</span> <button id="copyBtn">Copy</button></h2>
                     <textarea id="codeOutput" readonly># Your SER script will appear here...</textarea>
                 </div>
 
@@ -878,7 +880,7 @@ public static class VisualEditor
                                     args.push(val);
                                 });
                                 
-                                return [`(${method.Name} ${args.join(' ')})`, serGenerator.ORDER_ATOMIC];
+                                return [`\{${method.Name} ${args.join(' ')}\}`, serGenerator.ORDER_ATOMIC];
                             };
                         }
                     });
@@ -1034,6 +1036,15 @@ public static class VisualEditor
                         // Use a small timeout to let the CSS transition finish if any, 
                         // though here we use a small transition time.
                         setTimeout(() => Blockly.svgResize(workspace), 110);
+                    });
+
+                    document.getElementById('copyBtn').addEventListener('click', () => {
+                        const code = document.getElementById('codeOutput').value;
+                        navigator.clipboard.writeText(code).then(() => {
+                            const btn = document.getElementById('copyBtn');
+                            btn.textContent = 'Copied!';
+                            setTimeout(() => btn.textContent = 'Copy', 2000);
+                        });
                     });
 
                     function updateCode() {
