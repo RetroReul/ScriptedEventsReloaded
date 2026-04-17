@@ -151,12 +151,6 @@ public class ProvidedArguments(Method method)
         return GetValueNullableStruct<bool, BoolArgument>(argName);
     }
 
-    public Func<bool> GetBoolFunc(string argName)
-    {
-        var evaluator = GetEvaluators<bool, BoolArgument>(argName).First();
-        return () => evaluator.Invoke().Value;
-    }
-
     public T GetLooseReference<T>(string argName)
     {
         return (T)GetValue<object, LooseReferenceArgument>(argName);
@@ -267,13 +261,13 @@ public class ProvidedArguments(Method method)
     public TValue[] GetRemainingArguments<TValue, TArg>(string argName) 
         where TArg : Argument
     {
-        return GetEvaluators<TValue, TArg>(argName).Select(dtg => dtg.Invoke().Value!).ToArray();
+        return GetValues<TValue, TArg>(argName).ToArray();
     }
 
     public TValue GetValue<TValue, TArg>(string argName) 
         where TArg : Argument
     {
-        return GetEvaluators<TValue, TArg>(argName).First().Invoke().Value!;
+        return GetValues<TValue, TArg>(argName)[0];
     }
     
     public TValue? GetValueNullableStruct<TValue, TArg>(string argName) 
@@ -300,30 +294,30 @@ public class ProvidedArguments(Method method)
         };
     }
 
-    private List<DynamicTryGet<TValue>> GetEvaluators<TValue, TArg>(string argName)
+    private List<TValue> GetValues<TValue, TArg>(string argName)
         where TArg : Argument
     {
         Result mainErr = $"Fetching argument '{argName}' for method '{method.Name}' failed.";
 
         var evaluators = GetValueInternal<TValue, TArg>(argName);
 
-        List<DynamicTryGet<TValue>> resultList = [];
+        List<TValue> resultList = [];
         foreach (var evaluator in evaluators)
         {
-            if (evaluator.Result.HasErrored(out var error))
-            {
-                throw new CustomScriptRuntimeError(mainErr + error);
-            }
-
             if (evaluator is not DynamicTryGet<TValue> argEvalRes)
             {
                 throw new AndrzejFuckedUpException(
-                    mainErr + 
+                    mainErr +
                     $"Argument value is not of type {typeof(TValue).Name}, evaluator: {evaluator.GetType().AccurateName}."
                 );
             }
-            
-            resultList.Add(argEvalRes);
+
+            if (argEvalRes.Invoke().HasErrored(out var err, out var value))
+            {
+                throw new CustomScriptRuntimeError(mainErr + err);
+            }
+
+            resultList.Add(value);
         }
         
         return resultList;
