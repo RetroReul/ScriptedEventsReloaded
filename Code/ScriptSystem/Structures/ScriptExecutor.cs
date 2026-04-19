@@ -32,7 +32,8 @@ public abstract class ScriptExecutor
 
         if (sender is not PlayerCommandSender playerSender)
         {
-            Logger.Warn("A presumed command was sent, but cannot infer the player who sent it. Switching to server.");
+            Logger.Warn("A non-server command was used, but the sending player is not known. " +
+                        "Falling back to server being the sender.");
             return ServerConsoleExecutor.Instance;
         }
 
