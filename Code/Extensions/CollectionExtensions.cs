@@ -15,10 +15,10 @@ public static class CollectionExtensions
         }
     }
     
-    public static T? GetRandomValue<T>(this IEnumerable<T> enumerable)
+    public static T GetRandomValue<T>(this IEnumerable<T> enumerable)
     {
-        var array = enumerable.ToArray<T>();
-        return array.Length != 0 ? array[Random.Range(0, array.Length)] : default (T);
+        var array = enumerable as T[] ?? enumerable.ToArray();
+        return array[Random.Range(0, array.Length)];
     }
 
     public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> enumerable)

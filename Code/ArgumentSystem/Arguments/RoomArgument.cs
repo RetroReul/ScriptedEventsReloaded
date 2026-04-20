@@ -20,7 +20,7 @@ public class RoomArgument(string name) : EnumHandlingArgument(name)
             token,
             new()
             {
-                [typeof(RoomName)] = roomName => Room.List.First(room => room.Name == (RoomName)roomName),
+                [typeof(RoomName)] = roomName => Room.List.Where(room => room.Name == (RoomName)roomName).GetRandomValue()!,
             },
             () =>
             {
