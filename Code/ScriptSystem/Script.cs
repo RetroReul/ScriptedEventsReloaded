@@ -69,7 +69,7 @@ public class Script
     
     public DateTime StartTime { get; private set; }
 
-    public TimeSpan TimeRunning => StartTime == DateTime.MinValue ? TimeSpan.Zero : DateTime.Now - StartTime;
+    public TimeSpan TimeRunning => StartTime == default ? TimeSpan.Zero : DateTime.Now - StartTime;
 
     private static readonly HashSet<Script> RunningScriptsList = [];
     public static Script[] RunningScripts => RunningScriptsList.ToArray();
