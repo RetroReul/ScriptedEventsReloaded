@@ -31,7 +31,11 @@ public abstract class Flag
     
     public abstract void Unbind();
     
-    public virtual Result OnScriptRunning(Script scr) => true;
+    public virtual Result OnScriptRunning(Script scr, out bool mustReport)
+    {
+        mustReport = true;
+        return true;
+    }
 
     // when this fucker is set to null, it still compiles but the plugin will just fucking explode
     // even better, the errors will be pointing to a random line in some child class

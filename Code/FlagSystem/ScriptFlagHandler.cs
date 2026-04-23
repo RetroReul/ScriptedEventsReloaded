@@ -59,8 +59,9 @@ public static class ScriptFlagHandler
         _currentFlag = null;
     }
 
-    public static Result DoFlagsApproveExecution(Script scr)
+    public static Result DoFlagsApproveExecution(Script scr, out bool mustReport)
     {
+        mustReport = true;
         if (!ScriptsFlags.TryGetValue(scr.Name, out var scriptFlags))
         {
             return true;
@@ -68,7 +69,7 @@ public static class ScriptFlagHandler
 
         foreach (var flag in scriptFlags)
         {
-            if (flag.OnScriptRunning(scr).HasErrored(out var error))
+            if (flag.OnScriptRunning(scr, out mustReport).HasErrored(out var error))
             {
                 Result rs = $"Flag '{flag.Name}' disallows script execution.";
                 return rs + error;

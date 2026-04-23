@@ -44,8 +44,10 @@ public class FunctionFlag : Flag
         )
     ];
     
-    public override Result OnScriptRunning(Script scr)
+    public override Result OnScriptRunning(Script scr, out bool mustReport)
     {
+        mustReport = true;
+        
         (VariableToken token, Variable var)[] provided = _expectedVarTokens
             .Select(token => (token, scr.LocalVariables.FirstOrDefault(var => var.Name == token.Name)))
             .OfType<(VariableToken, Variable)>()

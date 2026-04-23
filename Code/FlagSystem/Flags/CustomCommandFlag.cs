@@ -273,8 +273,9 @@ public class CustomCommandFlag : Flag
         }
     }
 
-    public override Result OnScriptRunning(Script scr)
+    public override Result OnScriptRunning(Script scr, out bool mustReport)
     {
+        mustReport = true;
         if (scr.HasFlag<OnEventFlag>())
         {
             return $"Detected conflicting flag: {nameof(OnEventFlag)}.";

@@ -1,0 +1,18 @@
+!-- CustomCommand healscp
+-- description "heals a random SCP"
+-- availableFor Player
+-- cooldown 10s
+
+# dont allow SCPs to use this command
+if {@sender -> team} is "SCPs"
+    stop
+end
+
+# get a random SCP that is not a SCP-079
+@randomScp = LimitPlayers {RemovePlayers @scpPlayers @scp079Players} 1
+
+# get 5% of the SCP's max health
+$healAmount = RoundNumber ({@randomScp -> maxHealth} * 0.05)
+
+Heal @randomScp $healAmount
+Broadcast @randomScp 4s "{@sender -> name} healed you with {$healAmount} HP!"

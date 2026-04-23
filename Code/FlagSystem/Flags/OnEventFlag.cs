@@ -1,8 +1,12 @@
 ﻿using JetBrains.Annotations;
+using SER.Code.Extensions;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.ScriptSystem.Structures;
+using SER.Code.TokenSystem.Tokens;
+using SER.Code.TokenSystem.Tokens.VariableTokens;
+using SER.Code.VariableSystem.Bases;
 using EventHandler = SER.Code.EventSystem.EventHandler;
 
 namespace SER.Code.FlagSystem.Flags;
@@ -10,6 +14,7 @@ namespace SER.Code.FlagSystem.Flags;
 [UsedImplicitly]
 public class OnEventFlag : Flag
 {
+    private List<VariableToken> _requiredVars = [];
     private Safe<string> _event;
     
     public override string Description =>
@@ -44,22 +49,52 @@ public class OnEventFlag : Flag
         "!-- OnEvent RoundStarted"
     );
 
-    public override Result OnScriptRunning(Script scr)
+    public override Result OnScriptRunning(Script scr, out bool mustReport)
     {
+        mustReport = true;
         if (scr.HasFlag<CustomCommandFlag>())
         {
             return $"Detected conflicting flag: {nameof(CustomCommandFlag)}.";
         }
-        
-        if (scr.RunReason == RunReason.Event)
+
+        if (scr.RunReason != RunReason.Event)
         {
-            return true;
+            return $"Tried to run script by other mean than the '{_event}' event, which is not allowed.";
+        }
+
+        if (_requiredVars.Any(rvt => scr.TryGetVariable<Variable>(rvt).HasErrored()))
+        {
+            mustReport = false;
+            return "Required variable is missing. (this error should be silent, if you see it, please report it)";
         }
         
-        return $"Tried to run script by other mean than the '{_event}' event, which is not allowed.";
+        return true;
     }
 
-    public override Argument[] Arguments => [];
+    public override Argument[] Arguments => 
+    [
+        new()
+        {
+            Name = "requiredVars",
+            Description = "A list of variables that have to be present in order for this script to execute.",
+            Handler = args =>
+            {
+                foreach (var arg in args)
+                {
+                    if (BaseToken.TryParse<VariableToken>(arg, null!).HasErrored(out var error, out var token))
+                    {
+                        return error;
+                    }
+                    
+                    _requiredVars.Add(token);
+                }
+
+                return true;
+            },
+            IsRequired = false,
+            Example = "-- requiredVars @evPlayer *evItem"
+        }
+    ];
 
     public override void Unbind()
     {

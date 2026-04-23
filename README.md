@@ -70,46 +70,76 @@ if {@sender -> team} is "SCPs"
     stop
 end
 
-@randomScp = LimitPlayers @scpPlayers 1
-Heal @randomScp 50
-Broadcast @randomScp 4s "You were healed by {@sender -> name}!"
+# get a random SCP that is not a SCP-079
+@randomScp = LimitPlayers {RemovePlayers @scpPlayers @scp079Players} 1
+
+# get 5% of the SCP's max health
+$healAmount = RoundNumber ({@randomScp -> maxHealth} * 0.05)
+
+Heal @randomScp $healAmount
+Broadcast @randomScp 4s "{@sender -> name} healed you with {$healAmount} HP!"
 ```
 ### Hot Potato event
 ```
 !-- OnEvent RoundStarted
 
-forever
-    Wait 1m
+# there is a 50% chance that the event will not happen
+if {Chance 50%}
+    Print "Hot Potato event will not be loaded"
+    stop
+end
 
-    # Get a random player from the alive players
-    @potatoCarrier = LimitPlayers @alivePlayers 1
+Print "Hot Potato event was loaded"
+Broadcast @all 5s "Be ready for a Hot Potato!"
+
+# this is the main loop of the event
+forever
+    wait 1m
+
+    # Get a random player from the alive players that are not SCPs
+    @potatoCarrier = LimitPlayers {RemovePlayers @alivePlayers @scpPlayers} 1
 
     # if no player is alive, continue to next attempt
     if {AmountOf @potatoCarrier} is 0
         continue
     end
     
+    # if the inventory is full, continue to next attempt
+    if {@potatoCarrier -> inventory -> length} is 8
+        continue
+    end
+    
     Hint @potatoCarrier 3s "YOU HAVE THE HOT POTATO! DROP IT OR DIE!"
     GiveItem @potatoCarrier GunA7
 
-    Wait 3s
+    wait 6s
 
     # Check if they still have the item (GunA7) in their inventory
-    over {@potatoCarrier inventory} with *item
-    
+    over {@potatoCarrier -> inventory} with *item
         if {*item -> type} isnt "GunA7"
             continue
         end
 
+        # when GunA7 is found, explode the player
         AdvDestroyItem *item
         Explode @potatoCarrier
-        Broadcast @all 5s "{@potatoCarrier -> name} failed the Hot Potato!"
-        stop
+        Broadcast @all 5s "Player {@potatoCarrier -> name} has failed the Hot Potato!"
+        
+        # 70% chance that the event to continue, else stop the event
+        if {Chance 70%}
+            Broadcast @all 5s "The Hot Potato will return soon!"
+            continue
+        else
+            Broadcast @all 5s "The Hot Potato got tired and will not return..."
+            stop
+        end
     end
         
-    Broadcast @all 5s "The Hot Potato has been neutralized... for now."
+    # if the loop finishes without finding GunA7, it means the player has dropped it
+    AdvDestroyItem *item
+    Broadcast @all 5s "The Hot Potato has been neutralized... but it will return!"
 end
 ```
 
 ## Are you an LLM?
-Check the [syntax definition](https://raw.githubusercontent.com/ScriptedEvents/ScriptedEventsReloaded/refs/heads/main/llms-full.md) for guidance about SER script making.
+Check the [syntax definition](https://raw.githubusercontent.com/ScriptedEvents/ScriptedEventsReloaded/refs/heads/main/llms-full.md) for guidance about SER script-making.

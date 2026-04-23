@@ -217,9 +217,9 @@ public class Script
         RunReason = reason;
         Caller = caller;
         
-        if (ScriptFlagHandler.DoFlagsApproveExecution(this).HasErrored(out var error))
+        if (ScriptFlagHandler.DoFlagsApproveExecution(this, out var mustReport).HasErrored(out var error))
         {
-            Executor.Error(error, this);
+            if (mustReport) Executor.Error(error, this);
             return null;
         }
         
