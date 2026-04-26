@@ -14,10 +14,7 @@ public class RoundInfoMethod : LiteralValueReturningMethod
 {
     public override string Description => "Returns information about the current round.";
     
-    public override TypeOfValue LiteralReturnTypes => new TypesOfValue([
-        typeof(BoolValue), 
-        typeof(DurationValue)
-    ]);
+    public override TypeOfValue LiteralReturnTypes => new TypesOfValue(typeof(BoolValue), typeof(DurationValue));
 
     public override Argument[] ExpectedArguments { get; } =
     [
