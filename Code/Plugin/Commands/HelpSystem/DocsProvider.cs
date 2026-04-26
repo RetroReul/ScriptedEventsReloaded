@@ -37,7 +37,7 @@ public static class DocsProvider
 
     public static bool GetGeneralOutput(ArraySegment<string> args, out string response)
     {
-        var arg = args.Array?[args.Offset].ToLower() ?? throw new Exception("argument provided in invalid format");
+        var arg = args.Array?[args.Offset].ToLowerInvariant() ?? throw new Exception("argument provided in invalid format");
         if (Enum.TryParse(arg, true, out HelpOption option))
         {
             if (option == HelpOption.Properties && args.Count > 1)
@@ -75,7 +75,7 @@ public static class DocsProvider
             return true;
         }
         
-        var enumType = HelpInfoStorage.UsedEnums.FirstOrDefault(e => e.Name.ToLower() == arg);
+        var enumType = HelpInfoStorage.UsedEnums.FirstOrDefault(e => e.Name.ToLowerInvariant() == arg);
         if (enumType is not null)
         {
             response = GetEnum(enumType);
@@ -83,7 +83,7 @@ public static class DocsProvider
         }
         
         var ev = EventSystem.EventHandler.AvailableEvents
-            .FirstOrDefault(e => e.Name.ToLower() == arg);
+            .FirstOrDefault(e => e.Name.ToLowerInvariant() == arg);
         if (ev is not null)
         {
             response = GetEventInfo(ev);
@@ -91,7 +91,7 @@ public static class DocsProvider
         }
         
         var method = MethodIndex.GetMethods()
-            .FirstOrDefault(met => met.Name.ToLower() == arg);
+            .FirstOrDefault(met => met.Name.ToLowerInvariant() == arg);
         if (method is not null)
         {
             response = GetMethodHelp(method);
@@ -101,14 +101,14 @@ public static class DocsProvider
         var outsideMethodKvp = MethodIndex.FrameworkDependentMethods
             .Select(kvp => kvp.Value.Select(m => (m, kvp.Key)))
             .Flatten()
-            .FirstOrDefault(kvp => kvp.m.Name.ToLower() == arg);
+            .FirstOrDefault(kvp => kvp.m.Name.ToLowerInvariant() == arg);
         if (outsideMethodKvp is { m: {} outsideMethod, Key: var framework})
         {
             response = GetMethodHelp(outsideMethod, framework);
         }
 
         var correctFlagName = Flag.FlagInfos.Keys
-            .FirstOrDefault(k => k.ToLower() == arg);
+            .FirstOrDefault(k => k.ToLowerInvariant() == arg);
         if (correctFlagName is not null)
         {
             response = GetFlagInfo(correctFlagName);
@@ -125,7 +125,7 @@ public static class DocsProvider
                 === Welcome to the help command of SER! ===
 
                 To get specific information for your script creation adventure:
-                (1) find the desired option (like '{nameof(HelpOption.Methods).ToLower()}')
+                (1) find the desired option (like '{nameof(HelpOption.Methods).ToLowerInvariant()}')
                 (2) use this command, attaching the option after it (like 'serhelp methods')
                 (3) enjoy!
 

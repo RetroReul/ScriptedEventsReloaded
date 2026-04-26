@@ -419,7 +419,7 @@ public class CustomCommandFlag : Flag, IMajorBehaviorFlag
         {
             var slice = provided[index];
             var argVariable = cmd.Usage[index];
-            var name = argVariable[0].ToString().ToLower() + argVariable[1..];
+            var name = argVariable[0].ToString().ToLowerInvariant() + argVariable[1..];
 
             if (name.Last() == '?')
             {

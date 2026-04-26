@@ -96,7 +96,7 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
     {
         ["length"] = new Prop<NumberValue>(t => t.Value.Length, "Amount of characters in the text"),
         ["upper"] = new Prop<StaticTextValue>(t => t.Value.ToUpper(), "Upper case of the text"),
-        ["lower"] = new Prop<StaticTextValue>(t => t.Value.ToLower(), "Lower case of the text"),
+        ["lower"] = new Prop<StaticTextValue>(t => t.Value.ToLowerInvariant(), "Lower case of the text"),
         ["trim"] = new Prop<StaticTextValue>(t => t.Value.Trim(), "Trimmed text"),
         ["isEmpty"] = new Prop<BoolValue>(t => string.IsNullOrEmpty(t.Value), "Whether the text is empty"),
         ["valType"] = new Prop<EnumValue<ValueType>>(_ => ValueType.Text, "The type of the value")

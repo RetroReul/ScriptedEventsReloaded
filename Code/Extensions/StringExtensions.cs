@@ -16,7 +16,7 @@ public static class StringExtensions
     [Pure]
     public static string LowerFirst(this string str)
     {
-        return str[0].ToString().ToLower() + str[1..];
+        return str[0].ToString().ToLowerInvariant() + str[1..];
     }
 
     // python ahh
@@ -51,7 +51,7 @@ public static class StringExtensions
                 continue;
             }
 
-            res.Append(lowerCase ? $" {c.ToString().ToLower()}" : $" {c}");
+            res.Append(lowerCase ? $" {c.ToString().ToLowerInvariant()}" : $" {c}");
         }
 
         return res.ToString();

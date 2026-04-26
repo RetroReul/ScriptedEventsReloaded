@@ -19,7 +19,7 @@ public class BoolValue(bool value) : LiteralValue<bool>(value), IValueWithProper
         return value.Value;
     }
 
-    public override string StringRep => Value.ToString().ToLower();
+    public override string StringRep => Value.ToString().ToLowerInvariant();
 
     [UsedImplicitly]
     public new static string FriendlyName => "bool value";
@@ -31,7 +31,7 @@ public class BoolValue(bool value) : LiteralValue<bool>(value), IValueWithProper
     {
         ["not"] = new Prop<BoolValue>(b => !b.Value, "Inverted boolean value"),
         ["asNumber"] = new Prop<NumberValue>(b => b.Value ? 1m : 0m, "Converts boolean to number (1 for true, 0 for false)"),
-        ["asString"] = new Prop<StaticTextValue>(b => b.Value.ToString().ToLower(), "Converts boolean to string ('true' or 'false')"),
+        ["asString"] = new Prop<StaticTextValue>(b => b.Value.ToString().ToLowerInvariant(), "Converts boolean to string ('true' or 'false')"),
         ["valType"] = new Prop<EnumValue<ValueType>>(_ => ValueType.Bool, "The type of the value")
     };
 }

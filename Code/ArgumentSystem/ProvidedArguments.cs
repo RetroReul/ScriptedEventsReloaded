@@ -241,7 +241,7 @@ public class ProvidedArguments(Method method)
     /// </remarks>
     public string GetOption(string argName)
     {
-        return GetValue<string, OptionsArgument>(argName).ToLower();
+        return GetValue<string, OptionsArgument>(argName).ToLowerInvariant();
     }
 
     public Type GetEffectType(string argName)
