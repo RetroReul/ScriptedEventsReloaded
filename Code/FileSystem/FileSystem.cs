@@ -5,6 +5,7 @@ using SER.Code.FlagSystem;
 using SER.Code.Helpers;
 using SER.Code.ScriptSystem;
 using SER.Code.ScriptSystem.Structures;
+using EventHandler = SER.Code.EventSystem.EventHandler;
 
 namespace SER.Code.FileSystem;
 
@@ -54,6 +55,7 @@ public static class FileSystem
 
         UpdateScriptPathCollection();
         ScriptFlagHandler.Clear();
+        EventHandler.Clear();
         
         foreach (var scriptPath in RegisteredScriptPaths)
         {

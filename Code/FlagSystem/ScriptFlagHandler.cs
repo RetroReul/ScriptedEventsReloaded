@@ -23,7 +23,6 @@ public static class ScriptFlagHandler
         _currentFlag = null;
         ScriptsFlags.Values.ForEachItem(script => script.ForEach(flag => flag.Unbind()));
         ScriptsFlags.Clear();
-        EventHandler.EventClear();
     }
     
     internal static void RegisterScript(List<Line> scriptLinesWithFlags, ScriptName scriptName)

@@ -1,4 +1,3 @@
-using Exiled.API.Features;
 using JetBrains.Annotations;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ContextSystem.Contexts;
@@ -11,7 +10,6 @@ using SER.Code.TokenSystem.Tokens;
 using SER.Code.ValueSystem;
 using SER.Code.ValueSystem.Other;
 using SER.Code.VariableSystem.Bases;
-using Log = SER.Code.Helpers.Log;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
