@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Text;
+using JetBrains.Annotations;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 using SER.Code.ValueSystem;
@@ -40,27 +41,20 @@ public static class StringExtensions
     [Pure]
     public static string Spaceify(this string str, bool lowerCase = false)
     {
-        string res = "";
+        StringBuilder res = new();
         for (var index = 0; index < str.Length; index++)
         {
             var c = str[index];
             if (!char.IsUpper(c) || index == 0)
             {
-                res += c;
+                res.Append(c);
                 continue;
             }
-            
-            if (lowerCase)
-            {
-                res += $" {c.ToString().ToLower()}";
-            }
-            else
-            {
-                res += $" {c}";   
-            }
+
+            res.Append(lowerCase ? $" {c.ToString().ToLower()}" : $" {c}");
         }
 
-        return res;
+        return res.ToString();
     }
     
     [Pure]
