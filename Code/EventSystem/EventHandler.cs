@@ -16,11 +16,12 @@ namespace SER.Code.EventSystem;
 
 public static class EventHandler
 {
-    private static readonly Dictionary<string, Action> UnsubscribeActions = [];
+    private static readonly List<Action> UnsubscribeActions = [];
     private static readonly Dictionary<string, List<Action<EventArgs?, Variable[]>>> OnEventActions = [];
     private static readonly HashSet<string> DisabledEvents = [];
     public static List<EventInfo> AvailableEvents = [];
     public static readonly HashSet<string> RegisteredHandlers = [];
+    public static readonly HashSet<string> BindedEvents = [];
     
     public static void Initialize()
     {
@@ -31,13 +32,17 @@ public static class EventHandler
             .Flatten().ToList();
     }
     
-    public static void EventClear()
+    public static void Clear()
     {
         RegisteredHandlers.Clear();
         OnEventActions.Clear();
-        UnsubscribeActions.Values.ForEachItem(act => act());
+        foreach (var unsubscribeAction in UnsubscribeActions)
+        {
+            unsubscribeAction();
+        }
         UnsubscribeActions.Clear();
         DisabledEvents.Clear();
+        BindedEvents.Clear();
     }
 
     public static Result DisableEvent(string evName)
@@ -46,15 +51,9 @@ public static class EventHandler
         return BindEvent(evName);
     }
 
-    public static bool EnableEvent(string evName, bool unsubscribe = false)
+    public static bool EnableEvent(string evName)
     {
         DisabledEvents.Remove(evName);
-        if (unsubscribe && UnsubscribeActions.TryGetValue(evName, out var action))
-        {
-            action();
-            return true;
-        }
-
         return false;
     }
     
@@ -108,12 +107,12 @@ public static class EventHandler
 
     private static Result BindEvent(string evName)
     {
-        if (UnsubscribeActions.ContainsKey(evName))
+        if (!BindedEvents.Add(evName))
         {
             // already binded
             return true;
         }
-        
+
         EventInfo? matchingEventInfo = AvailableEvents.FirstOrDefault(e => e.Name == evName);
         if (matchingEventInfo is null)
         {
@@ -162,7 +161,7 @@ public static class EventHandler
         eventInfo.GetAddMethod(false).Invoke(null!, [handler]);
 
         // Store unsubscribe action
-        UnsubscribeActions[evName] = () => eventInfo.GetRemoveMethod(false).Invoke(null!, [handler]);
+        UnsubscribeActions.Add(() => eventInfo.GetRemoveMethod(false).Invoke(null!, [handler]));
     }
 
     private static void BindArgumented(EventInfo eventInfo, Type generic)
@@ -189,7 +188,7 @@ public static class EventHandler
         eventInfo.GetAddMethod(false).Invoke(null!, [handler]);
 
         // Store unsubscribe action
-        UnsubscribeActions[evName] = () => eventInfo.GetRemoveMethod(false).Invoke(null!, [handler]);
+        UnsubscribeActions.Add(() => eventInfo.GetRemoveMethod(false).Invoke(null!, [handler]));
     }
 
     private static void OnNonArgumentedEvent(string evName)
