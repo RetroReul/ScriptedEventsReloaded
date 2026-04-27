@@ -23,7 +23,7 @@ if {Chance 50%}
 end
 
 # select a random effect of the coin, from 9 available
-$effect = RandomNum 1 9 int
+$effect = Random 1 9 int
 
 # russian rulette with a full gun :trollface:
 if $effect is 1
@@ -34,7 +34,7 @@ end
 
 # HP change 
 if $effect is 2
-    $newHP = RandomNum 1 150 int
+    $newHP = Random 1 150 int
     SetHealth @evPlayer $newHP
     SetMaxHealth @evPlayer $newHP
 
@@ -110,7 +110,7 @@ if $effect is 5
     SetPlayerData @evPlayer "coin locked" true
 
     Countdown @evPlayer 15s "{$baseText}You can now open any keycard locked thing! (for %seconds% seconds)"
-    Bypass @evPlayer true
+    SetBypass @evPlayer true
 
     repeat 15
         wait 1s
@@ -121,7 +121,7 @@ if $effect is 5
         end
     end
 
-    Bypass @evPlayer false
+    SetBypass @evPlayer false
     SetPlayerData @evPlayer "coin locked" false
     stop
 end
@@ -156,7 +156,7 @@ end
 # change size
 if $effect is 8
     # set player size in every direction to a random number between 10% and 100%
-    SetSize @evPlayer {RandomNum 0.1 1 real} {RandomNum 0.1 1 real} {RandomNum 0.1 1 real}
+    SetSize @evPlayer {Random 0.1 1 real} {Random 0.1 1 real} {Random 0.1 1 real}
 
     Broadcast @evPlayer 5s "{$baseText}Your size has changed a little!"
     stop

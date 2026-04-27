@@ -8,7 +8,8 @@ using SER.Code.VariableSystem.Variables;
 namespace SER.Code.MethodSystem.Methods.CollectionVariableMethods;
 
 [UsedImplicitly]
-public class CollectionRemoveMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class Coll_RemoveMethod : SynchronousMethod
 {
     public override string Description => "Removes a matching value from a collection variable";
 

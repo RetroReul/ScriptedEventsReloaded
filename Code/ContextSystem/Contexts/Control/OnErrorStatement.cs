@@ -21,9 +21,9 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
     public string[] Arguments => [];
     public string Example =>
         """
-        &collection = EmptyCollection
+        &collection = Coll.Empty
         attempt
-            Print {CollectionFetch &collection 2}
+            Print {Coll.Fetch &collection 2}
             # ERROR: there's nothing at index 2
             
             Print "Hello, world!"

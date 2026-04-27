@@ -1,10 +1,14 @@
-﻿using SER.Code.ArgumentSystem.Arguments;
+﻿using JetBrains.Annotations;
+using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.CollectionVariableMethods;
-public class SubtractCollectionsMethod : ReturningMethod<CollectionValue>
+
+[UsedImplicitly]
+// ReSharper disable once InconsistentNaming
+public class Coll_SubtractMethod : ReturningMethod<CollectionValue>
 {
     public override string Description => "Returns a collection that has the values of the first collection without the values of the latter";
 

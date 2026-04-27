@@ -9,7 +9,7 @@ using SER.Code.ValueSystem.Other;
 namespace SER.Code.MethodSystem.Methods.CollectionVariableMethods;
 
 [UsedImplicitly]
-public class CollectionFetchMethod : ReturningMethod
+public class Coll_FetchMethod : ReturningMethod
 {
     public override string Description => "Returns a value from a collection variable at a given position.";
     public override TypeOfValue Returns => new UnknownTypeOfValue();

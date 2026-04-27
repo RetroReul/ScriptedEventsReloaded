@@ -9,7 +9,8 @@ using SER.Code.VariableSystem.Variables;
 namespace SER.Code.MethodSystem.Methods.CollectionVariableMethods;
 
 [UsedImplicitly]
-public class CollectionInsertMethod : SynchronousMethod, IAdditionalDescription
+// ReSharper disable once InconsistentNaming
+public class Coll_InsertMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Adds a value to a collection variable";
 

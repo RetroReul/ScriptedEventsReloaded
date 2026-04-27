@@ -198,7 +198,7 @@ $name = ""  # empty text
 $num = 0  # zero
 $bool = false  # false
 @plrs = @empty  # empty player array
-&coll = EmptyCollection  # empty collection
+&coll = Coll.Empty  # empty collection
 ```
 
 ### Memory Scopes
@@ -742,13 +742,13 @@ SER includes several advanced systems you should explore:
 
 **Utility Methods:**
 - **AmountOf** - `AmountOf @players` - Returns count of players
-- **RoundLock** - `RoundLock true/false` - Locks/unlocks round
+- **LockRound** - `LockRound true/false` - Locks/unlocks round
 - **LobbyLock** - `LobbyLock true/false` - Locks/unlocks lobby
 - **SetPlayerData** - `SetPlayerData @player "key" value` - Stores custom player data
 - **GetPlayerData** - `GetPlayerData @player "key"` - Retrieves custom player data
 - **HasPlayerData** - `HasPlayerData @player "key"` - Checks if data exists
 - **LimitPlayers** - `LimitPlayers @players count` - Returns random subset
-- **RandomNum** - `RandomNum min max type` - Random number (int/real)
+- **Random** - `Random min max type` - Random number (int/real)
 - **Chance** - `Chance percentage` - Returns true with given chance
 - **VarExists** - `VarExists $variable` - Checks if variable exists
 - **ValidRef** - `ValidRef *reference` - Checks if reference is valid

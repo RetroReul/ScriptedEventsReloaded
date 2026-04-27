@@ -7,7 +7,8 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.CollectionVariableMethods;
 
 [UsedImplicitly]
-public class CollectionContainsMethod : ReturningMethod<BoolValue>
+// ReSharper disable once InconsistentNaming
+public class Coll_ContainsMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if the value exists in the collection";
 

@@ -1,9 +1,13 @@
-﻿using SER.Code.ArgumentSystem.BaseArguments;
+﻿using JetBrains.Annotations;
+using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.CollectionVariableMethods;
-public class EmptyCollectionMethod : ReturningMethod<CollectionValue>
+
+[UsedImplicitly]
+// ReSharper disable once InconsistentNaming
+public class Coll_EmptyMethod : ReturningMethod<CollectionValue>
 {
     public override string Description => "Returns an empty collection.";
 

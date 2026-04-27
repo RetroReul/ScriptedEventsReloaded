@@ -26,7 +26,7 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
         
         # ========================================
         # you can also use a variable to define the amount of times to repeat
-        repeat {RandomNum 1 10 int}
+        repeat {Random 1 10 int}
             Print "hi"
         end
         

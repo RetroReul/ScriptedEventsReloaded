@@ -34,7 +34,7 @@ public abstract class Method
             .Replace("_", " ")
                    ?? "Unknown";
         
-        var name = type.Name;
+        var name = type.Name.Replace("_", ".");
         if (!name.EndsWith("Method"))
         {
             throw new AndrzejFuckedUpException($"Method class name '{name}' must end with 'Method'.");

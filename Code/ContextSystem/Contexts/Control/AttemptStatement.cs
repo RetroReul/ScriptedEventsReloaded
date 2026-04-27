@@ -18,10 +18,10 @@ public class AttemptStatement : StatementContext, IExtendableStatement, IKeyword
     public string[] Arguments => [];
     public string? Example =>
         """
-        &collection = EmptyCollection
+        &collection = Coll.Empty
         # swallows the error (doesn't stop the script)
         attempt
-            Print {CollectionFetch &collection 2}
+            Print {Coll.Fetch &collection 2}
             # throws because there's nothing at index 2
         end
         """;

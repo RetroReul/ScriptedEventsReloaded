@@ -12,7 +12,7 @@ LockDoor * NoPower
 
 # cassie for spooky effect
 repeat 2
-    Cassie noJingle "pitch_{RandomNum 0.15 0.25 real} .g{RandomNum 1 6 int}"
+    Cassie noJingle "pitch_{Random 0.15 0.25 real} .g{Random 1 6 int}"
 end
 
 # duration of the restart
