@@ -1,5 +1,4 @@
 ﻿using LabApi.Features.Wrappers;
-using Respawning.Waves;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
@@ -249,9 +248,9 @@ public class ProvidedArguments(Method method)
         return GetValue<Type, EffectTypeArgument>(argName);
     }
 
-    public SpawnableWaveBase GetWave(string argName)
+    public Type GetWaveType(string argName)
     {
-        return GetValue<SpawnableWaveBase, WaveArgument>(argName);
+        return GetValue<Type, WaveTypeArgument>(argName);
     }
 
     public CollectionVariable GetCollectionVariable(string argName)
