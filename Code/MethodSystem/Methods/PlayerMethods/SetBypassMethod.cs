@@ -6,7 +6,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.PlayerMethods;
 
 [UsedImplicitly]
-public class BypassMethod : SynchronousMethod
+public class SetBypassMethod : SynchronousMethod
 {
     public override string Description => "Grants or removes bypass mode for players.";
 
