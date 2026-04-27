@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 namespace SER.Code.MethodSystem.Methods.NumberMethods;
 
 [UsedImplicitly]
-public class RandomNumMethod : ReturningMethod<NumberValue>, IAdditionalDescription
+public class RandomMethod : ReturningMethod<NumberValue>, IAdditionalDescription
 {
     public override string Description =>
         "Returns a randomly generated number.";
@@ -28,6 +28,9 @@ public class RandomNumMethod : ReturningMethod<NumberValue>, IAdditionalDescript
             new("int", "Returns an integer number"), 
             new("real", "Returns a real number")
         )
+        {
+            DefaultValue = new("int", null)
+        }
     ];
 
     public override void Execute()
