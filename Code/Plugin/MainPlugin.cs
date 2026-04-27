@@ -175,6 +175,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
                 .Select(c => $"> {c.Name} as {c
                     .Contribution
                     .GetFlags()
+                    .OrderByDescending(f => f)
                     .Select(f => f.ToString().Spaceify())
                     .JoinStrings(", ")}"
                 )

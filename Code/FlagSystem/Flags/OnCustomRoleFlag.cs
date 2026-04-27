@@ -5,14 +5,17 @@ using SER.Code.FlagSystem.Structures;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.ScriptSystem.Structures;
 using SER.Code.VariableSystem.Variables;
-using Player = LabApi.Features.Wrappers.Player;
 
 namespace SER.Code.FlagSystem.Flags;
 
 [UsedImplicitly]
 public class OnCustomRoleFlag : Flag, IMajorBehaviorFlag
 {
-    public override string Description => "Similar to OnEvent flag, but for custom roles.";
+    public override string Description => 
+        """
+        Similar to OnEvent flag, but for custom roles.
+        This also adds @evPlayer and *evCRole variables when executed.
+        """;
 
     private static readonly string Events = typeof(CRole.CustomRoleEvent).GetEnumNames().JoinStrings(" or ");
 
