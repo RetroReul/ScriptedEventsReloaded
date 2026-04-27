@@ -8,7 +8,7 @@ using SER.Code.ValueSystem.Other;
 namespace SER.Code.MethodSystem.Methods.TextMethods;
 
 [UsedImplicitly]
-public class ContainsTextMethod : ReturningMethod
+public class TextContainsMethod : ReturningMethod
 {
     public override string Description => "Returns true or false indicating if the provided text contains a provided value.";
 
