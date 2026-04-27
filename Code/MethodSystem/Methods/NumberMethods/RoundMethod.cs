@@ -7,7 +7,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.NumberMethods;
 
 [UsedImplicitly]
-public class RoundNumberMethod : ReturningMethod<NumberValue>
+public class RoundMethod : ReturningMethod<NumberValue>
 {
     public override string Description => "Rounds a provided number.";
 
