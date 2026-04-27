@@ -9,7 +9,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
 [UsedImplicitly]
-public class JoinPlayersMethod : ReturningMethod<PlayerValue>
+public class JoinMethod : ReturningMethod<PlayerValue>
 {
     public override string Description =>
         "Returns all players that were provided from multiple player variables.";

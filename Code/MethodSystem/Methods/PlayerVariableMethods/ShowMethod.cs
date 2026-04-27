@@ -28,6 +28,10 @@ public class ShowMethod : ReturningMethod<TextValue>, ICanError
         {
             DefaultValue = new(PlayerValue.PlayerProperty.Name, "name"),
             Description = "The property which will be displayed."
+        },
+        new TextArgument("separator")
+        {
+            DefaultValue = new(", ", "\", \"")
         }
     ];
 
@@ -47,7 +51,7 @@ public class ShowMethod : ReturningMethod<TextValue>, ICanError
             .Select(handler)
             .OfType<LiteralValue>()
             .Select(lv => lv.StringRep)
-            .JoinStrings(", ")
+            .JoinStrings(Args.GetText("separator"))
             .ToStaticTextValue();
     }
 }

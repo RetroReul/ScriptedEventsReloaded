@@ -9,15 +9,15 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
 [UsedImplicitly]
-public class RemovePlayersMethod : ReturningMethod<PlayerValue>
+public class ExceptMethod : ReturningMethod<PlayerValue>
 {
     public override string Description => 
-        "Returns players from the original variable that were not present in other variables.";
+        "Returns players from the original variable EXCEPT those that were present in other variables.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
         new PlayersArgument("original players"),
-        new PlayersArgument("players to remove")
+        new PlayersArgument("players to except")
         {
             ConsumesRemainingValues = true,
         }
@@ -27,7 +27,7 @@ public class RemovePlayersMethod : ReturningMethod<PlayerValue>
     {
         var originalPlayers = Args.GetPlayers("original players");
         var playersToRemove = Args
-            .GetRemainingArguments<Player[], PlayersArgument>("players to remove")
+            .GetRemainingArguments<Player[], PlayersArgument>("players to except")
             .Flatten();
 
         ReturnValue = new PlayerValue(originalPlayers.Where(p => !playersToRemove.Contains(p)));

@@ -9,7 +9,7 @@ using SER.Code.ValueSystem.PropertySystem;
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
 [UsedImplicitly]
-public class FilterPlayersMethod : ReturningMethod<PlayerValue>
+public class FilterMethod : ReturningMethod<PlayerValue>
 {
     public override string Description => "Returns players which match the value for a given property.";
 

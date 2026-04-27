@@ -8,7 +8,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
 [UsedImplicitly]
-public class LimitPlayersMethod : ReturningMethod<PlayerValue>
+public class LimitMethod : ReturningMethod<PlayerValue>
 {
     public override string Description =>
         "Returns a player variable with amount of players being equal or lower than the limit.";

@@ -7,7 +7,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
 
 [UsedImplicitly]
-public class ContainsPlayerMethod : ReturningMethod<BoolValue>
+public class ContainsMethod : ReturningMethod<BoolValue>
 {
     public override string Description =>
         "Returns a true/false value indicating if the provided player is in the list.";

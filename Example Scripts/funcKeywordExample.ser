@@ -6,7 +6,7 @@ run ExplodeAll  # this just explodes everyone
 
 
 func @SigmasOnly
-    return RemovePlayers * @classDPlayers
+    return Except * @classDPlayers
 end
 
 @sigmas = run @SigmasOnly
