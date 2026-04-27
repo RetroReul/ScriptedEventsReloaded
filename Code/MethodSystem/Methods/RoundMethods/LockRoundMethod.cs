@@ -7,7 +7,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RoundMethods;
 
 [UsedImplicitly]
-public class RoundLockMethod : SynchronousMethod
+public class LockRoundMethod : SynchronousMethod
 {
     public override string Description => "Changes the round lock state.";
 
