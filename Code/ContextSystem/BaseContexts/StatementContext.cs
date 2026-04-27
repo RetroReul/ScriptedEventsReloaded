@@ -1,6 +1,7 @@
 ﻿using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
+using SER.Code.VariableSystem.Bases;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
@@ -8,6 +9,7 @@ public abstract class StatementContext : YieldingContext
 {
     public readonly List<RunnableContext> Children = [];
     public uint? EndLine;
+    public readonly HashSet<Variable> EphemeralVariables = [];
     
     public void SendControlMessage(ParentContextControlMessage msg)
     {
@@ -24,12 +26,29 @@ public abstract class StatementContext : YieldingContext
     {
         foreach (var coro in Children.Select(c => c.ExecuteBaseContext()))
         {
-            if (endCond?.Invoke() is true) yield break;
+            if (endCond?.Invoke() is true) goto leave;
             while (coro.MoveNext())
             {
-                if (endCond?.Invoke() is true) yield break;
+                if (endCond?.Invoke() is true) goto leave;
                 yield return coro.Current;
             }
         }
+        
+        leave:
+        WipeEphemeralVariables();
+    }
+    
+    public void MarkVariableAsEphemeral(Variable variable)
+    {
+        EphemeralVariables.Add(variable);
+    }
+    
+    protected void WipeEphemeralVariables()
+    {
+        foreach (var variable in EphemeralVariables)
+        {
+            Script.RemoveLocalVariable(variable);
+        }
+        EphemeralVariables.Clear();
     }
 }

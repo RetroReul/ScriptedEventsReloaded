@@ -60,5 +60,7 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
             ReceivedContinue = false;
             break;
         }
+        
+        WipeEphemeralVariables();
     }
 }

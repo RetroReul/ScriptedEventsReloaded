@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Contexts.VariableDefinition;
 using SER.Code.ContextSystem.Interfaces;
@@ -7,18 +7,17 @@ using SER.Code.Exceptions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.VariableTokens;
-using SER.Code.VariableSystem;
 
 namespace SER.Code.ContextSystem.Contexts;
 
 [UsedImplicitly]
-public class GlobalKeyword : YieldingContext, IKeywordContext
+public class EphmKeyword : YieldingContext, IKeywordContext
 {
     public override string FriendlyName =>
-        $"global{(_variableToken is null ? "" : $" '{_variableToken.RawRep}'")} variable definition";
+        $"ephemeral{(_variableToken is null ? "" : $" '{_variableToken.RawRep}'")} variable definition";
 
-    public string KeywordName => "global";
-    public string Description => "Creates/modifies a global variable.";
+    public string KeywordName => "ephm";
+    public string Description => "Creates/modifies a ephemeral variable.";
     public string[] Arguments => ["[variable prefix and name]", "=", "[value]"];
     public string? Example => null;
 
@@ -47,8 +46,6 @@ public class GlobalKeyword : YieldingContext, IKeywordContext
 
     protected override IEnumerator<float> Execute()
     {
-        _variableContext.CreateLocalVariable = false;
-        
         using var definitionEnumerator = _variableContext.Run();
         while (definitionEnumerator.MoveNext()) yield return definitionEnumerator.Current;
 
@@ -57,6 +54,6 @@ public class GlobalKeyword : YieldingContext, IKeywordContext
             throw new TosoksFuckedUpException();
         }
         
-        VariableIndex.AddGlobalVariable(_variableContext.DefinedVariable);
+        ParentContext?.MarkVariableAsEphemeral(_variableContext.DefinedVariable);
     }
 }
