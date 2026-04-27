@@ -7,7 +7,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RoundMethods;
 
 [UsedImplicitly]
-public class LobbyLockMethod : SynchronousMethod
+public class LockLobbyMethod : SynchronousMethod
 {
     public override string Description => "Changes the lobby lock state.";
 
