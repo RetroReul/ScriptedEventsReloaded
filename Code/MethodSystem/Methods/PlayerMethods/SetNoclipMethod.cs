@@ -7,7 +7,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.PlayerMethods;
 
 [UsedImplicitly]
-public class NoclipMethod : SynchronousMethod
+public class SetNoclipMethod : SynchronousMethod
 {
     public override string Description => "Enables or disables access to noclip for specified players.";
 
