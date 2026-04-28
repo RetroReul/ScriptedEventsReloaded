@@ -9,10 +9,20 @@ if {@sender -> team} is "SCPs"
 end
 
 # get a random SCP that is not a SCP-079
-@randomScp = Take {Except @scpPlayers @scp079Players} 1
+@target = Take {Except @scpPlayers @scp079Players} 1
+
+# check if the was no viable target
+if {AmountOf @target} is 0
+    Reply "There is no SCP to heal"
+    stop
+end
 
 # get 5% of the SCP's max health
-$healAmount = Round ({@randomScp -> maxHealth} * 0.05)
+$healAmount = Round ({@target -> maxHealth} * 0.05)
 
-Heal @randomScp $healAmount
-Broadcast @randomScp 4s "{@sender -> name} healed you with {$healAmount} HP!"
+# heal
+Heal @target $healAmount
+
+# inform
+Broadcast @target 4s "{@sender -> name} healed you with {$healAmount} HP!"
+Reply "You have healed {@target -> name} by {$healAmount} HP!"
