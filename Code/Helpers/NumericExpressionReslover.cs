@@ -140,7 +140,7 @@ public static class NumericExpressionReslover
                 AppendRaw(tmp);
                 return true;
             }
-            case { RawRep: "==" or "!=" or ">" or ">=" or "<" or "<=" or "+" or "-" or "*" or "/" or "%"}:
+            case { RawRep: "==" or "!=" or ">" or ">=" or "<" or "<=" or "+" or "-" or "*" or "/" or "%" or "&&" or "||"}:
             {
                 AppendRaw(token.RawRep);
                 return true;
