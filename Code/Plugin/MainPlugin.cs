@@ -10,7 +10,7 @@ using SER.Code.Helpers;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
-using SER.Code.MethodSystem.Methods.TeslaRuleMethds;
+using SER.Code.MethodSystem.Methods.TeslaRuleMethods;
 using SER.Code.ScriptSystem;
 using SER.Code.VariableSystem;
 using EventHandler = SER.Code.EventSystem.EventHandler;

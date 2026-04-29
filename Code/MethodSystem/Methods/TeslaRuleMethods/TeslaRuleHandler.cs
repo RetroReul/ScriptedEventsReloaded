@@ -2,7 +2,7 @@ using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.CustomHandlers;
 using PlayerRoles;
 
-namespace SER.Code.MethodSystem.Methods.TeslaRuleMethds;
+namespace SER.Code.MethodSystem.Methods.TeslaRuleMethods;
 
 public class TeslaRuleHandler : CustomEventsHandler
 {

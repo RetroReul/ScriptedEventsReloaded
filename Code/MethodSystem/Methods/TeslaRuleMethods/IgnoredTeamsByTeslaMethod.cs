@@ -4,7 +4,7 @@ using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 
-namespace SER.Code.MethodSystem.Methods.TeslaRuleMethds;
+namespace SER.Code.MethodSystem.Methods.TeslaRuleMethods;
 
 [UsedImplicitly]
 public class IgnoredTeamsByTeslaMethod : SynchronousMethod, IAdditionalDescription

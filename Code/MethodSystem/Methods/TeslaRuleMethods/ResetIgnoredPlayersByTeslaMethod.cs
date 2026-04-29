@@ -1,7 +1,7 @@
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 
-namespace SER.Code.MethodSystem.Methods.TeslaRuleMethds;
+namespace SER.Code.MethodSystem.Methods.TeslaRuleMethods;
 
 [UsedImplicitly]
 public class ResetIgnoredPlayersByTeslaMethod : SynchronousMethod
