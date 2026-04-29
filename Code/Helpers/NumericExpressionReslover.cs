@@ -141,12 +141,12 @@ public static class NumericExpressionReslover
                 AppendRaw(tmp);
                 return true;
             }
-            case VariableToken playerVariable:
+            case VariableToken varToken:
             {
                 var tmp = MakeTempName();
                 variables[tmp] = new(() =>
                 {
-                    if (playerVariable.TryGetVariable().HasErrored(out var err, out var variable))
+                    if (varToken.TryGetVariable().HasErrored(out var err, out var variable))
                     {
                         return mainErr + err;
                     }
