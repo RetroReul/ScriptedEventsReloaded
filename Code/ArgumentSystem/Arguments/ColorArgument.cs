@@ -1,4 +1,5 @@
 ﻿using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.ValueTokens;
@@ -14,11 +15,11 @@ public class ColorArgument(string name) : Argument(name)
     [UsedImplicitly]
     public DynamicTryGet<Color> GetConvertSolution(BaseToken token)
     {
-        if (token is ColorToken colorToken)
+        if (!token.CanReturn<ColorValue>(out var func))
         {
-            return colorToken.Value.Value;
+            return $"Value is not a {InputDescription}.";
         }
         
-        return new(() => token.TryGetLiteralValue<ColorValue>().OnSuccess(val => val.Value));
+        return new(() => func().OnSuccess(val => val.Value));
     }
 }

@@ -424,16 +424,6 @@ public class CustomCommandFlag : Flag, IMajorBehaviorFlag
             {
                 name = name[..^1];
             }
-
-            if (Tokenizer.GetTokenFromSlice(slice, null!, 0)
-                .WasSuccessful(out var token))
-            {
-                if (token.TryGetLiteralValue<LiteralValue>().WasSuccessful(out var value))
-                {
-                    script.AddLocalVariable(Variable.Create(name, value));
-                    continue;
-                }
-            }
             
             script.AddLocalVariable(new LiteralVariable<TextValue>(name, new StaticTextValue(slice.Value)));
         }

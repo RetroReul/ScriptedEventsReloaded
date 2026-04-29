@@ -143,9 +143,11 @@ public static class Contexter
         
         if (firstToken is not IContextableToken contextable)
         {
-            var text = $"'{firstToken.RawRep}' is not a valid way to start a line."
-                + (FindClosestMatch(firstToken.RawRep) is { } match ? $" Did you mean to use '{match}'?" : "");
-            return rs + text.AsError();
+            var tip = $"'{firstToken.RawRep}' is not a valid way to start a line."
+                + (FindClosestMatches(firstToken.RawRep) is { Length: > 0 } matches 
+                    ? $" Did you mean to use {matches.Select(x => $"'{x}'").JoinStrings(" or ")}?" 
+                    : "");
+            return rs + tip.AsError();
         }
 
         var context = contextable.GetContext(scr);
@@ -247,7 +249,7 @@ public static class Contexter
     }
 
     private static List<string>? _suggestions = null;
-    public static string? FindClosestMatch(string input)
+    public static string[] FindClosestMatches(string input)
     {
         if (_suggestions is null)
         {
@@ -255,70 +257,33 @@ public static class Contexter
             _suggestions.AddRange(MethodIndex.GetMethods().Select(m => m.Name));
             _suggestions.AddRange(KeywordToken.KeywordContexts.Select(k => k.KeywordName));
         }
-        
-        var suggestion = _suggestions
-            .Select(name => new { Name = name, Score = GetJaroWinklerSimilarity(input, name) })
+
+        return _suggestions
+            .Select(name => new { Name = name, Score = GetDiceCoefficient(input, name) })
             .Where(x => x.Score > 0.5)
             .OrderByDescending(x => x.Score)
-            .FirstOrDefault();
-
-        return suggestion?.Name;
+            .Take(3)
+            .Select(x => x.Name)
+            .ToArray();
     }
     
-    public static double GetJaroWinklerSimilarity(string s1, string s2)
+    public static double GetDiceCoefficient(string s1, string s2)
     {
-        s1 = s1.ToLowerInvariant();
-        s2 = s2.ToLowerInvariant();
-        
-        double jaroDist = GetJaroSimilarity(s1, s2);
-        if (jaroDist < 0.7) return jaroDist;
-        
-        int prefixLength = 0;
-        for (int i = 0; i < Math.Min(4, Math.Min(s1.Length, s2.Length)); i++)
-        {
-            if (s1[i] == s2[i]) prefixLength++;
-            else break;
-        }
+        if (string.IsNullOrEmpty(s1) || string.IsNullOrEmpty(s2)) return 0;
+        if (s1 == s2) return 1;
 
-        return jaroDist + prefixLength * 0.1 * (1.0 - jaroDist);
-    }
+        var s1Upper = s1.ToUpperInvariant();
+        var s2Upper = s2.ToUpperInvariant();
 
-    private static double GetJaroSimilarity(string s1, string s2)
-    {
-        int s1Len = s1.Length, s2Len = s2.Length;
-        if (s1Len == 0 && s2Len == 0) return 1.0;
-    
-        int matchDistance = Math.Max(s1Len, s2Len) / 2 - 1;
-        bool[] s1Matches = new bool[s1Len];
-        bool[] s2Matches = new bool[s2Len];
+        var set1 = Enumerable.Range(0, s1Upper.Length - 1).Select(i => s1Upper.Substring(i, 2)).ToList();
+        var set2 = Enumerable.Range(0, s2Upper.Length - 1).Select(i => s2Upper.Substring(i, 2)).ToList();
 
         int matches = 0;
-        for (int i = 0; i < s1Len; i++)
+        foreach (var bigram in set1)
         {
-            int start = Math.Max(0, i - matchDistance);
-            int end = Math.Min(i + matchDistance + 1, s2Len);
-            for (int j = start; j < end; j++)
-            {
-                if (s2Matches[j] || s1[i] != s2[j]) continue;
-                s1Matches[i] = true;
-                s2Matches[j] = true;
-                matches++;
-                break;
-            }
+            if (set2.Remove(bigram)) matches++;
         }
 
-        if (matches == 0) return 0.0;
-
-        double transpositions = 0;
-        int k = 0;
-        for (int i = 0; i < s1Len; i++)
-        {
-            if (!s1Matches[i]) continue;
-            while (!s2Matches[k]) k++;
-            if (s1[i] != s2[k]) transpositions++;
-            k++;
-        }
-
-        return (matches / (double)s1Len + matches / (double)s2Len + (matches - transpositions / 2.0) / matches) / 3.0;
+        return (2.0 * matches) / (s1.Length - 1 + s2.Length - 1);
     }
 }

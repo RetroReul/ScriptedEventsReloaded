@@ -742,16 +742,14 @@ SER includes several advanced systems you should explore:
 
 **Utility Methods:**
 - **AmountOf** - `AmountOf @players` - Returns count of players
-- **LockRound** - `LockRound true/false` - Locks/unlocks round
-- **LobbyLock** - `LobbyLock true/false` - Locks/unlocks lobby
+- **SetRoundLock** - `SetRoundLock true/false` - Locks/unlocks round
+- **SetLobbyLock** - `SetLobbyLock true/false` - Locks/unlocks lobby
 - **SetPlayerData** - `SetPlayerData @player "key" value` - Stores custom player data
 - **GetPlayerData** - `GetPlayerData @player "key"` - Retrieves custom player data
 - **HasPlayerData** - `HasPlayerData @player "key"` - Checks if data exists
-- **LimitPlayers** - `LimitPlayers @players count` - Returns random subset
-- **Random** - `Random min max type` - Random number (int/real)
+- **Take** - `Take @players count` - Returns random subset
+- **Random** - `Random min max int/real` - Random number (int/real)
 - **Chance** - `Chance percentage` - Returns true with given chance
-- **VarExists** - `VarExists $variable` - Checks if variable exists
-- **ValidRef** - `ValidRef *reference` - Checks if reference is valid
 
 ## TOP 5 ESSENTIAL EVENTS
 
@@ -779,7 +777,7 @@ SER includes several advanced systems you should explore:
 
 **Random Player Selection:**
 ```ser
-@randomPlayer = LimitPlayers @all 1
+@randomPlayer = Take @all 1
 ```
 
 **Percentage Chance:**
@@ -819,8 +817,7 @@ UnlockDoor *
 
 **Teleport to Room:**
 ```ser
-*room = GetRoomByName "RoomName"
-TPRoom @player *room
+TPRoom @player LczToilets
 ```
 
 **Item Management:**

@@ -63,7 +63,7 @@ public class DynamicTryGet<T> : DynamicTryGet
         
         return _tryGetFunc!();
     }
-
+    
     public DynamicTryGet(T value)
     {
         Static = true;

@@ -1,5 +1,6 @@
 ﻿using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Exceptions;
+using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.ValueTokens;
@@ -56,7 +57,13 @@ public class IntArgument : Argument
         {
             return VerifyRange(number.Value.Value);
         }
-        return new(() => token.TryGetLiteralValue<NumberValue>().OnSuccess(VerifyRange));
+
+        if (!token.CanReturn<NumberValue>(out var func))
+        {
+            return $"{token} is not {InputDescription}.";
+        }
+        
+        return new(() => func().OnSuccess(VerifyRange));
     }
 
     private TryGet<int> VerifyRange(NumberValue value)

@@ -6,9 +6,9 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RoundMethods;
 
 [UsedImplicitly]
-public class LockLobbyMethod : SynchronousMethod
+public class SetRoundLockMethod : SynchronousMethod
 {
-    public override string Description => "Changes the lobby lock state.";
+    public override string Description => "Changes the round lock state.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -17,6 +17,6 @@ public class LockLobbyMethod : SynchronousMethod
     
     public override void Execute()
     {
-        Round.IsLobbyLocked = Args.GetBool("new state");
+        Round.IsLocked = Args.GetBool("new state");
     }
 }
