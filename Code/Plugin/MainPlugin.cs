@@ -9,6 +9,7 @@ using SER.Code.FlagSystem.Flags;
 using SER.Code.Helpers;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
+using SER.Code.MethodSystem.Methods.DamageRuleMethods;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
 using SER.Code.MethodSystem.Methods.TeslaRuleMethods;
 using SER.Code.ScriptSystem;
@@ -121,6 +122,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
 
         FileSystem.FileSystem.Initialize();
         CustomHandlersManager.RegisterEventsHandler(new TeslaRuleHandler());
+        CustomHandlersManager.RegisterEventsHandler(new DamageRuleHandler());
         CRole.RegisterEvents();
     }
 
@@ -130,6 +132,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         Script.StopAll();
         SetPlayerDataMethod.PlayerData.Clear();
         TeslaRuleHandler.ResetAll();
+        DamageRuleHandler.ResetAll();
     }
 
     private void OnServerFullyInit(FrameworkBridge frameworkBridge)

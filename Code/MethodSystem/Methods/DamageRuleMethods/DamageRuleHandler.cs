@@ -1,0 +1,66 @@
+using LabApi.Events.Arguments.PlayerEvents;
+using LabApi.Events.CustomHandlers;
+using LabApi.Features.Wrappers;
+using PlayerStatsSystem;
+using SER.Code.Helpers.ResultSystem;
+
+namespace SER.Code.MethodSystem.Methods.DamageRuleMethods;
+
+public class DamageRuleHandler : CustomEventsHandler
+{
+    public struct DamageRule
+    {
+        public required string? Id;
+        public required float Multiplier;
+        public required DynamicTryGet<Player[]> Getter;
+    }
+    
+    public static readonly List<DamageRule> AttackerRules = [];
+    public static readonly List<DamageRule> RecieverRules = [];
+
+    public static void ResetAll()
+    {
+        AttackerRules.Clear();
+        RecieverRules.Clear();
+    }
+
+    public static void RemoveRule(string? id)
+    {
+        if (id is null)
+        {
+            ResetAll();
+            return;
+        }
+        
+        AttackerRules.RemoveAll(rule => rule.Id == id);
+        RecieverRules.RemoveAll(rule => rule.Id == id);
+    }
+
+    public override void OnPlayerHurting(PlayerHurtingEventArgs ev)
+    {
+        if (ev.DamageHandler is not StandardDamageHandler handler) return;
+        
+        if (ev.Player is { } reciever)
+        {
+            Apply(RecieverRules, reciever);
+        }
+        
+        if (ev.Attacker is { } attacker)
+        {
+            Apply(AttackerRules, attacker);
+        }
+
+        return;
+
+        void Apply(List<DamageRule> rules, Player player)
+        {
+            foreach (var rule in rules)
+            {
+                if (rule.Getter.Invoke().WasSuccessful(out var players) && players.Contains(player))
+                {
+                    handler.Damage *= rule.Multiplier;
+                }
+            }
+        }
+    }
+}
