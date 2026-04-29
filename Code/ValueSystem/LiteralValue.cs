@@ -45,7 +45,7 @@ public abstract class LiteralValue : Value
 
     public override string ToString()
     {
-        return $"{StringRep} ({base.ToString()})";
+        return $"{StringRep} ({FriendlyName})";
     }
 
     public override int HashCode => Value.GetHashCode();
