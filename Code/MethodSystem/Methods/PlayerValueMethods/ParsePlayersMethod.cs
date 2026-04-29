@@ -6,7 +6,7 @@ using SER.Code.MethodSystem.MethodDescriptors;
 using SER.Code.ValueSystem;
 using Utils;
 
-namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
+namespace SER.Code.MethodSystem.Methods.PlayerValueMethods;
 
 [UsedImplicitly]
 public class ParsePlayersMethod : ReturningMethod<PlayerValue>, IAdditionalDescription

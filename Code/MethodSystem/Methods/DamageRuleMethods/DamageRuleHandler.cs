@@ -2,7 +2,6 @@ using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.CustomHandlers;
 using LabApi.Features.Wrappers;
 using PlayerStatsSystem;
-using SER.Code.Helpers.ResultSystem;
 
 namespace SER.Code.MethodSystem.Methods.DamageRuleMethods;
 
@@ -12,7 +11,7 @@ public class DamageRuleHandler : CustomEventsHandler
     {
         public required string? Id;
         public required float Multiplier;
-        public required DynamicTryGet<Player[]> Getter;
+        public required Func<Player[]> Getter;
     }
     
     public static readonly List<DamageRule> AttackerRules = [];
@@ -56,7 +55,7 @@ public class DamageRuleHandler : CustomEventsHandler
         {
             foreach (var rule in rules)
             {
-                if (rule.Getter.Invoke().WasSuccessful(out var players) && players.Contains(player))
+                if (rule.Getter().Contains(player))
                 {
                     handler.Damage *= rule.Multiplier;
                 }

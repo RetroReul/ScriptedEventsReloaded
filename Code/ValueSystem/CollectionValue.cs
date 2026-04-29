@@ -97,10 +97,7 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
         return !CastedValues.Where((val, i) => !val.Equals(otherP.CastedValues[i])).Any();
     }
 
-    public override int HashCode =>
-        CastedValues.GetEnumerableHashCode().HasErrored(out var error, out var val)
-        ? throw new TosoksFuckedUpException(error)
-        : val;
+    public override int HashCode => CastedValues.GetEnumerableHashCode();
     
     private class Prop<T>(Func<CollectionValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<CollectionValue, T>(handler, description) where T : Value;

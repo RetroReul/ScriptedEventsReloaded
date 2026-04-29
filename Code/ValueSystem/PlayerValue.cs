@@ -5,7 +5,6 @@ using PlayerRoles.FirstPersonControl;
 using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.PlayableScps.Scp079;
 using Respawning.NamingRules;
-using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
@@ -36,11 +35,8 @@ public class PlayerValue : Value, IValueWithProperties
     public Player[] Players { get; }
 
     public override bool Equals(Value? other) => other is PlayerValue otherP && Players.SequenceEqual(otherP.Players);
-    
-    public override int HashCode =>
-        Players.Select(plr => plr.UserId).GetEnumerableHashCode().HasErrored(out var error, out var val)
-            ? throw new TosoksFuckedUpException(error)
-            : val;
+
+    public override int HashCode => Players.Select(plr => plr.UserId).GetEnumerableHashCode();
 
     [UsedImplicitly]
     public new static string FriendlyName => "player value";

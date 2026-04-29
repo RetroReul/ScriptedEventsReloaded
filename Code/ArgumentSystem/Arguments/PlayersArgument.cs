@@ -22,8 +22,8 @@ public class PlayersArgument(string name) : EnumHandlingArgument(name)
     {
         return ResolveEnums<Player[]>(token, new()
             {
-                [typeof(Team)] = team => Player.ReadyList.Where(player => player.Team == (Team)team).ToArray(),
-                [typeof(RoleTypeId)] = role => Player.ReadyList.Where(player => player.Role == (RoleTypeId)role).ToArray(),
+                [typeof(Team)] = team => new(() => Player.ReadyList.Where(player => player.Team == (Team)team).ToArray()),
+                [typeof(RoleTypeId)] = role => new(() => Player.ReadyList.Where(player => player.Role == (RoleTypeId)role).ToArray()),
             },
             () =>
             {

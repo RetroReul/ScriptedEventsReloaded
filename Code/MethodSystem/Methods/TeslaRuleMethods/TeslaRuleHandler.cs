@@ -1,31 +1,49 @@
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.CustomHandlers;
-using PlayerRoles;
+using LabApi.Features.Wrappers;
 
 namespace SER.Code.MethodSystem.Methods.TeslaRuleMethods;
 
 public class TeslaRuleHandler : CustomEventsHandler
 {
-    public static HashSet<RoleTypeId> IgnoredRoles = [];
-    public static HashSet<Team> IgnoredTeams = [];
-    public static HashSet<int> IgnoredPlayerIds = [];
+    public struct TeslaIgnoreRule
+    {
+        public required string? Id;
+        public required Func<Player[]> Players;
+    }
+    
+    public static readonly List<TeslaIgnoreRule> Rules = [];
 
     public static void ResetAll()
     {
-        IgnoredRoles.Clear();
-        IgnoredTeams.Clear();
-        IgnoredPlayerIds.Clear();
+        Rules.Clear();
     }
 
     public override void OnPlayerIdlingTesla(PlayerIdlingTeslaEventArgs ev)
     {
         if (ev.Player is not {} plr) return;
-        if (
-            IgnoredRoles.Contains(plr.Role)
-            || IgnoredTeams.Contains(plr.Team)
-            || IgnoredPlayerIds.Contains(plr.PlayerId))
+
+        foreach (var rule in Rules)
         {
-            ev.IsAllowed = false;
+            if (rule.Players().Contains(plr))
+            {
+                ev.IsAllowed = false;
+                return;
+            }
+        }
+    }
+
+    public override void OnPlayerTriggeringTesla(PlayerTriggeringTeslaEventArgs ev)
+    {
+        if (ev.Player is not {} plr) return;
+
+        foreach (var rule in Rules)
+        {
+            if (rule.Players().Contains(plr))
+            {
+                ev.IsAllowed = false;
+                return;
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ public abstract class EnumHandlingArgument(string name) : Argument(name)
 {
     public DynamicTryGet<T> ResolveEnums<T>(
         BaseToken token,
-        Dictionary<Type, Func<object, TryGet<T>>> handlers,
+        Dictionary<Type, Func<object, DynamicTryGet<T>>> handlers,
         Func<DynamicTryGet<T>> fallback)
     {
         foreach (var enumType in handlers.Keys)

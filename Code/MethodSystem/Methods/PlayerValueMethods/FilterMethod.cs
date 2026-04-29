@@ -5,7 +5,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 using SER.Code.ValueSystem.PropertySystem;
 
-namespace SER.Code.MethodSystem.Methods.PlayerVariableMethods;
+namespace SER.Code.MethodSystem.Methods.PlayerValueMethods;
 
 [UsedImplicitly]
 public class FilterMethod : ReturningMethod<PlayerValue>

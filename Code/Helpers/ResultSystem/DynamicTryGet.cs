@@ -106,4 +106,12 @@ public class DynamicTryGet<T> : DynamicTryGet
     }
 
     public static implicit operator DynamicTryGet<T>(Func<TryGet<T>> tryGetFunc) => new(tryGetFunc);
+    
+    public DynamicTryGet(Func<T> getFunc)
+    {
+        Static = false;
+        _tryGetFunc = () => new TryGet<T>(getFunc(), null);
+    }
+
+    public static implicit operator DynamicTryGet<T>(Func<T> getFunc) => new(getFunc);
 }
