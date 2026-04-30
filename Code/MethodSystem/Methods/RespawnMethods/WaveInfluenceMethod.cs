@@ -11,14 +11,14 @@ public class WaveInfluenceMethod : SynchronousMethod
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new WaveTypeArgument("wave type"),
+        new WaveArgument("wave type"),
         new OptionsArgument("mode", "set", "changeBy"),
         new FloatArgument("influence")
     ];
 
     public override void Execute()
     {
-        if (WaveTypeArgument.GetWave(Args.GetWaveType("wave type")) is not {} wave)
+        if (Args.GetWave("wave type") is not {} wave)
         {
             return;
         }

@@ -15,17 +15,17 @@ public class GetWaveTimerMethod : ReturningMethod<DurationValue>, IAdditionalDes
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new WaveTypeArgument("wave type")
+        new WaveArgument("wave type")
     ];
     
     public override void Execute()
     {
-        ReturnValue = TimeSpan.FromSeconds(Args.GetWaveType("wave type") switch
+        ReturnValue = TimeSpan.FromSeconds(Args.GetWave("wave type") switch
         {
-            var t when t == typeof(MtfWave) => RespawnWaves.PrimaryMtfWave?.TimeLeft ?? 0,
-            var t when t == typeof(MiniMtfWave) => RespawnWaves.MiniMtfWave?.TimeLeft ?? 0,
-            var t when t == typeof(ChaosWave) => RespawnWaves.PrimaryChaosWave?.TimeLeft ?? 0,
-            var t when t == typeof(MiniChaosWave) => RespawnWaves.MiniChaosWave?.TimeLeft ?? 0,
+            MtfWave => RespawnWaves.PrimaryMtfWave?.TimeLeft ?? 0,
+            MiniMtfWave => RespawnWaves.MiniMtfWave?.TimeLeft ?? 0,
+            ChaosWave => RespawnWaves.PrimaryChaosWave?.TimeLeft ?? 0,
+            MiniChaosWave => RespawnWaves.MiniChaosWave?.TimeLeft ?? 0,
             _ => throw new AndrzejFuckedUpException()
         });
     }

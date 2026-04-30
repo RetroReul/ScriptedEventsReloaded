@@ -7,7 +7,7 @@ using SER.Code.TokenSystem.Tokens;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
-public class WaveTypeArgument(string name) : Argument(name)
+public class WaveArgument(string name) : Argument(name)
 {
     public static readonly Type[] WaveTypes = typeof(RespawnWave).Assembly.GetTypes()
         .Where(t => 
@@ -21,17 +21,22 @@ public class WaveTypeArgument(string name) : Argument(name)
         + WaveTypes.Select(t => $"> {t.Name.LowerFirst()}").JoinStrings("\n"); 
     
     [UsedImplicitly]
-    public DynamicTryGet<Type> GetConvertSolution(BaseToken token)
+    public DynamicTryGet<RespawnWave?> GetConvertSolution(BaseToken token)
     {
-        if (token.BestTextRepr().IsStatic(out var name, out var func))
+        if (!token.BestTextRepr().IsStatic(out var name, out var func))
         {
-            return InternalConvert(name);
+            return new(() => GetType(func()).OnSuccess(GetWave));
         }
         
-        return new(() => InternalConvert(func()));
+        if (GetType(name).HasErrored(out var error, out var type))
+        {
+            return error;
+        }
+
+        return new(() => GetWave(type));
     }
 
-    private static TryGet<Type> InternalConvert(string name)
+    private static TryGet<Type> GetType(string name)
     {
         if (WaveTypes.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase)) is {} type)
         {

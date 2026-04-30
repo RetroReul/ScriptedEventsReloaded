@@ -248,9 +248,9 @@ public class ProvidedArguments(Method method)
         return GetValue<Type, EffectTypeArgument>(argName);
     }
 
-    public Type GetWaveType(string argName)
+    public RespawnWave? GetWave(string argName)
     {
-        return GetValue<Type, WaveTypeArgument>(argName);
+        return GetValue<RespawnWave?, WaveArgument>(argName);
     }
 
     public CollectionVariable GetCollectionVariable(string argName)

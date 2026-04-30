@@ -13,19 +13,16 @@ public class PlayWaveEffectMethod : SynchronousMethod
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new OptionsArgument("wave faction",
-            "ntf",
-            "ci")
+        new WaveArgument("wave type")
     ];
+    
     public override void Execute()
     {
-        var faction = Args.GetOption("wave faction");
+        if (Args.GetWave("wave type") is not { Base: { } wave })
+        {
+            return;
+        }
         
-        WaveUpdateMessage.ServerSendUpdate(
-            WaveManager.Waves.First(wave => 
-                faction == "ntf"
-                    ? wave is NtfSpawnWave
-                    : wave is ChaosSpawnWave),
-            UpdateMessageFlags.Trigger);
+        WaveUpdateMessage.ServerSendUpdate(wave, UpdateMessageFlags.Trigger);
     }
 }
