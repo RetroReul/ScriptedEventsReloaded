@@ -9,7 +9,7 @@ namespace SER.Code.ArgumentSystem.Arguments;
 public class CustomRoleArgument(string name) : Argument(name)
 {
     public override string InputDescription => "Custom role id e.g. myCustomRole";
-    
+
     [UsedImplicitly]
     public DynamicTryGet<CRole> GetConvertSolution(BaseToken token)
     {

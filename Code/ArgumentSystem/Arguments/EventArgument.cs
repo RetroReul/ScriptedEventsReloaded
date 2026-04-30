@@ -7,9 +7,9 @@ namespace SER.Code.ArgumentSystem.Arguments;
 
 public class EventArgument(string name) : Argument(name)
 {
-    public override string InputDescription => 
+    public override string InputDescription =>
         "An in-game event e.g. RoundStarted (found using command 'serhelp events')";
-    
+
     [UsedImplicitly]
     public DynamicTryGet<string> GetConvertSolution(BaseToken token)
     {
@@ -18,7 +18,7 @@ public class EventArgument(string name) : Argument(name)
         {
             return Verify(evName);
         }
-        
+
         return new(() => Verify(get()));
     }
 

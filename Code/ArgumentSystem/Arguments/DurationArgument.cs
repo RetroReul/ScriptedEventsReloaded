@@ -24,7 +24,7 @@ public class DurationArgument(string name) : Argument(name)
         {
             return get().OnSuccess(v => v.Value, rs);
         }
-        
+
         return new(() => get().OnSuccess(v => v.Value, rs));
     }
 }

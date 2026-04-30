@@ -10,16 +10,16 @@ namespace SER.Code.ArgumentSystem.Arguments;
 public class WaveArgument(string name) : Argument(name)
 {
     public static readonly Type[] WaveTypes = typeof(RespawnWave).Assembly.GetTypes()
-        .Where(t => 
-            t.IsSubclassOf(typeof(RespawnWave)) && 
+        .Where(t =>
+            t.IsSubclassOf(typeof(RespawnWave)) &&
             !t.IsAbstract
         )
         .ToArray();
 
-    public override string InputDescription => 
-        "One of the following wave types:\n" 
-        + WaveTypes.Select(t => $"> {t.Name.LowerFirst()}").JoinStrings("\n"); 
-    
+    public override string InputDescription =>
+        "One of the following wave types:\n"
+        + WaveTypes.Select(t => $"> {t.Name.LowerFirst()}").JoinStrings("\n");
+
     [UsedImplicitly]
     public DynamicTryGet<RespawnWave?> GetConvertSolution(BaseToken token)
     {
@@ -27,7 +27,7 @@ public class WaveArgument(string name) : Argument(name)
         {
             return new(() => GetType(func()).OnSuccess(GetWave));
         }
-        
+
         if (GetType(name).HasErrored(out var error, out var type))
         {
             return error;
@@ -38,11 +38,11 @@ public class WaveArgument(string name) : Argument(name)
 
     private static TryGet<Type> GetType(string name)
     {
-        if (WaveTypes.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase)) is {} type)
+        if (WaveTypes.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase)) is { } type)
         {
             return type;
         }
-        
+
         return "Value is not a valid wave type.";
     }
 

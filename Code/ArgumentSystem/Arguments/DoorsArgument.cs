@@ -11,7 +11,7 @@ namespace SER.Code.ArgumentSystem.Arguments;
 
 public class DoorsArgument(string name) : EnumHandlingArgument(name)
 {
-    public override string InputDescription => 
+    public override string InputDescription =>
         $"{nameof(DoorName)} enum, " +
         $"{nameof(FacilityZone)} enum, " +
         $"{nameof(RoomName)} enum, " +
@@ -28,13 +28,13 @@ public class DoorsArgument(string name) : EnumHandlingArgument(name)
             {
                 [typeof(DoorName)] = doorName =>
                     Door.List.Where(door => door.DoorName == (DoorName)doorName).ToArray(),
-                
-                [typeof(FacilityZone)] = zone => 
+
+                [typeof(FacilityZone)] = zone =>
                     Door.List.Where(d => d.Zone == (FacilityZone)zone).Where(d => d is not ElevatorDoor).ToArray(),
-                
-                [typeof(RoomName)] = roomName => 
+
+                [typeof(RoomName)] = roomName =>
                     Door.List.Where(d => d.Rooms.Any(r => r.Name == (RoomName)roomName))
-                        .Distinct().Where(d => d is not ElevatorDoor).ToArray(),
+                        .Distinct().Where(d => d is not ElevatorDoor).ToArray()
             },
             () =>
             {
@@ -49,14 +49,14 @@ public class DoorsArgument(string name) : EnumHandlingArgument(name)
                 {
                     return rs;
                 }
-                
+
                 return new(() =>
                 {
                     if (get().HasErrored(out var error, out var refToken))
                     {
                         return error;
                     }
-                    
+
                     if (ReferenceArgument<Door>.TryParse(refToken).WasSuccessful(out var door))
                     {
                         return new[] { door };
@@ -66,7 +66,7 @@ public class DoorsArgument(string name) : EnumHandlingArgument(name)
                     {
                         return room.Doors.ToArray();
                     }
-                    
+
                     return rs;
                 });
             }

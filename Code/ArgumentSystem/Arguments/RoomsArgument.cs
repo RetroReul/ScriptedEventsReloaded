@@ -10,7 +10,7 @@ namespace SER.Code.ArgumentSystem.Arguments;
 
 public class RoomsArgument(string name) : EnumHandlingArgument(name)
 {
-    public override string InputDescription => 
+    public override string InputDescription =>
         $"{nameof(RoomName)} enum, {nameof(FacilityZone)} enum, reference to {nameof(Room)}, or * for every room";
 
     [UsedImplicitly]
@@ -21,7 +21,7 @@ public class RoomsArgument(string name) : EnumHandlingArgument(name)
             new()
             {
                 [typeof(RoomName)] = roomName => Room.List.Where(room => room.Name == (RoomName)roomName).ToArray(),
-                [typeof(FacilityZone)] = zone => Room.List.Where(room => room.Zone == (FacilityZone)zone).ToArray(),
+                [typeof(FacilityZone)] = zone => Room.List.Where(room => room.Zone == (FacilityZone)zone).ToArray()
             },
             () =>
             {
@@ -42,7 +42,7 @@ public class RoomsArgument(string name) : EnumHandlingArgument(name)
                     {
                         return error;
                     }
-                    
+
                     if (ReferenceArgument<Room>.TryParse(refVal).WasSuccessful(out var room))
                     {
                         return new[] { room };

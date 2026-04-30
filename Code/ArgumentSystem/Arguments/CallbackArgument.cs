@@ -12,25 +12,20 @@ using SER.Code.VariableSystem.Bases;
 
 namespace SER.Code.ArgumentSystem.Arguments;
 
-public class CallbackArgument(string argumentName, params (SingleTypeOfValue type, string name)[] requiredArguments) 
+public class CallbackArgument(string argumentName, params (SingleTypeOfValue type, string name)[] requiredArguments)
     : Argument(argumentName)
 {
-    public class Callback
-    {
-        public required Action<Value[], Action<Script>?> Action;
-        public required string Name;
-    }
-    
+
     public string FuncName = null!;
-    
-    public override string InputDescription => 
+
+    public override string InputDescription =>
         "A name of a function defined above e.g. MyFunction" +
-        (requiredArguments.Length > 0 
+        (requiredArguments.Length > 0
             ? $". It has to have these arguments: {requiredArguments
                 .Select(x => $"{Value.GetPrefixOfValue(x.type)}{x.name}").JoinStrings(" ")}"
             : string.Empty
         );
-    
+
     [UsedImplicitly]
     public DynamicTryGet<Callback> GetConvertSolution(BaseToken token)
     {
@@ -38,7 +33,7 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
         {
             return Verify(value);
         }
-        
+
         return new(() => Verify(func()));
     }
 
@@ -48,14 +43,14 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
         {
             return err;
         }
-        
+
         FuncName = funcName;
         return new(
             new Callback
             {
-                Action = GetCallback, 
+                Action = GetCallback,
                 Name = funcName
-            }, 
+            },
             null
         );
     }
@@ -63,11 +58,11 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
     private void GetCallback(Value[] args, Action<Script>? modifier)
     {
         var mainError = $"Failed getting the callback function '{FuncName}' from script '{Script.Name}'.".AsError();
-        
+
         // create new instance of the script since there may have been changes to it, 
         // which the old object will not know about
-        if (Script.Name.GetScript(null).HasErrored(out var error, out var hostScript) 
-            || hostScript.Compile().HasErrored(out error) 
+        if (Script.Name.GetScript(null).HasErrored(out var error, out var hostScript)
+            || hostScript.Compile().HasErrored(out error)
             || FetchFunc(hostScript, FuncName).HasErrored(out error, out var func))
         {
             throw new CustomScriptRuntimeError(mainError + error.AsError());
@@ -76,7 +71,7 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
         if (func.LineNum is not { } startLine)
         {
             throw new CustomScriptRuntimeError(
-                mainError 
+                mainError
                 + $"Cannot find the beginning of the '{FuncName}' function - this should not happen.".AsError());
         }
 
@@ -86,7 +81,7 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
                 mainError
                 + $"Cannot find the end of the '{FuncName}' function - this should not happen.".AsError());
         }
-        
+
         var funcContent = hostScript
             .Content
             .Replace("\r", string.Empty)
@@ -101,7 +96,7 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
             Script.Executor,
             scr =>
             {
-                for (int i = 0; i < args.Length; i++)
+                for (var i = 0; i < args.Length; i++)
                 {
                     scr.AddLocalVariable(
                         Variable.Create(func.ExpectedVariables[i].Name, args[i])
@@ -133,7 +128,7 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
                    $"but {requiredArguments.Length} are needed.";
         }
 
-        for (int i = 0; i < requiredArguments.Length; i++)
+        for (var i = 0; i < requiredArguments.Length; i++)
         {
             var requiredType = requiredArguments[i].type;
             var definedType = func.ExpectedVariables[i].ValueType;
@@ -146,5 +141,11 @@ public class CallbackArgument(string argumentName, params (SingleTypeOfValue typ
         }
 
         return func;
+    }
+
+    public class Callback
+    {
+        public required Action<Value[], Action<Script>?> Action;
+        public required string Name;
     }
 }
