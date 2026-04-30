@@ -1,5 +1,4 @@
 ﻿using Respawning;
-using Respawning.Waves;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
