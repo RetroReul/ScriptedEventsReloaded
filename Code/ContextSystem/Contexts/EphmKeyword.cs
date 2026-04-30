@@ -12,6 +12,8 @@ namespace SER.Code.ContextSystem.Contexts;
 [UsedImplicitly]
 public class EphmKeyword : YieldingContext, IKeywordContext
 {
+    private VariableDefinitionContext _variableContext = null!;
+    private VariableToken? _variableToken;
     public override string FriendlyName =>
         $"ephemeral{(_variableToken is null ? "" : $" '{_variableToken.RawRep}'")} variable definition";
 
@@ -20,13 +22,10 @@ public class EphmKeyword : YieldingContext, IKeywordContext
     public string[] Arguments => ["[variable prefix and name]", "=", "[value]"];
     public string? Example => null;
 
-    private VariableDefinitionContext _variableContext = null!;
-    private VariableToken? _variableToken;
-    
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (_variableToken is not null) return _variableContext.TryAddToken(token);
-        
+
         if (token is not VariableToken variableToken)
             return TryAddTokenRes.Error($"{KeywordName} expects a variable definition afterwards.");
 
@@ -38,10 +37,10 @@ public class EphmKeyword : YieldingContext, IKeywordContext
     public override Result VerifyCurrentState()
     {
         if (ParentContext is null) return "To define an ephemeral variable, it must be inside a statement.";
-        
+
         if (_variableToken is null)
             return "Variable name and value haven't been provided.";
-            
+
         return _variableContext.VerifyCurrentState();
     }
 
@@ -54,7 +53,7 @@ public class EphmKeyword : YieldingContext, IKeywordContext
         {
             throw new TosoksFuckedUpException();
         }
-        
+
         ParentContext?.MarkVariableAsEphemeral(_variableContext.DefinedVariable);
     }
 }

@@ -15,15 +15,26 @@ namespace SER.Code.ContextSystem.Contexts;
 [UsedImplicitly]
 public class FuncStatement :
     StatementContext,
-    INotRunningContext, 
+    INotRunningContext,
     IAcceptOptionalVariableDefinitionsContext,
     IMayReturnValueContext,
     IKeywordContext
 {
-    public string FunctionName { get; private set;  } = null!;
+    private readonly List<Variable> _localVariables = [];
     private bool _end = false;
     public VariableToken[] ExpectedVariables = [];
-    private readonly List<Variable> _localVariables = [];
+    public string FunctionName { get; private set; } = null!;
+
+    public override string FriendlyName =>
+        FunctionName is not null
+            ? $"'{FunctionName}' function definition statement"
+            : "function definition statement";
+
+    public Result SetOptionalVariables(params VariableToken[] variableTokens)
+    {
+        ExpectedVariables = variableTokens;
+        return true;
+    }
 
     public string KeywordName => "func";
     public string Description => "Defines a function.";
@@ -37,20 +48,20 @@ public class FuncStatement :
 
         $sum = run $Add 5 3
         Print $sum
-        
-        
+
+
         func @SigmasOnly
             return RemovePlayers * @classDPlayers
         end
-        
+
         @sigmas = run @SigmasOnly
         Explode @sigmas
-        
-        
+
+
         func ExplodeAll
             Explode *
         end
-        
+
         run ExplodeAll
         """;
 
@@ -73,11 +84,6 @@ public class FuncStatement :
     public string MissingValueHint => "Maybe you forgot to use the 'return' keyword?";
     public string UndefinedReturnsHint => "Maybe you forgot to define the return type in the function name?";
 
-    public override string FriendlyName =>
-        FunctionName is not null
-            ? $"'{FunctionName}' function definition statement"
-            : "function definition statement";
-
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (token.GetType() != typeof(BaseToken) && token is not VariableToken)
@@ -87,7 +93,7 @@ public class FuncStatement :
                 $"as it was recognized as a {token.FriendlyTypeName()}"
             );
         }
-        
+
         FunctionName = token.RawRep;
         Script.DefineFunction(FunctionName, this);
         return TryAddTokenRes.End();
@@ -101,12 +107,6 @@ public class FuncStatement :
         );
     }
 
-    public Result SetOptionalVariables(params VariableToken[] variableTokens)
-    {
-        ExpectedVariables = variableTokens;
-        return true;
-    }
-
     public IEnumerator<float> RunProperly(params Value[] values)
     {
         if (LineNum.HasValue)
@@ -114,7 +114,7 @@ public class FuncStatement :
 
         if (values.Length != ExpectedVariables.Length)
         {
-            throw new ScriptRuntimeError(this, 
+            throw new ScriptRuntimeError(this,
                 $"Provided [{values.Length}] values, but [{ExpectedVariables.Length}] were expected."
             );
         }
@@ -123,15 +123,15 @@ public class FuncStatement :
         {
             if (value.Type.IsSameOrHigherThan(variableToken.ValueType))
             {
-                throw new ScriptRuntimeError(this, 
+                throw new ScriptRuntimeError(this,
                     $"Provided variable '{variableToken.Name}' of type '{value.FriendlyTypeName()}' " +
                     $"does not match expected type '{variableToken.ValueType.FriendlyTypeName()}'"
                 );
             }
-            
+
             _localVariables.Add(Variable.Create(variableToken.Name, value));
         }
-        
+
         Script.AddLocalVariables(_localVariables.ToArray());
         return Execute();
     }
@@ -143,12 +143,12 @@ public class FuncStatement :
             case Break:
                 _end = true;
                 return;
-            
+
             case Return ret:
                 _end = true;
                 ReturnedValue = ret.ReturnedValue;
                 return;
-            
+
             default:
                 SendControlMessage(msg);
                 break;
@@ -159,7 +159,7 @@ public class FuncStatement :
     {
         var coro = RunChildren(() => _end);
         while (coro.MoveNext()) yield return coro.Current;
-        
+
         _localVariables.ForEach(v => Script.RemoveLocalVariable(v));
     }
 }

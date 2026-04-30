@@ -20,20 +20,20 @@ namespace SER.Code.ContextSystem.Contexts;
 
 public class MethodContext(MethodToken methodToken) : YieldingContext, IMayReturnValueContext
 {
-    public readonly Method Method = methodToken.Method;
     public readonly MethodArgumentDispatcher Dispatcher = new(methodToken.Method);
+    public readonly Method Method = methodToken.Method;
     private int _providedArguments = 0;
-    
-    public TypeOfValue? Returns => Method is IReturningMethod returningMethod 
-        ? returningMethod.Returns 
+
+    public override string FriendlyName => $"'{Method.Name}' method call";
+
+    public TypeOfValue? Returns => Method is IReturningMethod returningMethod
+        ? returningMethod.Returns
         : null;
-    
+
     public Value? ReturnedValue { get; set; }
 
     public string MissingValueHint => "This method did not return a value. This may be a SER bug.";
     public string UndefinedReturnsHint => "This method does not define a return type. This may be a SER bug.";
-
-    public override string FriendlyName => $"'{Method.Name}' method call";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
@@ -44,12 +44,12 @@ public class MethodContext(MethodToken methodToken) : YieldingContext, IMayRetur
         {
             return TryAddTokenRes.Error($"Value '{token.RawRep}' is not a valid argument: {error}");
         }
-        
+
         if (!possibleArgumentInfo.HasValue) return TryAddTokenRes.Continue();
         var argInfo = possibleArgumentInfo.Value;
-        
+
         Log.Debug($"skeleton {argInfo.Name} {argInfo.ArgumentType} registered");
-        
+
         Method.Args.Add(argInfo);
         return TryAddTokenRes.Continue();
     }
@@ -72,13 +72,13 @@ public class MethodContext(MethodToken methodToken) : YieldingContext, IMayRetur
         {
             yield return Timing.WaitForOneFrame;
         }
-        
+
         switch (Method)
         {
             case SynchronousMethod stdAct:
                 stdAct.Execute();
                 break;
-            
+
             case YieldingMethod yieldAct:
                 var enumerator = yieldAct.Execute();
                 while (enumerator.MoveNext())

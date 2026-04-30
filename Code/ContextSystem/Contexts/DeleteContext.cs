@@ -13,7 +13,7 @@ public class DeleteContext : StandardContext, IKeywordContext
 {
     private VariableToken _variableToken = null!;
     public override string FriendlyName => "delete statement";
-    
+
     public string KeywordName => "delete";
     public string Description => "Deletes a variable.";
     public string[] Arguments => ["variable to delete"];
@@ -26,17 +26,17 @@ public class DeleteContext : StandardContext, IKeywordContext
             # delete variable that should not be accessed anymore
             delete $temporaryVariable
         end
-        
+
         run SomeFunction
         """;
-    
+
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (token is not VariableToken varToken)
         {
             return TryAddTokenRes.Error($"Delete statement expects a variable to delete, not {token}");
         }
-        
+
         _variableToken = varToken;
         return TryAddTokenRes.End();
     }

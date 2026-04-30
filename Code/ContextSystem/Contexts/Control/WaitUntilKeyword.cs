@@ -13,22 +13,22 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class WaitUntilKeyword : YieldingContext, IKeywordContext
 {
+    protected readonly List<BaseToken> Tokens = [];
+    
+    private NumericExpressionReslover.CompiledExpression _expression;
+
+    public override string FriendlyName => $"'{KeywordName}' keyword";
     public virtual string KeywordName => "wait_until";
 
     public virtual string Description => "Halts execution of the script until a condition is met.";
 
     public virtual string[] Arguments => ["<condition...>"];
 
-    public virtual string? Example => SER.Code.Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+    public virtual string? Example => Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
                                       """
                                       # wait until there are no players on the server
                                       wait_until {AmountOf @all} is 0
                                       """;
-
-    public override string FriendlyName => $"'{KeywordName}' keyword";
-
-    protected readonly List<BaseToken> Tokens = [];
-    private NumericExpressionReslover.CompiledExpression _expression;
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
@@ -71,7 +71,7 @@ public class WaitUntilKeyword : YieldingContext, IKeywordContext
         if (objResult is not bool result)
         {
             throw new ScriptRuntimeError(
-                this, 
+                this,
                 $"'{KeywordName}' condition must evaluate to a boolean value, but received {objResult.FriendlyTypeName()}"
             );
         }

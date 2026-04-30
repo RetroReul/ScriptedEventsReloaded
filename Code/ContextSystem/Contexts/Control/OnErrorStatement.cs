@@ -14,35 +14,9 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordContext, IAcceptOptionalVariableDefinitionsContext
 {
-    public string KeywordName => "on_error";
-    public string Description => "Catches an exception thrown inside of an 'attempt' statement.";
-    
-    public string[] Arguments => [];
-    public string Example =>
-        """
-        &collection = Coll.Empty
-        attempt
-            Print {Coll.Fetch &collection 2}
-            # ERROR: there's nothing at index 2
-            
-            Print "Hello, world!"
-            # ^ won't get executed because 'attempt' skips the remaining code
-            # inside of it if an error was made
-            
-        on_error with $message $type $stackTrace
-            # this will print the error message
-            Print "Error: {$message}"
-            
-            # In 90% of situations $type will be ScriptRuntimeError
-            Print "Type of error: {$type}"
-            
-            # This just shows where in the internal code (not the script) the error was made
-            # (basically to allow devs to know where in the code they may have fucked up)
-            Print "Stack trace: {$stackTrace}"
-        end
-        """;
-
-    public IExtendableStatement.Signal Extends => IExtendableStatement.Signal.ThrewException;
+    private VariableToken? _messageVariableToken;
+    private VariableToken? _stackTraceVariableToken;
+    private VariableToken? _typeVariableToken;
     public override string FriendlyName => "'on_error' statement";
 
     public Exception? Exception
@@ -54,19 +28,6 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
                 return;
             field = value;
         }
-    }
-    private VariableToken? _messageVariableToken;
-    private VariableToken? _typeVariableToken;
-    private VariableToken? _stackTraceVariableToken;
-    
-    public override TryAddTokenRes TryAddToken(BaseToken token)
-    {
-        return TryAddTokenRes.Error($"A {FriendlyName} does not expect any arguments.");
-    }
-
-    public override Result VerifyCurrentState()
-    {
-        return true;
     }
 
     public Result SetOptionalVariables(params VariableToken[] variableTokens)
@@ -100,7 +61,7 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
             default:
                 return string.Format(errorMsg, typeToken.RawRepr);
         }
-        
+
         var stackTraceToken = variableTokens.Skip(2).FirstOrDefault();
         switch (stackTraceToken)
         {
@@ -112,16 +73,55 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
             default:
                 return string.Format(errorMsg, stackTraceToken.RawRepr);
         }
-        
+
         return true;
     }
-    
+    public string KeywordName => "on_error";
+    public string Description => "Catches an exception thrown inside of an 'attempt' statement.";
+
+    public string[] Arguments => [];
+    public string Example =>
+        """
+        &collection = Coll.Empty
+        attempt
+            Print {Coll.Fetch &collection 2}
+            # ERROR: there's nothing at index 2
+            
+            Print "Hello, world!"
+            # ^ won't get executed because 'attempt' skips the remaining code
+            # inside of it if an error was made
+            
+        on_error with $message $type $stackTrace
+            # this will print the error message
+            Print "Error: {$message}"
+            
+            # In 90% of situations $type will be ScriptRuntimeError
+            Print "Type of error: {$type}"
+            
+            # This just shows where in the internal code (not the script) the error was made
+            # (basically to allow devs to know where in the code they may have fucked up)
+            Print "Stack trace: {$stackTrace}"
+        end
+        """;
+
+    public IExtendableStatement.Signal Extends => IExtendableStatement.Signal.ThrewException;
+
+    public override TryAddTokenRes TryAddToken(BaseToken token)
+    {
+        return TryAddTokenRes.Error($"A {FriendlyName} does not expect any arguments.");
+    }
+
+    public override Result VerifyCurrentState()
+    {
+        return true;
+    }
+
     protected override IEnumerator<float> Execute()
     {
         Variable? messageVariable = null;
         Variable? typeVariable = null;
         Variable? stackTraceVariable = null;
-        
+
         if (_messageVariableToken is not null)
         {
             messageVariable = Variable.Create(_messageVariableToken.Name, Value.Parse(Exception!.Message, Script));
@@ -141,9 +141,9 @@ public class OnErrorStatement : StatementContext, IStatementExtender, IKeywordCo
         var coro = RunChildren();
         while (coro.MoveNext())
             yield return coro.Current;
-        
-        if (messageVariable    is not null) Script.RemoveLocalVariable(messageVariable);
-        if (typeVariable       is not null) Script.RemoveLocalVariable(typeVariable);
+
+        if (messageVariable is not null) Script.RemoveLocalVariable(messageVariable);
+        if (typeVariable is not null) Script.RemoveLocalVariable(typeVariable);
         if (stackTraceVariable is not null) Script.RemoveLocalVariable(stackTraceVariable);
     }
 }

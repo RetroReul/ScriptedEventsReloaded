@@ -6,27 +6,27 @@ namespace SER.Code.ContextSystem.BaseContexts;
 
 public abstract class LoopContext : StatementContext, IExtendableStatement, IKeywordContext
 {
+    protected bool ReceivedBreak;
+
+    protected bool ReceivedContinue;
+
+    protected abstract string? Usage { get; }
+
+    public sealed override string FriendlyName => $"'{KeywordName}' loop statement";
     public IExtendableStatement.Signal AllowedSignals => IExtendableStatement.Signal.DidntExecute;
     public Dictionary<IExtendableStatement.Signal, StatementContext> RegisteredSignals { get; } = [];
-    
+
     public abstract string KeywordName { get; }
     public abstract string Description { get; }
     public abstract string[] Arguments { get; }
-    
-    protected abstract string? Usage { get; }
 
-    public string Example => SER.Code.Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+    public string Example => Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
                              $"""
                               {Usage}
-                              
+
                               # ========================================
                               # "break" and "continue" keywords work as usual and you are free to use them inside "{KeywordName}" loops
                               """;
-
-    protected bool ReceivedContinue;
-    protected bool ReceivedBreak;
-
-    public sealed override string FriendlyName => $"'{KeywordName}' loop statement";
 
     protected override void OnReceivedControlMessageFromChild(ParentContextControlMessage msg)
     {
@@ -60,7 +60,7 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
             ReceivedContinue = false;
             break;
         }
-        
+
         WipeEphemeralVariables();
     }
 }

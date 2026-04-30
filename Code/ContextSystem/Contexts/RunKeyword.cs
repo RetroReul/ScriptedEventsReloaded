@@ -13,19 +13,19 @@ namespace SER.Code.ContextSystem.Contexts;
 [UsedImplicitly]
 public class RunKeyword : YieldingContext, IMayReturnValueContext
 {
-    private FuncStatement? _functionDefinitionContext;
     private readonly List<IValueToken> _providedValues = [];
+    private FuncStatement? _functionDefinitionContext;
+
+    public override string FriendlyName =>
+        _functionDefinitionContext is not null
+            ? $"'{_functionDefinitionContext.FunctionName}' function call"
+            : "function call";
 
     public TypeOfValue? Returns => _functionDefinitionContext?.Returns;
     public Value? ReturnedValue => _functionDefinitionContext?.ReturnedValue;
 
     public string MissingValueHint => _functionDefinitionContext?.MissingValueHint ?? "Function is not defined.";
     public string UndefinedReturnsHint => _functionDefinitionContext?.UndefinedReturnsHint ?? "Function is not defined.";
-
-    public override string FriendlyName =>
-        _functionDefinitionContext is not null
-            ? $"'{_functionDefinitionContext.FunctionName}' function call"
-            : "function call";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
@@ -50,7 +50,7 @@ public class RunKeyword : YieldingContext, IMayReturnValueContext
         {
             return TryAddTokenRes.Error($"Unexpected token '{token.RawRep}'");
         }
-        
+
         return TryAddTokenRes.Continue();
     }
 
@@ -64,16 +64,16 @@ public class RunKeyword : YieldingContext, IMayReturnValueContext
 
     protected override IEnumerator<float> Execute()
     {
-        List<Value> varsToProvide = []; 
+        List<Value> varsToProvide = [];
         foreach (var valToken in _providedValues)
         {
             if (valToken.Value().HasErrored(out var error, out var variable))
             {
-                throw new ScriptRuntimeError(this, 
+                throw new ScriptRuntimeError(this,
                     $"Cannot run {_functionDefinitionContext!}: {error}"
                 );
             }
-            
+
             varsToProvide.Add(variable);
         }
 

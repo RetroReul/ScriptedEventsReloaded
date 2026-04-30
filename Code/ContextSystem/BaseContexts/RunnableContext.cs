@@ -8,7 +8,7 @@ public abstract class RunnableContext : Context
 
     public StatementContext? ParentContext { get; set; } = null;
 
-    public static RunnableContext Create(Type contextType, Script scr, uint? lineNum )
+    public static RunnableContext Create(Type contextType, Script scr, uint? lineNum)
     {
         var context = (RunnableContext)Activator.CreateInstance(contextType);
         context.Script = scr;
@@ -18,9 +18,9 @@ public abstract class RunnableContext : Context
 
     public override string ToString()
     {
-        if (LineNum.HasValue) 
+        if (LineNum.HasValue)
             return $"{FriendlyName} at line {LineNum}";
-        
+
         return FriendlyName;
     }
 }

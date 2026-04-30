@@ -9,16 +9,16 @@ namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 [UsedImplicitly]
 public class ContinueKeyword : StandardContext, IKeywordContext
 {
-    public string KeywordName => "continue";
+    public override string FriendlyName => "'continue' keyword";
     
+    public string KeywordName => "continue";
+
     public string Description =>
         "Makes a given loop (that the 'continue' keyword is inside) act as it has reached the end of its body.";
-    
-    public string[] Arguments => [];
-    
-    public string? Example => null;
 
-    public override string FriendlyName => "'continue' keyword";
+    public string[] Arguments => [];
+
+    public string? Example => null;
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

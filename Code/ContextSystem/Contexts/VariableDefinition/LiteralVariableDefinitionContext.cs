@@ -6,5 +6,3 @@ namespace SER.Code.ContextSystem.Contexts.VariableDefinition;
 
 public class LiteralVariableDefinitionContext(VariableToken<LiteralVariable, LiteralValue> varToken) :
     VariableDefinitionContext<VariableToken<LiteralVariable, LiteralValue>, LiteralValue, LiteralVariable>(varToken);
-
-

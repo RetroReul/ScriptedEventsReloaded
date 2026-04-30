@@ -15,12 +15,12 @@ public static class BaseContextExtensions
             case StandardContext standardContext:
                 standardContext.Run();
                 yield break;
-            
+
             case YieldingContext yieldingContext:
                 var coro = yieldingContext.Run();
                 while (coro.MoveNext()) yield return coro.Current;
                 yield break;
-            
+
             default:
                 throw new AndrzejFuckedUpException("context is not standard nor yielding");
         }

@@ -8,9 +8,9 @@ namespace SER.Code.ContextSystem.BaseContexts;
 public abstract class StatementContext : YieldingContext
 {
     public readonly List<RunnableContext> Children = [];
-    public uint? EndLine;
     public readonly HashSet<Variable> EphemeralVariables = [];
-    
+    public uint? EndLine;
+
     public void SendControlMessage(ParentContextControlMessage msg)
     {
         Log.Debug($"{this} has received control message: {msg}");
@@ -21,7 +21,7 @@ public abstract class StatementContext : YieldingContext
     {
         ParentContext?.SendControlMessage(msg);
     }
-    
+
     protected IEnumerator<float> RunChildren(Func<bool>? endCond = null)
     {
         foreach (var coro in Children.Select(c => c.ExecuteBaseContext()))
@@ -33,16 +33,16 @@ public abstract class StatementContext : YieldingContext
                 yield return coro.Current;
             }
         }
-        
+
         leave:
         WipeEphemeralVariables();
     }
-    
+
     public void MarkVariableAsEphemeral(Variable variable)
     {
         EphemeralVariables.Add(variable);
     }
-    
+
     protected void WipeEphemeralVariables()
     {
         foreach (var variable in EphemeralVariables)

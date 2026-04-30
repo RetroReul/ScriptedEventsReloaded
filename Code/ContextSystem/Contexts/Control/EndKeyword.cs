@@ -9,12 +9,12 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class EndKeyword : StandardContext, IKeywordContext
 {
-    public string KeywordName => "end";
     public override string FriendlyName => "'end' keyword";
+    public string KeywordName => "end";
     public string Description => "Ends the current statement's body.";
     public string[] Arguments => [];
     public string? Example => null;
-    
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override TryAddTokenRes TryAddToken(BaseToken token)

@@ -14,26 +14,25 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class WaitKeyword : YieldingContext, IKeywordContext
 {
+    private IValueToken? _durationToken;
+    private Func<TryGet<DurationValue>>? _getDuration;
+
+    public override string FriendlyName => $"'{KeywordName}' keyword";
     public virtual string KeywordName => "wait";
 
     public virtual string Description => "Halts execution of the script for a specified amount of time.";
 
     public virtual string[] Arguments => ["<duration>"];
 
-    public virtual string? Example => SER.Code.Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+    public virtual string Example => Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
                                       """
                                       # wait for 5 seconds
                                       wait 5s
-                                      
+
                                       # Waits using a variable
                                       $duration = 10s
                                       wait $duration
                                       """;
-
-    public override string FriendlyName => $"'{KeywordName}' keyword";
-
-    private IValueToken? _durationToken;
-    private Func<TryGet<DurationValue>>? _getDuration;
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
@@ -64,7 +63,7 @@ public class WaitKeyword : YieldingContext, IKeywordContext
         {
             throw new ScriptRuntimeError(this, error);
         }
-        
+
         yield return Timing.WaitForSeconds((float)duration.Value.TotalSeconds);
     }
 }

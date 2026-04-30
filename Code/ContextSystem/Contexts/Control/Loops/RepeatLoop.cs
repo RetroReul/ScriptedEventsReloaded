@@ -12,9 +12,14 @@ namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 [UsedImplicitly]
 public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
 {
+    private readonly Result _rs = "Cannot create 'repeat' loop.";
+    private ulong? _repeatCount = null;
+    private Func<TryGet<ulong>>? _repeatCountExpression = null;
+    
     public override string KeywordName => "repeat";
     public override string Description => "Repeats everything inside its body a given amount of times.";
     public override string[] Arguments => ["[number]"];
+    
     protected override string Usage =>
         """
         # repeat loop repeats its body a given amount of times
@@ -22,13 +27,13 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
         repeat 10
             Print "hi"
         end
-        
+
         # ========================================
         # you can also use a variable to define the amount of times to repeat
         repeat {Random 1 10 int}
             Print "hi"
         end
-        
+
         # ========================================
         # you can also define a variable which will hold the current iteration number, starting from 1
         repeat 10 with $iter
@@ -36,13 +41,7 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
             Print "current iteration: {$iter}"
         end
         """;
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private readonly Result _rs = "Cannot create 'repeat' loop.";
-    private Func<TryGet<ulong>>? _repeatCountExpression = null;
-    private ulong? _repeatCount = null;
-    
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (token is not IValueToken valToken || !valToken.CapableOf<NumberValue>(out var getNumber))
@@ -64,7 +63,7 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
 
             return (uint)value.Value;
         };
-        
+
         return TryAddTokenRes.End();
     }
 
@@ -80,20 +79,20 @@ public class RepeatLoop : LoopContextWithSingleIterationVariable<NumberValue>
     {
         if (!_repeatCount.HasValue)
         {
-            if (_repeatCountExpression == null) 
+            if (_repeatCountExpression == null)
                 throw new AndrzejFuckedUpException("Repeat context has no amount specified");
 
             if (_repeatCountExpression().HasErrored(out var error, out var val))
             {
-                throw new ScriptRuntimeError(this,  error);
+                throw new ScriptRuntimeError(this, error);
             }
-            
+
             _repeatCount = val;
         }
 
         for (ulong i = 0; i < _repeatCount.Value; i++)
         {
-            SetVariable(i+1);
+            SetVariable(i + 1);
             var coro = RunChildren();
             while (coro.MoveNext())
             {

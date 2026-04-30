@@ -69,7 +69,7 @@ public class ReferenceVariableDefinitionContext(VariableToken<ReferenceVariable,
 
         if (Expression.GetValue().HasErrored(out var error, out var tValue))
         {
-            throw new ScriptRuntimeError(this, 
+            throw new ScriptRuntimeError(this,
                 $"Value returned by {FriendlyName} could not be resolved: {error}"
             );
         }
@@ -82,7 +82,7 @@ public class ReferenceVariableDefinitionContext(VariableToken<ReferenceVariable,
 
         if (!lastProp.propInfo.IsSettable)
         {
-             throw new ScriptRuntimeError(this, $"Property '{lastProp.propInfo.ReturnType}' is read-only.");
+            throw new ScriptRuntimeError(this, $"Property '{lastProp.propInfo.ReturnType}' is read-only.");
         }
 
         var setResult = lastProp.propInfo.SetValue(lastProp.target, tValue);

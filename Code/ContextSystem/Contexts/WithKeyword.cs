@@ -13,7 +13,9 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
 {
     private readonly List<VariableToken> _variables = [];
     private Safe<IAcceptOptionalVariableDefinitionsContext> _receiver;
-    
+
+    public override string FriendlyName => "'with' keyword";
+
     public string KeywordName => "with";
 
     public string Description =>
@@ -27,7 +29,7 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
         over @all with @plr
             Print {@plr -> name}
         end
-        
+
         # CORRECT - with can be on its own line
         over @all 
             with @plr
@@ -61,15 +63,13 @@ public class WithKeyword : StandardContext, IKeywordContext, INotRunningContext,
         return true;
     }
 
-    public override string FriendlyName => "'with' keyword";
-
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (token is not VariableToken vToken)
         {
             return TryAddTokenRes.Error($"Value '{token.RawRep}' is not a variable.");
         }
-        
+
         _variables.Add(vToken);
         return TryAddTokenRes.Continue();
     }

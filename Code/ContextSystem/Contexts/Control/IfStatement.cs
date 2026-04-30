@@ -12,29 +12,26 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class IfStatement : StatementContext, IExtendableStatement, IKeywordContext
 {
+    private readonly List<BaseToken> _condition = [];
+
+    private NumericExpressionReslover.CompiledExpression _expression;
+
+    public override string FriendlyName => "'if' statement";
+
+    public IExtendableStatement.Signal AllowedSignals => IExtendableStatement.Signal.DidntExecute;
+    public Dictionary<IExtendableStatement.Signal, StatementContext> RegisteredSignals { get; } = [];
     public string KeywordName => "if";
     public string Description => "This statement will execute only if the provided condition is met.";
     public string[] Arguments => ["[condition]"];
     public string? Example => null;
-    
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public IExtendableStatement.Signal AllowedSignals => IExtendableStatement.Signal.DidntExecute;
-    public Dictionary<IExtendableStatement.Signal, StatementContext> RegisteredSignals { get; } = [];
-
-    private readonly List<BaseToken> _condition = [];
-    
-    private NumericExpressionReslover.CompiledExpression _expression;
-
-    public override string FriendlyName => "'if' statement";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (NumericExpressionReslover.IsValidForExpression(token).HasErrored(out var error))
         {
             return TryAddTokenRes.Error(error);
-        }        
-        
+        }
+
         _condition.Add(token);
         return TryAddTokenRes.Continue();
     }
@@ -46,9 +43,9 @@ public class IfStatement : StatementContext, IExtendableStatement, IKeywordConte
         {
             return error;
         }
-        
+
         _expression = cond;
-        
+
         return _condition.Count > 0
             ? true
             : "An if statement expects to have a condition, but none was provided!";
@@ -65,14 +62,14 @@ public class IfStatement : StatementContext, IExtendableStatement, IKeywordConte
         {
             throw new ScriptRuntimeError(this, $"An if statement condition must evaluate to a boolean value, but received {objResult.FriendlyTypeName()}");
         }
-        
+
         if (!result)
         {
             if (!RegisteredSignals.TryGetValue(IExtendableStatement.Signal.DidntExecute, out var statement))
             {
                 yield break;
             }
-            
+
             var didntExecuteCoro = statement.Run();
             while (didntExecuteCoro.MoveNext())
             {
@@ -81,7 +78,7 @@ public class IfStatement : StatementContext, IExtendableStatement, IKeywordConte
 
             yield break;
         }
-        
+
         var coro = RunChildren();
         while (coro.MoveNext())
         {

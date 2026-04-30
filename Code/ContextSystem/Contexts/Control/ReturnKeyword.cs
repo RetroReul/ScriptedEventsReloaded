@@ -11,30 +11,30 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 public class ReturnKeyword : StandardContext, IKeywordContext
 {
     private ValueExpressionContext? _expression = null;
-    
+
+    public override string FriendlyName => "'return' keyword";
+
     public string KeywordName => "return";
     public string Description => "Returns value when in a function.";
     public string[] Arguments => ["[return value]"];
     public string? Example => null;
 
-    public override string FriendlyName => "'return' keyword";
-
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (_expression is not null) return _expression.TryAddToken(token);
-        
+
         _expression = new ValueExpressionContext(token, true)
         {
             Script = token.Script
         };
-        
+
         return TryAddTokenRes.Continue();
     }
 
     public override Result VerifyCurrentState()
     {
         if (_expression is not null) return _expression.VerifyCurrentState();
-        
+
         return Result.Assert(
             _expression is not null,
             "Return value was not provided."

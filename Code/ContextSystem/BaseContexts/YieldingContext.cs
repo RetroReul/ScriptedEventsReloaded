@@ -11,16 +11,16 @@ public abstract class YieldingContext : RunnableContext
         {
             yield break;
         }
-        
-        var prof = Script.Profile is not null 
+
+        var prof = Script.Profile is not null
             ? new Profile(Script.Profile, $"running YieldingContext {this}")
             : null;
-        
+
         if (LineNum.HasValue)
         {
             Script.CurrentLine = LineNum.Value;
         }
-        
+
         var enumerator = Execute();
         while (enumerator.MoveNext())
         {

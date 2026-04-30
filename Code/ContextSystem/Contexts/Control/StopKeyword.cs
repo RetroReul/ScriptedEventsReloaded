@@ -10,16 +10,16 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class StopKeyword : StandardContext, IKeywordContext
 {
+    public override string FriendlyName => "'stop' keyword";
+    
     public string KeywordName => "stop";
 
     public string Description => "Stops the script from executing.";
 
     public string[] Arguments => [];
-    
+
     public string? Example => null;
 
-    public override string FriendlyName => "'stop' keyword";
-    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public override TryAddTokenRes TryAddToken(BaseToken token)

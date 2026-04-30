@@ -13,15 +13,17 @@ using SER.Code.TokenSystem.Tokens;
 namespace SER.Code.ContextSystem;
 
 /// <summary>
-/// Responsible for joining tokens from a line together into contexts for execution.
+///     Responsible for joining tokens from a line together into contexts for execution.
 /// </summary>
 public static class Contexter
 {
+    private static List<string>? _suggestions = null;
+
     public static TryGet<RunnableContext[]> ContextLines(Line[] lines, Script scr)
     {
         Stack<StatementContext> statementStack = [];
         List<RunnableContext> contexts = [];
-        
+
         List<Result> errors = [];
         foreach (var line in lines)
         {
@@ -32,9 +34,9 @@ public static class Contexter
                 errors.Add(mainErr + error);
                 continue;
             }
-            
+
             if (context is null) continue;
-            
+
             if (TryAddResult(context, line.LineNumber, statementStack, contexts).HasErrored(out var addError))
             {
                 errors.Add(mainErr + addError);
@@ -42,30 +44,31 @@ public static class Contexter
             }
             Log.Debug($"current statement stack: {statementStack.Select(s => s.GetType().Name).JoinStrings(" -> ")}");
         }
-        
+
         if (errors.Any()) return Result.Merge(errors);
-        
+
         return contexts.ToArray();
     }
 
     private static Result TryAddResult(
         RunnableContext context,
-        uint lineNum, 
-        Stack<StatementContext> statementStack, 
+        uint lineNum,
+        Stack<StatementContext> statementStack,
         List<RunnableContext> contexts
-    ) {
+    )
+    {
         Result rs = $"Invalid {context}";
 
         Log.Debug($"Trying to add context {context}");
-        
+
         switch (context)
         {
             case EndKeyword:
             {
                 if (statementStack.Count == 0)
                     return rs +
-                        "Check if the statement you are trying to close hasn't thrown an error when compiling.".AsError() +
-                        "There is no valid statement to close with the 'end' keyword!".AsError();
+                           "Check if the statement you are trying to close hasn't thrown an error when compiling.".AsError() +
+                           "There is no valid statement to close with the 'end' keyword!".AsError();
 
                 var lastContext = statementStack.Pop();
                 lastContext.EndLine = context.LineNum;
@@ -100,7 +103,7 @@ public static class Contexter
             {
                 return rs + "The statement to extend is not extendable.";
             }
-            
+
             if (!extendable.AllowedSignals.HasFlag(treeExtenderInfo.Extends))
             {
                 return rs + "The statement to extend does not support this type of extension.";
@@ -111,7 +114,7 @@ public static class Contexter
             statementStack.Push(treeExtenderContext);
             return context.VerifyCurrentState().HasErrored(out error) ? rs + error.AsError() : true;
         }
-        
+
         if (currentStatement is not null)
         {
             Log.Debug($"Adding finished context {context} to tree context {currentStatement}");
@@ -124,10 +127,10 @@ public static class Contexter
             contexts.Add(context);
         }
 
-        if (context is StatementContext treeContext) 
+        if (context is StatementContext treeContext)
             statementStack.Push(treeContext);
-        
-        if (context.VerifyCurrentState().HasErrored(out error)) 
+
+        if (context.VerifyCurrentState().HasErrored(out error))
             return rs + error;
 
         Log.Debug($"Line {lineNum} has been contexted to {context}");
@@ -137,23 +140,23 @@ public static class Contexter
     public static TryGet<RunnableContext?> ContextLine(BaseToken[] tokens, uint? lineNum, Script scr)
     {
         Result rs = $"Line {(lineNum.HasValue ? $"{lineNum.Value} " : "")}is invalid";
-        
+
         var firstToken = tokens.FirstOrDefault();
         if (firstToken is null) return null as RunnableContext;
-        
+
         if (firstToken is not IContextableToken contextable)
         {
             var tip = $"'{firstToken.RawRep}' is not a valid way to start a line."
-                + (FindClosestMatches(firstToken.RawRep) is { Length: > 0 } matches 
-                    ? $" Did you mean to use {matches.Select(x => $"'{x}'").JoinStrings(" or ")}?" 
-                    : "");
+                      + (FindClosestMatches(firstToken.RawRep) is { Length: > 0 } matches
+                          ? $" Did you mean to use {matches.Select(x => $"'{x}'").JoinStrings(" or ")}?"
+                          : "");
             return rs + tip.AsError();
         }
 
         var context = contextable.GetContext(scr);
         if (context is null) return context;
-        
-        bool endLineContexting = false;
+
+        var endLineContexting = false;
         for (var index = 1; index < tokens.Length; index++)
         {
             var token = tokens[index];
@@ -164,7 +167,7 @@ public static class Contexter
                 {
                     return rs + error;
                 }
-                
+
                 break;
             }
 
@@ -172,7 +175,7 @@ public static class Contexter
             {
                 break;
             }
-            
+
             if (token is CommentToken)
             {
                 return context;
@@ -188,14 +191,14 @@ public static class Contexter
     private static bool AttemptsInlineWithKeyword(BaseToken token, Context currentContext)
     {
         return token is IContextableToken contextable
-            && contextable.GetContext(token.Script) is WithKeyword
-            && currentContext is StatementContext;
+               && contextable.GetContext(token.Script) is WithKeyword
+               && currentContext is StatementContext;
     }
-    
+
     private static Result HandleInlineWithKeyword(IEnumerable<BaseToken> enumTokens, RunnableContext context, Script scr)
     {
         var tokens = enumTokens.ToArray();
-        
+
         if (tokens.First() is not IContextableToken contextable2
             || contextable2.GetContext(scr) is not WithKeyword
             || context is not StatementContext statement)
@@ -212,7 +215,7 @@ public static class Contexter
         {
             return $"{contextResult.FriendlyName} does not accept {tokens.First()}";
         }
-        
+
         if (with.AcceptStatement(statement).HasErrored(out var acceptError))
         {
             return acceptError;
@@ -247,8 +250,6 @@ public static class Contexter
         endLineContexting = true;
         return true;
     }
-
-    private static List<string>? _suggestions = null;
     public static string[] FindClosestMatches(string input)
     {
         if (_suggestions is null)
@@ -266,7 +267,7 @@ public static class Contexter
             .Select(x => x.Name)
             .ToArray();
     }
-    
+
     public static double GetDiceCoefficient(string s1, string s2)
     {
         if (string.IsNullOrEmpty(s1) || string.IsNullOrEmpty(s2)) return 0;
@@ -278,12 +279,12 @@ public static class Contexter
         var set1 = Enumerable.Range(0, s1Upper.Length - 1).Select(i => s1Upper.Substring(i, 2)).ToList();
         var set2 = Enumerable.Range(0, s2Upper.Length - 1).Select(i => s2Upper.Substring(i, 2)).ToList();
 
-        int matches = 0;
+        var matches = 0;
         foreach (var bigram in set1)
         {
             if (set2.Remove(bigram)) matches++;
         }
 
-        return (2.0 * matches) / (s1.Length - 1 + s2.Length - 1);
+        return 2.0 * matches / (s1.Length - 1 + s2.Length - 1);
     }
 }

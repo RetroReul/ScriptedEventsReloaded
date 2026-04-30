@@ -4,7 +4,7 @@ using SER.Code.Helpers.ResultSystem;
 namespace SER.Code.ContextSystem.Interfaces;
 
 /// <summary>
-/// Requests the previous statement context to be provided
+///     Requests the previous statement context to be provided
 /// </summary>
 public interface IRequirePreviousStatementContext
 {

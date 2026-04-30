@@ -13,6 +13,8 @@ namespace SER.Code.ContextSystem.Contexts;
 [UsedImplicitly]
 public class GlobalKeyword : YieldingContext, IKeywordContext
 {
+    private VariableDefinitionContext _variableContext = null!;
+    private VariableToken? _variableToken;
     public override string FriendlyName =>
         $"global{(_variableToken is null ? "" : $" '{_variableToken.RawRep}'")} variable definition";
 
@@ -21,13 +23,10 @@ public class GlobalKeyword : YieldingContext, IKeywordContext
     public string[] Arguments => ["[variable prefix and name]", "=", "[value]"];
     public string? Example => null;
 
-    private VariableDefinitionContext _variableContext = null!;
-    private VariableToken? _variableToken;
-    
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         if (_variableToken is not null) return _variableContext.TryAddToken(token);
-        
+
         if (token is not VariableToken variableToken)
             return TryAddTokenRes.Error($"{KeywordName} expects a variable definition afterwards.");
 
@@ -40,14 +39,14 @@ public class GlobalKeyword : YieldingContext, IKeywordContext
     {
         if (_variableToken is null)
             return "Variable name and value haven't been provided.";
-            
+
         return _variableContext.VerifyCurrentState();
     }
 
     protected override IEnumerator<float> Execute()
     {
         _variableContext.CreateLocalVariable = false;
-        
+
         using var definitionEnumerator = _variableContext.Run();
         while (definitionEnumerator.MoveNext()) yield return definitionEnumerator.Current;
 
@@ -55,7 +54,7 @@ public class GlobalKeyword : YieldingContext, IKeywordContext
         {
             throw new TosoksFuckedUpException();
         }
-        
+
         VariableIndex.AddGlobalVariable(_variableContext.DefinedVariable);
     }
 }

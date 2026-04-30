@@ -12,11 +12,15 @@ namespace SER.Code.ContextSystem.Contexts.Control.Loops;
 [UsedImplicitly]
 public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
 {
+    private readonly List<BaseToken> _condition = [];
+
+    private readonly Result _rs = "Cannot create 'while' loop.";
+    private NumericExpressionReslover.CompiledExpression _expression;
     public override string KeywordName => "while";
-    
+
     public override string Description =>
         "A loop which will execute its body as long as the provided condition is evaluated to true.";
-    
+
     public override string[] Arguments => ["[condition...]"];
 
     protected override string Usage =>
@@ -35,12 +39,6 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
         end
         """;
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    private readonly Result _rs = "Cannot create 'while' loop.";
-    private readonly List<BaseToken> _condition = []; 
-    private NumericExpressionReslover.CompiledExpression _expression;
-    
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {
         _condition.Add(token);
@@ -54,9 +52,9 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
         {
             return error;
         }
-        
+
         _expression = cond;
-        
+
         return Result.Assert(
             _condition.Count > 0,
             _rs + "The condition was not provided.");
@@ -73,7 +71,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
             {
                 yield return coro.Current;
             }
-            
+
             RemoveVariable();
             if (ReceivedBreak) break;
         }
@@ -89,7 +87,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
         if (objResult is not bool result)
         {
             throw new ScriptRuntimeError(
-                this, 
+                this,
                 $"A while statement condition must evaluate to a boolean value, " +
                 $"but received {objResult.FriendlyTypeName()}"
             );

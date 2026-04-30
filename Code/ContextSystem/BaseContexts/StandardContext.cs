@@ -8,9 +8,9 @@ public abstract class StandardContext : RunnableContext
         {
             Script.CurrentLine = LineNum.Value;
         }
-        
+
         Execute();
     }
-    
+
     protected abstract void Execute();
 }

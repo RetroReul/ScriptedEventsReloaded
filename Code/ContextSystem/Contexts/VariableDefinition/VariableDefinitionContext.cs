@@ -12,13 +12,13 @@ namespace SER.Code.ContextSystem.Contexts.VariableDefinition;
 
 public abstract class VariableDefinitionContext : YieldingContext
 {
-    public Variable? DefinedVariable;
     public bool CreateLocalVariable = true;
+    public Variable? DefinedVariable;
 }
 
 public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TVarToken varToken) : VariableDefinitionContext
     where TVarToken : VariableToken<TVariable, TValue>
-    where TValue    : Value
+    where TValue : Value
     where TVariable : Variable<TValue>
 {
     protected bool EqualSignSet = false;
@@ -35,7 +35,7 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
                 return TryAddTokenRes.Error(
                     "After a variable, an equals sign is expected to set a value to said variable.");
             }
-            
+
             EqualSignSet = true;
             return TryAddTokenRes.Continue();
         }
@@ -72,14 +72,14 @@ public abstract class VariableDefinitionContext<TVarToken, TValue, TVariable>(TV
 
         if (Expression.GetValue().SuccessTryCast<TValue>().HasErrored(out var error, out var tValue))
         {
-            throw new ScriptRuntimeError(this, 
+            throw new ScriptRuntimeError(this,
                 $"Value returned by {FriendlyName} cannot be assigned to the '{varToken.RawRep}' variable: {error}"
             );
         }
 
         DefinedVariable = Variable.Create(varToken.Name, tValue);
-        
-        if (CreateLocalVariable) 
+
+        if (CreateLocalVariable)
             Script.AddLocalVariable(DefinedVariable);
     }
 }

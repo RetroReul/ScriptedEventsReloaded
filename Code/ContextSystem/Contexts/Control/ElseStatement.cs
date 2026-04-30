@@ -10,17 +10,16 @@ namespace SER.Code.ContextSystem.Contexts.Control;
 [UsedImplicitly]
 public class ElseStatement : StatementContext, IStatementExtender, IKeywordContext
 {
+    public override string FriendlyName => "'else' statement";
     public string KeywordName => "else";
     public string Description =>
         "If the statement above it didn't execute, 'else' statement will execute instead.";
     public string[] Arguments => [];
     public string? Example => null;
-    
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public IExtendableStatement.Signal Extends => IExtendableStatement.Signal.DidntExecute;
-
-    public override string FriendlyName => "'else' statement";
 
     public override TryAddTokenRes TryAddToken(BaseToken token)
     {

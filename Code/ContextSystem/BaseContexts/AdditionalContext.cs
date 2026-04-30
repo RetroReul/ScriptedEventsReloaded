@@ -11,7 +11,7 @@ public abstract class AdditionalContext : Context
         get => _parentContext.Value;
         set => _parentContext = value;
     }
-    
+
     public static AdditionalContext Create(Type contextType, Script scr, RunnableContext parentContext)
     {
         var context = (AdditionalContext)Activator.CreateInstance(contextType);
@@ -20,5 +20,8 @@ public abstract class AdditionalContext : Context
         return context;
     }
 
-    public override string ToString() => $"{FriendlyName} attached to {ParentContext}";
+    public override string ToString()
+    {
+        return $"{FriendlyName} attached to {ParentContext}";
+    }
 }

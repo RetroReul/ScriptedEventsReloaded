@@ -4,5 +4,5 @@ using SER.Code.VariableSystem.Variables;
 
 namespace SER.Code.ContextSystem.Contexts.VariableDefinition;
 
-public class CollectionVariableDefinitionContext(VariableToken<CollectionVariable, CollectionValue> varToken) : 
+public class CollectionVariableDefinitionContext(VariableToken<CollectionVariable, CollectionValue> varToken) :
     VariableDefinitionContext<VariableToken<CollectionVariable, CollectionValue>, CollectionValue, CollectionVariable>(varToken);
