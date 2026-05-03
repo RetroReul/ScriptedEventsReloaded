@@ -21,7 +21,7 @@ public class SetShownPlayerInfoMethod : SynchronousMethod
     public override void Execute()
     {
         var players = Args.GetPlayers("players");
-        PlayerInfoArea info = Args.GetRemainingArguments<PlayerInfoArea, EnumArgument<PlayerInfoArea>>("info area")
+        PlayerInfoArea info = Args.GetRemainingArguments<PlayerInfoArea, EnumArgument<PlayerInfoArea>>("info to show")
             .Aggregate((a, b) => a | b);
         
         players.ForEach(p => p.InfoArea = info);
