@@ -19,15 +19,14 @@ public class DeleteContext : StandardContext, IKeywordContext
     public string[] Arguments => ["variable to delete"];
     public string Example =>
         """
-        func SomeFunction
-            $temporaryVariable = 10
-            # ... further implementation ...
-            
-            # delete variable that should not be accessed anymore
-            delete $temporaryVariable
-        end
-
-        run SomeFunction
+        global $someVar = "value"
+        
+        # some code
+        # ...
+        
+        # delete a global variable after it's no longer needed
+        # in order to not pollute the global namespace
+        delete $someVar
         """;
 
     public override TryAddTokenRes TryAddToken(BaseToken token)

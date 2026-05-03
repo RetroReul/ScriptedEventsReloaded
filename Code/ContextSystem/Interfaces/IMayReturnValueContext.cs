@@ -1,5 +1,6 @@
 ﻿using SER.Code.ValueSystem;
 using SER.Code.ValueSystem.Other;
+// ReSharper disable UnusedMemberInSuper.Global
 
 namespace SER.Code.ContextSystem.Interfaces;
 
