@@ -13,7 +13,7 @@ namespace SER.Code.FlagSystem.Flags;
 [UsedImplicitly]
 public class OnEventFlag : Flag, IMajorBehaviorFlag
 {
-    private List<VariableToken> _requiredVars = [];
+    private List<VariableToken> _require = [];
     private Safe<string> _event;
     
     public override string Description =>
@@ -58,7 +58,7 @@ public class OnEventFlag : Flag, IMajorBehaviorFlag
             return $"Tried to run script by other mean than the '{_event}' event, which is not allowed.";
         }
 
-        if (_requiredVars.Any(rvt => scr.TryGetVariable<Variable>(rvt).HasErrored()))
+        if (_require.Any(rvt => scr.TryGetVariable<Variable>(rvt).HasErrored()))
         {
             mustReport = false;
             return "Required variable is missing. (this error should be silent, if you see it, please report it)";
@@ -71,7 +71,7 @@ public class OnEventFlag : Flag, IMajorBehaviorFlag
     [
         new()
         {
-            Name = "requiredVars",
+            Name = "require",
             Description = "A list of variables that have to be present in order for this script to execute.",
             Handler = args =>
             {
@@ -82,13 +82,13 @@ public class OnEventFlag : Flag, IMajorBehaviorFlag
                         return error;
                     }
                     
-                    _requiredVars.Add(token);
+                    _require.Add(token);
                 }
 
                 return true;
             },
             IsRequired = false,
-            Example = "-- requiredVars @evPlayer *evItem"
+            Example = "-- require @evPlayer *evItem"
         }
     ];
 

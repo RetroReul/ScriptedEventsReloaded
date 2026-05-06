@@ -1,5 +1,5 @@
 !-- OnEvent Death
--- requiredVars @evPlayer @evAttacker
+-- require @evPlayer @evAttacker
 
 # stop if death was a suicide - meaning @evPlayer and @evAttacker are the same player 
 if {Overlapping @evPlayer @evAttacker} is true

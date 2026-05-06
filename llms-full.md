@@ -645,7 +645,7 @@ end
 or define which are required:
 ```
 !-- OnEvent Dying
--- requiredVars @evAttacker
+-- require @evAttacker
 ```
 
 ---
