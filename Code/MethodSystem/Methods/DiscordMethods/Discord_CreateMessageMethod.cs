@@ -16,7 +16,7 @@ public class Discord_CreateMessageMethod : ReferenceReturningMethod<Discord_Crea
     public override string Description => "Creates a discord message object.";
 
     public string AdditionalDescription =>
-        $"This method does NOT send the message. Use {GetFriendlyName(typeof(Discord_SendMessageMethod))} for that.";
+        $"This method does NOT send the message. Use {NameOfMethod(typeof(Discord_SendMessageMethod))} for that.";
 
     public string[] ErrorReasons { get; } =
     [

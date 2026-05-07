@@ -13,7 +13,7 @@ public class Toy_MoveMethod : SynchronousMethod, ICanError, IAdditionalDescripti
 {
     public override string Description => "Moves an Admin Toy relative to its rotation.";
 
-    public string AdditionalDescription => $"E.g. \"{GetFriendlyName(typeof(Toy_MoveMethod))} *toy 0 0 1\" would " +
+    public string AdditionalDescription => $"E.g. \"{NameOfMethod(typeof(Toy_MoveMethod))} *toy 0 0 1\" would " +
                                            $"move the referenced toy 1 unit (meter) forward.";
     public string[] ErrorReasons =>
     [

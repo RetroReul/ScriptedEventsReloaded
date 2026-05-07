@@ -74,5 +74,5 @@ public abstract class Method
             : $"{Name} method";
     }
     
-    public static string GetFriendlyName(Type type) => type.Name[..^"Method".Length];
+    public static string NameOfMethod(Type type) => type.Name[..^"Method".Length].Replace("_", ".");
 }

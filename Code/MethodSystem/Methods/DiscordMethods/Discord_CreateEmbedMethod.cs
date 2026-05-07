@@ -16,7 +16,7 @@ public class Discord_CreateEmbedMethod : ReferenceReturningMethod<Discord_Create
     public override string Description => "Creates an embed which can later be sent to discord via webhook.";
 
     public string AdditionalDescription => 
-        $"This method does NOT send the embed. Use {GetFriendlyName(typeof(Discord_SendMessageMethod))} for that.";
+        $"This method does NOT send the embed. Use {NameOfMethod(typeof(Discord_SendMessageMethod))} for that.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -38,12 +38,12 @@ public class Discord_CreateEmbedMethod : ReferenceReturningMethod<Discord_Create
         new ReferenceArgument<Embed_CreateAuthorMethod.DEmbedAuthor>("author")
         {
             DefaultValue = new(null, "none"),
-            Description = $"Created using {GetFriendlyName(typeof(Embed_CreateAuthorMethod))}"
+            Description = $"Created using {NameOfMethod(typeof(Embed_CreateAuthorMethod))}"
         },
         new ReferenceArgument<Embed_CreateFooterMethod.DEmbedFooter>("footer")
         {
             DefaultValue = new(null, "none"),
-            Description = $"Created using {GetFriendlyName(typeof(Embed_CreateFooterMethod))}"
+            Description = $"Created using {NameOfMethod(typeof(Embed_CreateFooterMethod))}"
         },
         new TextArgument("thumbnail url")
         {
@@ -64,7 +64,7 @@ public class Discord_CreateEmbedMethod : ReferenceReturningMethod<Discord_Create
         {
             DefaultValue = new(Array.Empty<Embed_CreateFieldMethod.DEmbedField>(), "none"),
             ConsumesRemainingValues = true,
-            Description = $"List of fields, created using {GetFriendlyName(typeof(Embed_CreateFieldMethod))}"
+            Description = $"List of fields, created using {NameOfMethod(typeof(Embed_CreateFieldMethod))}"
         }
     ];
 

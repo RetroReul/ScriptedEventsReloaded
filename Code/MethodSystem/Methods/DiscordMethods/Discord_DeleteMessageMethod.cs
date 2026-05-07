@@ -27,7 +27,7 @@ public class Discord_DeleteMessageMethod : SynchronousMethod, ICanError
         new TextArgument("message id")
         {
             Description = "You can get it by right-clicking on a message and clicking \"Copy message ID\" " +
-                          $"or with the {GetFriendlyName(typeof(Discord_SendMessageAndWaitMethod))} method"
+                          $"or with the {NameOfMethod(typeof(Discord_SendMessageAndWaitMethod))} method"
         },
         new TextArgument("thread id")
         {
