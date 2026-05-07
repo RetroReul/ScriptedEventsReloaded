@@ -6,7 +6,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class EmbedAuthorMethod : ReferenceReturningMethod<EmbedAuthorMethod.DEmbedAuthor>
+// ReSharper disable once InconsistentNaming
+public class Embed_CreateAuthorMethod : ReferenceReturningMethod<Embed_CreateAuthorMethod.DEmbedAuthor>
 {
     public class DEmbedAuthor : JObject;
     

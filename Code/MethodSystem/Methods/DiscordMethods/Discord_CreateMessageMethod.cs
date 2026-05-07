@@ -9,14 +9,14 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class DiscordMessageMethod : ReferenceReturningMethod<DiscordMessageMethod.DMessage>, IAdditionalDescription, ICanError
+public class Discord_CreateMessageMethod : ReferenceReturningMethod<Discord_CreateMessageMethod.DMessage>, IAdditionalDescription, ICanError
 {
     public class DMessage : JObject;
     
     public override string Description => "Creates a discord message object.";
 
     public string AdditionalDescription =>
-        $"This method does NOT send the message. Use {GetFriendlyName(typeof(SendDiscordMessageMethod))} for that.";
+        $"This method does NOT send the message. Use {GetFriendlyName(typeof(Discord_SendMessageMethod))} for that.";
 
     public string[] ErrorReasons { get; } =
     [
@@ -40,11 +40,11 @@ public class DiscordMessageMethod : ReferenceReturningMethod<DiscordMessageMetho
             Description = "Overrides the webhook's default profile picture.",
             DefaultValue = new(null, "default")
         },
-        new ReferenceArgument<DiscordEmbedMethod.DEmbed>("embeds")
+        new ReferenceArgument<Discord_CreateEmbedMethod.DEmbed>("embeds")
         {
             Description = "An list containing up to 10 rich embed objects.",
             // i dont know if we can use both at the same time lmao - andrzej
-            DefaultValue = new(Array.Empty<DiscordEmbedMethod.DEmbed>(), "none"),
+            DefaultValue = new(Array.Empty<Discord_CreateEmbedMethod.DEmbed>(), "none"),
             ConsumesRemainingValues = true
         }
     ];
@@ -54,7 +54,7 @@ public class DiscordMessageMethod : ReferenceReturningMethod<DiscordMessageMetho
         var messageContent = Args.GetText("message content").MaybeNull();
         var webhookName = Args.GetText("sender name").MaybeNull();
         var avatarUrl = Args.GetText("sender avatar url").MaybeNull();
-        var embeds = Args.GetRemainingArguments<DiscordEmbedMethod.DEmbed, ReferenceArgument<DiscordEmbedMethod.DEmbed>>("embeds");
+        var embeds = Args.GetRemainingArguments<Discord_CreateEmbedMethod.DEmbed, ReferenceArgument<Discord_CreateEmbedMethod.DEmbed>>("embeds");
 
         DMessage json = new();
 

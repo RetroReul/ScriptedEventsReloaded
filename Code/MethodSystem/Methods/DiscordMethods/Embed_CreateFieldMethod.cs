@@ -6,7 +6,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class EmbedFieldMethod : ReferenceReturningMethod<EmbedFieldMethod.DEmbedField>
+// ReSharper disable once InconsistentNaming
+public class Embed_CreateFieldMethod : ReferenceReturningMethod<Embed_CreateFieldMethod.DEmbedField>
 {
     public class DEmbedField : JObject;
     

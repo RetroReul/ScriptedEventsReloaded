@@ -9,7 +9,8 @@ using SER.Code.MethodSystem.Methods.HTTPMethods;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class EditDiscordMessageMethod : SynchronousMethod, ICanError
+// ReSharper disable once InconsistentNaming
+public class Discord_EditMessageMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Edits a message sent by a discord webhook (with that same webhook).";
 
@@ -27,7 +28,7 @@ public class EditDiscordMessageMethod : SynchronousMethod, ICanError
         {
             Description = "You can get it by right-clicking on a message and clicking \"Copy message ID\""
         },
-        new ReferenceArgument<DiscordMessageMethod.DMessage>("message object"),
+        new ReferenceArgument<Discord_CreateMessageMethod.DMessage>("message object"),
         new TextArgument("thread id")
         {
             DefaultValue = new(string.Empty, "no thread")
@@ -38,7 +39,7 @@ public class EditDiscordMessageMethod : SynchronousMethod, ICanError
     {
         var webhookUrl = Args.GetText("webhook url");
         var messageId = Args.GetText("message id");
-        var messageObject = Args.GetReference<DiscordMessageMethod.DMessage>("message object");
+        var messageObject = Args.GetReference<Discord_CreateMessageMethod.DMessage>("message object");
         var threadId = Args.GetText("thread id");
         
         if (messageId.IsEmpty())

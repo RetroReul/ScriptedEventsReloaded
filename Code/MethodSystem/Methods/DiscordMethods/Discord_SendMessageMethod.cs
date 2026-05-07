@@ -9,7 +9,8 @@ using SER.Code.MethodSystem.Methods.HTTPMethods;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class SendDiscordMessageMethod : SynchronousMethod, ICanError
+// ReSharper disable once InconsistentNaming
+public class Discord_SendMessageMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Sends a message using a discord webhook.";
 
@@ -22,7 +23,7 @@ public class SendDiscordMessageMethod : SynchronousMethod, ICanError
     public override Argument[] ExpectedArguments { get; } =
     [
         new TextArgument("webhook url"),
-        new ReferenceArgument<DiscordMessageMethod.DMessage>("message object"),
+        new ReferenceArgument<Discord_CreateMessageMethod.DMessage>("message object"),
         new TextArgument("thread id")
         {
             DefaultValue = new(string.Empty, "no thread")
@@ -32,7 +33,7 @@ public class SendDiscordMessageMethod : SynchronousMethod, ICanError
     public override void Execute()
     {
         var webhookUrl = Args.GetText("webhook url");
-        var messageObject = Args.GetReference<DiscordMessageMethod.DMessage>("message object");
+        var messageObject = Args.GetReference<Discord_CreateMessageMethod.DMessage>("message object");
         var threadId = Args.GetText("thread id");
         
         if (!webhookUrl.StartsWith("https://discord.com/api/webhooks/"))

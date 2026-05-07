@@ -9,7 +9,8 @@ using SER.Code.MethodSystem.Methods.HTTPMethods;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class DeleteDiscordMessageMethod : SynchronousMethod, ICanError
+// ReSharper disable once InconsistentNaming
+public class Discord_DeleteMessageMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Deletes a message sent by a discord webhook (with that same webhook).";
 
@@ -26,7 +27,7 @@ public class DeleteDiscordMessageMethod : SynchronousMethod, ICanError
         new TextArgument("message id")
         {
             Description = "You can get it by right-clicking on a message and clicking \"Copy message ID\" " +
-                          $"or with the {GetFriendlyName(typeof(SendDiscordMessageAndWaitMethod))} method"
+                          $"or with the {GetFriendlyName(typeof(Discord_SendMessageAndWaitMethod))} method"
         },
         new TextArgument("thread id")
         {

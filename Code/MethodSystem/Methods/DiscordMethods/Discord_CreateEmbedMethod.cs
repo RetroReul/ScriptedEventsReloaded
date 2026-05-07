@@ -8,14 +8,15 @@ using UnityEngine;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class DiscordEmbedMethod : ReferenceReturningMethod<DiscordEmbedMethod.DEmbed>, IAdditionalDescription
+// ReSharper disable once InconsistentNaming
+public class Discord_CreateEmbedMethod : ReferenceReturningMethod<Discord_CreateEmbedMethod.DEmbed>, IAdditionalDescription
 {
     public class DEmbed : JObject;
     
     public override string Description => "Creates an embed which can later be sent to discord via webhook.";
 
     public string AdditionalDescription => 
-        $"This method does NOT send the embed. Use {GetFriendlyName(typeof(SendDiscordMessageMethod))} for that.";
+        $"This method does NOT send the embed. Use {GetFriendlyName(typeof(Discord_SendMessageMethod))} for that.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -34,15 +35,15 @@ public class DiscordEmbedMethod : ReferenceReturningMethod<DiscordEmbedMethod.DE
             DefaultValue = new(new Color(0, 0, 0, 0), "none"),
             Description = "The vertical sidebar color."
         },
-        new ReferenceArgument<EmbedAuthorMethod.DEmbedAuthor>("author")
+        new ReferenceArgument<Embed_CreateAuthorMethod.DEmbedAuthor>("author")
         {
             DefaultValue = new(null, "none"),
-            Description = $"Created using {GetFriendlyName(typeof(EmbedAuthorMethod))}"
+            Description = $"Created using {GetFriendlyName(typeof(Embed_CreateAuthorMethod))}"
         },
-        new ReferenceArgument<EmbedFooterMethod.DEmbedFooter>("footer")
+        new ReferenceArgument<Embed_CreateFooterMethod.DEmbedFooter>("footer")
         {
             DefaultValue = new(null, "none"),
-            Description = $"Created using {GetFriendlyName(typeof(EmbedFooterMethod))}"
+            Description = $"Created using {GetFriendlyName(typeof(Embed_CreateFooterMethod))}"
         },
         new TextArgument("thumbnail url")
         {
@@ -59,11 +60,11 @@ public class DiscordEmbedMethod : ReferenceReturningMethod<DiscordEmbedMethod.DE
             DefaultValue = new(null, "none"),
             Description = "Makes the title a clickable hyperlink."
         },
-        new ReferenceArgument<EmbedFieldMethod.DEmbedField>("fields")
+        new ReferenceArgument<Embed_CreateFieldMethod.DEmbedField>("fields")
         {
-            DefaultValue = new(Array.Empty<EmbedFieldMethod.DEmbedField>(), "none"),
+            DefaultValue = new(Array.Empty<Embed_CreateFieldMethod.DEmbedField>(), "none"),
             ConsumesRemainingValues = true,
-            Description = $"List of fields, created using {GetFriendlyName(typeof(EmbedFieldMethod))}"
+            Description = $"List of fields, created using {GetFriendlyName(typeof(Embed_CreateFieldMethod))}"
         }
     ];
 
@@ -84,9 +85,9 @@ public class DiscordEmbedMethod : ReferenceReturningMethod<DiscordEmbedMethod.DE
             embed["color"] = (r << 16) | (g << 8) | b;
         }
 
-        if (Args.GetReference<EmbedAuthorMethod.DEmbedAuthor>("author") is { } author) embed["author"] = author;
+        if (Args.GetReference<Embed_CreateAuthorMethod.DEmbedAuthor>("author") is { } author) embed["author"] = author;
         
-        if (Args.GetReference<EmbedFooterMethod.DEmbedFooter>("footer") is { } footer) embed["footer"] = footer;
+        if (Args.GetReference<Embed_CreateFooterMethod.DEmbedFooter>("footer") is { } footer) embed["footer"] = footer;
         
         if (Args.GetText("thumbnail url") is { } thumbnailUrl) embed["thumbnail"] = new JObject {{"url", thumbnailUrl}};
         
@@ -94,7 +95,7 @@ public class DiscordEmbedMethod : ReferenceReturningMethod<DiscordEmbedMethod.DE
 
         if (Args.GetText("clickable url") is { } url) embed["url"] = url;
 
-        var fields = Args.GetRemainingArguments<EmbedFieldMethod.DEmbedField, ReferenceArgument<EmbedFieldMethod.DEmbedField>>("fields");
+        var fields = Args.GetRemainingArguments<Embed_CreateFieldMethod.DEmbedField, ReferenceArgument<Embed_CreateFieldMethod.DEmbedField>>("fields");
         if (fields is { Length: > 0 })
         {
             embed["fields"] = JArray.FromObject(fields);

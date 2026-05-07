@@ -6,7 +6,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DiscordMethods;
 
 [UsedImplicitly]
-public class EmbedFooterMethod : ReferenceReturningMethod<EmbedFooterMethod.DEmbedFooter>
+// ReSharper disable once InconsistentNaming
+public class Embed_CreateFooterMethod : ReferenceReturningMethod<Embed_CreateFooterMethod.DEmbedFooter>
 {
     public class DEmbedFooter : JObject;
     
