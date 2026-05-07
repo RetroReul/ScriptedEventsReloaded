@@ -1,23 +1,23 @@
 ﻿using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
-using SER.Code.FileSystem.Structures;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
-using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.DatabaseMethods;
 
 [UsedImplicitly]
-public class DBExistsMethod : ReturningMethod<BoolValue>
+// ReSharper disable once InconsistentNaming
+public class DB_RemoveMethod : SynchronousMethod
 {
-    public override string Description => "Returns true if the provided database exists.";
+    public override string Description => "Removes a key from a database.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new TextArgument("database name")
+        new DatabaseArgument("database"),
+        new TextArgument("key")
     ];
     
     public override void Execute()
     {
-        ReturnValue = Database.TryGet(Args.GetText("database name")).WasSuccessful();
+        Args.GetDatabase("database").RemoveKey(Args.GetText("key"));
     }
 }

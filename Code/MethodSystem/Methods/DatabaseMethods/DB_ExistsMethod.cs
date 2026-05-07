@@ -1,23 +1,24 @@
 ﻿using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
+using SER.Code.FileSystem.Structures;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.DatabaseMethods;
 
 [UsedImplicitly]
-public class DBHasKeyMethod : ReturningMethod<BoolValue>
+// ReSharper disable once InconsistentNaming
+public class DB_ExistsMethod : ReturningMethod<BoolValue>
 {
-    public override string Description => "Returns true if the provided key exists in the database.";
+    public override string Description => "Returns true if the provided database exists.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
-        new DatabaseArgument("database"),
-        new TextArgument("key")   
+        new TextArgument("database name")
     ];
     
     public override void Execute()
     {
-        ReturnValue = Args.GetDatabase("database").HasKey(Args.GetText("key")).WasSuccessful();
+        ReturnValue = Database.TryGet(Args.GetText("database name")).WasSuccessful();
     }
 }

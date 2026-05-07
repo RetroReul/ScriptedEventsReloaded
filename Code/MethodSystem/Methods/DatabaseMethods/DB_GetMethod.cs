@@ -8,7 +8,8 @@ using SER.Code.ValueSystem.Other;
 namespace SER.Code.MethodSystem.Methods.DatabaseMethods;
 
 [UsedImplicitly]
-public class GetFromDBMethod : ReturningMethod, ICanError
+// ReSharper disable once InconsistentNaming
+public class DB_GetMethod : ReturningMethod, ICanError
 {
     public override string Description => "Returns the value of a given key in the database.";
 

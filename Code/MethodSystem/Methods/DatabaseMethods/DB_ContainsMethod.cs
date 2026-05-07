@@ -1,22 +1,24 @@
 ﻿using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
+using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.DatabaseMethods;
 
 [UsedImplicitly]
-public class RemoveDBKeyMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class DB_ContainsMethod : ReturningMethod<BoolValue>
 {
-    public override string Description => "Removes a key from a database.";
+    public override string Description => "Returns true if the provided key exists in the database.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
         new DatabaseArgument("database"),
-        new TextArgument("key")
+        new TextArgument("key")   
     ];
     
     public override void Execute()
     {
-        Args.GetDatabase("database").RemoveKey(Args.GetText("key"));
+        ReturnValue = Args.GetDatabase("database").HasKey(Args.GetText("key")).WasSuccessful();
     }
 }

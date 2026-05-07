@@ -7,7 +7,8 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.DatabaseMethods;
 
 [UsedImplicitly]
-public class AppendDBMethod : SynchronousMethod, ICanError
+// ReSharper disable once InconsistentNaming
+public class DB_AddMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Adds a key-value pair to the database.";
 

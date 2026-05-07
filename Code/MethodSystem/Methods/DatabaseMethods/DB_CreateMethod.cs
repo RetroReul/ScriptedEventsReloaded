@@ -6,7 +6,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DatabaseMethods;
 
 [UsedImplicitly]
-public class CreateDBMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class DB_CreateMethod : SynchronousMethod
 {
     public override string Description => "Creates a new JSON file in the database folder.";
 
