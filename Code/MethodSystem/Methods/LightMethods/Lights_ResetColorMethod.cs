@@ -1,4 +1,4 @@
-﻿using SER.Code.ArgumentSystem.Arguments;
+using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
@@ -7,7 +7,8 @@ using UnityEngine;
 namespace SER.Code.MethodSystem.Methods.LightMethods;
 
 [UsedImplicitly]
-public class ResetLightColorMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class Lights_ResetColorMethod : SynchronousMethod
 {
     public override string Description => "Resets the light color for rooms.";
 

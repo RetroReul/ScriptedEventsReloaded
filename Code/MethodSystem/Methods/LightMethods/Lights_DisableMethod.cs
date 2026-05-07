@@ -6,7 +6,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.LightMethods;
 
 [UsedImplicitly]
-public class LightsOutMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class Lights_DisableMethod : SynchronousMethod
 {
     public override string Description => "Turns off lights for rooms.";
 
