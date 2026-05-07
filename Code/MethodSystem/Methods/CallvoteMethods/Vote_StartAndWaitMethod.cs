@@ -61,7 +61,8 @@ optional plugins the user has installed.
 namespace SER.Code.MethodSystem.Methods.CallvoteMethods;
 
 [UsedImplicitly]
-public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAdditionalDescription, IDependOnFramework
+// ReSharper disable once InconsistentNaming
+public class Vote_StartAndWaitMethod : YieldingReturningMethod<TextValue>, IAdditionalDescription, IDependOnFramework
 {
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Callvote;
     
@@ -78,7 +79,7 @@ public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAddit
             Description = "Use _ if there isnt a specific player asking the question.",
             DefaultValue = new(null, "general question")
         },
-        new ReferenceArgument<VoteOptionMethod.VoteOption>("options")
+        new ReferenceArgument<Vote_CreateOptionMethod.VoteOption>("options")
         {
             Description = "The options for the vote.",
             ConsumesRemainingValues = true
@@ -89,8 +90,8 @@ public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAddit
     {
         var question = Args.GetText("question");
         var rawOptions = Args.GetRemainingArguments<
-            VoteOptionMethod.VoteOption, 
-            ReferenceArgument<VoteOptionMethod.VoteOption>>("options");
+            Vote_CreateOptionMethod.VoteOption, 
+            ReferenceArgument<Vote_CreateOptionMethod.VoteOption>>("options");
         
         bool completed = false;
         string result = "";
@@ -109,7 +110,7 @@ public class StartVoteAndWaitMethod : YieldingReturningMethod<TextValue>, IAddit
 
     private static void RunSafeVote(
         string question, 
-        IEnumerable<VoteOptionMethod.VoteOption> rawOptions, 
+        IEnumerable<Vote_CreateOptionMethod.VoteOption> rawOptions, 
         System.Action<string> onComplete)
     {
         var voteOptions = new HashSet<VoteOption>();

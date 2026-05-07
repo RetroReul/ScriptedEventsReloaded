@@ -11,7 +11,8 @@ using SER.Code.MethodSystem.Structures;
 namespace SER.Code.MethodSystem.Methods.CallvoteMethods;
 
 [UsedImplicitly]
-public class StartVoteMethod : SynchronousMethod, IDependOnFramework
+// ReSharper disable once InconsistentNaming
+public class Vote_StartMethod : SynchronousMethod, IDependOnFramework
 {
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Callvote;
     
@@ -25,7 +26,7 @@ public class StartVoteMethod : SynchronousMethod, IDependOnFramework
             Description = "Use _ if there isnt a specific player asking the question.",
             DefaultValue = new(null, "general question")
         },
-        new ReferenceArgument<VoteOptionMethod.VoteOption>("options")
+        new ReferenceArgument<Vote_CreateOptionMethod.VoteOption>("options")
         {
             Description = "The options for the vote.",
             ConsumesRemainingValues = true
@@ -36,8 +37,8 @@ public class StartVoteMethod : SynchronousMethod, IDependOnFramework
     {
         var question = Args.GetText("question");
         var rawOptions = Args.GetRemainingArguments<
-            VoteOptionMethod.VoteOption, 
-            ReferenceArgument<VoteOptionMethod.VoteOption>>("options");
+            Vote_CreateOptionMethod.VoteOption, 
+            ReferenceArgument<Vote_CreateOptionMethod.VoteOption>>("options");
         
         var voteOptions = new HashSet<VoteOption>();
         foreach (var o in rawOptions)

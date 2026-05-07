@@ -7,7 +7,8 @@ using SER.Code.MethodSystem.Structures;
 namespace SER.Code.MethodSystem.Methods.CallvoteMethods;
 
 [UsedImplicitly]
-public class VoteOptionMethod : ReferenceReturningMethod<VoteOptionMethod.VoteOption>, IDependOnFramework
+// ReSharper disable once InconsistentNaming
+public class Vote_CreateOptionMethod : ReferenceReturningMethod<Vote_CreateOptionMethod.VoteOption>, IDependOnFramework
 {
     public FrameworkBridge.Type DependsOn => FrameworkBridge.Type.Callvote;
 
