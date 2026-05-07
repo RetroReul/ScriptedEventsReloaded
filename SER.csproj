@@ -13,32 +13,40 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-        <Configurations>Release;Full Debug;Partial Debug</Configurations>
+        <Configurations>Release;Full Debug;Partial Debug;EXILED</Configurations>
         <Platforms>AnyCPU</Platforms>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Full Debug|AnyCPU' or '$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PropertyGroup Condition="'$(Configuration)'=='Full Debug' or '$(Configuration)'=='Debug'">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>embedded</DebugType>
         <Optimize>false</Optimize>
-        <DefineConstants>DEBUG;TRACE;HAVE_NULLABLE_ATTRIBUTES</DefineConstants>
-        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE;HAVE_NULLABLE_ATTRIBUTES;LABAPI</DefineConstants>
+        <OutputPath>bin\LABAPI\</OutputPath>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Partial Debug|AnyCPU'">
+    <PropertyGroup Condition="'$(Configuration)'=='Partial Debug'">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>embedded</DebugType>
         <Optimize>false</Optimize>
-        <DefineConstants>TRACE;HAVE_NULLABLE_ATTRIBUTES</DefineConstants>
-        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>TRACE;HAVE_NULLABLE_ATTRIBUTES;LABAPI</DefineConstants>
+        <OutputPath>bin\LABAPI\</OutputPath>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>full</DebugType>
         <Optimize>true</Optimize>
-        <DefineConstants>TRACE;HAVE_NULLABLE_ATTRIBUTES</DefineConstants>
-        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE;HAVE_NULLABLE_ATTRIBUTES;LABAPI</DefineConstants>
+        <OutputPath>bin\LABAPI\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='EXILED'">
+        <AssemblyName>SER-Exiled</AssemblyName>
+        <DebugType>full</DebugType>
+        <Optimize>true</Optimize>
+        <DefineConstants>TRACE;HAVE_NULLABLE_ATTRIBUTES;EXILED</DefineConstants>
+        <OutputPath>bin\EXILED\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -78,12 +86,12 @@
     <!-- QoL moving the dll -->
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy
-            SourceFiles="$(TargetDir)SER.dll"
+            SourceFiles="$(TargetPath)"
             DestinationFolder="$(LABAPI_PLUGINS)"
-            Condition="'$(LABAPI_PLUGINS)' != ''"
+            Condition="'$(LABAPI_PLUGINS)' != '' and '$(Configuration)' != 'EXILED'"
         />
         <Copy
-            SourceFiles="$(TargetDir)SER.dll"
+            SourceFiles="$(TargetPath)"
             DestinationFolder="$(SL_DEV_REFERENCES)"
             Condition="'$(SL_DEV_REFERENCES)' != ''" 
         />
@@ -122,7 +130,7 @@
         </PackageReference>
     </ItemGroup>
 
-    <!-- embedding dependencies into SER.dll -->
+    <!-- embedding dependencies into $(TargetFileName) -->
     <Target Name="EmbedSelectedDependencies" AfterTargets="ResolveReferences">
         <ItemGroup>
             <EmbeddedResource Include="@(ReferenceCopyLocalPaths)"

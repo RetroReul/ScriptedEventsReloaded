@@ -7,6 +7,7 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Partial Debug|Any CPU = Partial Debug|Any CPU
 		Full Debug|Any CPU = Full Debug|Any CPU
+		EXILED|Any CPU = EXILED|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FA94121F-C3B2-462E-A741-9D90790DE268}.Partial Debug|Any CPU.ActiveCfg = Partial Debug|Any CPU
@@ -15,5 +16,7 @@ Global
 		{FA94121F-C3B2-462E-A741-9D90790DE268}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA94121F-C3B2-462E-A741-9D90790DE268}.Full Debug|Any CPU.ActiveCfg = Full Debug|Any CPU
 		{FA94121F-C3B2-462E-A741-9D90790DE268}.Full Debug|Any CPU.Build.0 = Full Debug|Any CPU
+		{FA94121F-C3B2-462E-A741-9D90790DE268}.EXILED|Any CPU.ActiveCfg = EXILED|Any CPU
+		{FA94121F-C3B2-462E-A741-9D90790DE268}.EXILED|Any CPU.Build.0 = EXILED|Any CPU
 	EndGlobalSection
 EndGlobal

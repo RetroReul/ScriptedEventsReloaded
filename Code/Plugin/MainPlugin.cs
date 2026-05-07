@@ -2,7 +2,6 @@
 using LabApi.Events.CustomHandlers;
 using LabApi.Features;
 using LabApi.Features.Console;
-using LabApi.Features.Wrappers;
 using MEC;
 using SER.Code.Extensions;
 using SER.Code.FlagSystem.Flags;
@@ -16,16 +15,24 @@ using SER.Code.ScriptSystem;
 using SER.Code.VariableSystem;
 using EventHandler = SER.Code.EventSystem.EventHandler;
 using Events = LabApi.Events.Handlers;
+using Server = LabApi.Features.Wrappers.Server;
 
 namespace SER.Code.Plugin;
 
 [UsedImplicitly]
-public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
+#if !EXILED
+public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config> 
 {
-    public override string Name => "SER";
     public override string Description => "The scripting language for SCP:SL.";
-    public override string Author => "Elektryk_Andrzej";
     public override Version RequiredApiVersion => LabApiProperties.CurrentVersion;
+#else
+using Exiled.API.Features;
+
+public class MainPlugin : Plugin<Config> 
+{
+#endif
+    public override string Name => "SER";
+    public override string Author => "Elektryk_Andrzej";
     public override Version Version => new(1, 0, 0);
 
     public static string GitHubLink => "https://github.com/ScriptedEvents/ScriptedEventsReloaded";
@@ -95,8 +102,12 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
             "76561198199188486@steam"
         )
     ];
-
+    
+#if !EXILED
     public override void Enable()
+#else
+    public override void OnEnabled()
+#endif
     {
         if (!Config.IsEnabled)
         {
@@ -117,7 +128,7 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         SendLogo();
 
         Events.ServerEvents.WaitingForPlayers += () => OnServerFullyInit(fBridge);
-        Events.ServerEvents.RoundRestarted += Disable;
+        Events.ServerEvents.RoundRestarted += PrivateDisable;
         Events.PlayerEvents.Joined += OnJoined;
 
         FileSystem.FileSystem.Initialize();
@@ -125,8 +136,14 @@ public class MainPlugin : LabApi.Loader.Features.Plugins.Plugin<Config>
         CustomHandlersManager.RegisterEventsHandler(new DamageRuleHandler());
         CRole.RegisterEvents();
     }
+    
+#if !EXILED
+    public override void Disable() => PrivateDisable();
+#else
+    public override void OnDisabled() => PrivateDisable();
+#endif
 
-    public override void Disable()
+    private static void PrivateDisable()
     {
         CRole.ResetAll();
         Script.StopAll();

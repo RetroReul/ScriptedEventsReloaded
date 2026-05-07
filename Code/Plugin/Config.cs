@@ -1,11 +1,20 @@
 ﻿using System.ComponentModel;
+#if EXILED 
+using Exiled.API.Interfaces;
+#endif
 
 namespace SER.Code.Plugin;
 
+#if EXILED
+public class Config : IConfig
+#endif
 public class Config
 {
     public bool IsEnabled { get; set; } = true;
-    
+
+    [Description("This setting does not do anything lol")]
+    public bool Debug { get; set; } = false;
+
     [Description("If true, SER will send a message to the server console when the plugin is enabled.")]
     public bool SendInitMessage { get; set; } = true;
 

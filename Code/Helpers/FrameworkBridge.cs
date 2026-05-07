@@ -14,7 +14,6 @@ public class FrameworkBridge
 
     public enum Type
     {
-        None,
         Exiled,
         Callvote,
         Ucr
@@ -23,12 +22,17 @@ public class FrameworkBridge
     private readonly Framework[] _frameworks =
     [
         new("Callvote", Type.Callvote),
+#if !EXILED
         new("Exiled Loader", Type.Exiled),
+#endif
         new("UncomplicatedCustomRoles", Type.Ucr)
     ];
 
     public void Load()
     {
+#if EXILED
+        MethodIndex.LoadMethodsOfFramework(Type.Exiled);
+#endif
         Found.Clear();
         foreach (var framework in _frameworks)
         {
@@ -47,7 +51,7 @@ public class FrameworkBridge
         );
     }
 
-    private IEnumerator<float> Await(Framework framework)
+    private static IEnumerator<float> Await(Framework framework)
     {
         // handled from forever repeating when coroutines are killed
         while (true)
@@ -78,11 +82,11 @@ public class FrameworkBridge
             return false;
         }
 
-        if (PluginLoader.Plugins.Any(plg => plg.Key.Name == "Exiled Loader"))
+        if (PluginLoader.Plugins.All(plg => plg.Key.Name != "Exiled Loader"))
         {
-            return Exiled.Loader.Loader.Plugins.Any(plg => plg.Name == framework.Name);
+            return false;
         }
-
-        return false;
+        
+        return Exiled.Loader.Loader.Plugins.Any(plg => plg.Name == framework.Name);
     }
 }
