@@ -14,17 +14,15 @@ public class SetShownPlayerInfoMethod : SynchronousMethod
         new PlayersArgument("players"),
         new EnumArgument<PlayerInfoArea>("info to show")
         {
-            ConsumesRemainingValues = true,
-            DefaultValue = new((PlayerInfoArea)0, "nothing")
+            DefaultValue = new((PlayerInfoArea)0, "nothing", true)
         }
     ];
 
     public override void Execute()
     {
         var players = Args.GetPlayers("players");
-        PlayerInfoArea info = Args.GetRemainingArguments<PlayerInfoArea, EnumArgument<PlayerInfoArea>>("info to show")
-            .Aggregate((a, b) => a | b);
+        var info = Args.GetEnum<PlayerInfoArea>("info to show");
         
-        players.ForEach(p => p.InfoArea = info);
+        foreach (var player in players) player.InfoArea = info;
     }
 }
