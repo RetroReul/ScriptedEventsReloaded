@@ -9,6 +9,7 @@ using SER.Code.Extensions;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.ValueSystem.PropertySystem;
+using VoiceChat.Playbacks;
 using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
@@ -110,7 +111,8 @@ public class PlayerValue : Value, IValueWithProperties
         LifeId,
         UnitId,
         Unit,
-        CRole
+        CRole,
+        IsTransmitting
     }
 
     private class Info<T>(Func<Player, T> handler, string? description)
@@ -123,7 +125,7 @@ public class PlayerValue : Value, IValueWithProperties
     public static readonly Dictionary<PlayerProperty, IValueWithProperties.PropInfo> PropertyInfoMap = new()
     {
         [PlayerProperty.Name] = new Info<StaticTextValue>(plr => plr.Nickname, null),
-        [PlayerProperty.DisplayName] = new Info<StaticTextValue>(plr => plr.DisplayName, null),
+        [PlayerProperty.DisplayName] = new Info<StaticTextValue>(plr => plr.DisplayName.Replace("<color=#855439>*</color>", ""), null),
         [PlayerProperty.Role] = new Info<EnumValue<RoleTypeId>>(plr => plr.Role.ToEnumValue(), null),
         [PlayerProperty.RoleRef] = new Info<ReferenceValue<PlayerRoleBase>>(plr => new(plr.RoleBase), null),
         [PlayerProperty.Team] = new Info<EnumValue<Team>>(plr => plr.Team.ToEnumValue(), null),
@@ -226,7 +228,8 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.LifeId] = new Info<NumberValue>(plr => plr.LifeId, null),
         [PlayerProperty.UnitId] = new Info<NumberValue>(plr => (decimal)plr.UnitId, null),
         [PlayerProperty.Unit] = new Info<TextValue>(plr => NamingRulesManager.ClientFetchReceived(plr.Team, plr.UnitId).ToStaticTextValue(), "Returns the player's unit (e.g FOXTROT-03) if player is NTF or Facility Guard, otherwise returns an empty text value."),
-        [PlayerProperty.CRole] = new Info<ReferenceValue<CRole>>(plr => CRole.AssignedRoles.TryGetValue(plr, out var role) ? role : null, "Returns the player's CRole if player is a CRole, otherwise returns an empty reference value.")
+        [PlayerProperty.CRole] = new Info<ReferenceValue<CRole>>(plr => CRole.AssignedRoles.TryGetValue(plr, out var role) ? role : null, "Returns the player's CRole if player is a CRole, otherwise returns an empty reference value."),
+        [PlayerProperty.IsTransmitting] = new Info<BoolValue>(plr => PersonalRadioPlayback.IsTransmitting(plr.ReferenceHub), "Returns true if player is speaking through a radio, otherwise false.")
     };
 
     public override TryGet<object> ToCSharpObject(Type targetType)
