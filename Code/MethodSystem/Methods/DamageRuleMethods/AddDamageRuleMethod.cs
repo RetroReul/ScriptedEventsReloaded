@@ -14,7 +14,8 @@ public class AddDamageRuleMethod : SynchronousMethod
     [
         new OptionsArgument("mode", "attacker", "reciever")
         {
-            Description = "Indicates whether the damage rule will be applied on all damage dealt by the attacker or on all damage received by the reciever."
+            Description = "Indicates whether the damage rule will be applied on all damage dealt by the attacker " +
+                          "or on all damage received by the reciever."
         },
         new PlayersArgument("players affected"),
         new FloatArgument("multiplier", preferPercent: true),
@@ -49,9 +50,7 @@ public class AddDamageRuleMethod : SynchronousMethod
             Getter = Args.GetBool("update")
                 ? () => Args.GetGetter<Player[], PlayersArgument>("players affected")
                     .Invoke()
-                    .WasSuccessful(out var value)
-                        ? value 
-                        : []
+                    .WasSuccessful(out var value) ? value : []
                 : () => players
         };
         
