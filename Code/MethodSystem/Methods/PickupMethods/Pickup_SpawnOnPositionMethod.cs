@@ -11,7 +11,8 @@ using UnityEngine;
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
 [UsedImplicitly]
-public class SpawnPickupPosMethod : SynchronousMethod, ICanError
+// ReSharper disable once InconsistentNaming
+public class Pickup_SpawnOnPositionMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Spawns an item pickup / grenade at the coordinates.";
 
@@ -41,10 +42,7 @@ public class SpawnPickupPosMethod : SynchronousMethod, ICanError
     }
 
     // this is here just to make the ErrorReasons universal across all the pickup-spawning methods
-    public static SpawnPickupPosMethod Singleton
-    {
-        get => field is null ? field = new SpawnPickupPosMethod() : field;
-    } = null!;
+    public static Pickup_SpawnOnPositionMethod Singleton => field ??= new Pickup_SpawnOnPositionMethod();
 
     public static void SpawnPickup(Pickup obj, Vector3 pos, Method caller)
     {

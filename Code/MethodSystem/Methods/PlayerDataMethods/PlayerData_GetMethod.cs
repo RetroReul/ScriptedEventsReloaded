@@ -8,13 +8,14 @@ using SER.Code.ValueSystem.Other;
 namespace SER.Code.MethodSystem.Methods.PlayerDataMethods;
 
 [UsedImplicitly]
-public class GetPlayerDataMethod : ReturningMethod, IAdditionalDescription, ICanError
+// ReSharper disable once InconsistentNaming
+public class PlayerData_GetMethod : ReturningMethod, IAdditionalDescription, ICanError
 {
     public override string Description => "Gets player data from the key.";
 
     public string AdditionalDescription => 
         "WARNING: This method will error if the key doesn't exist. " +
-        $"Use {GetFriendlyName(typeof(HasPlayerDataMethod))} to verify if a key exists before calling this method.";
+        $"Use {NameOfMethod(typeof(PlayerData_ContainsMethod))} to verify if a key exists before calling this method.";
     
     public override TypeOfValue Returns => new UnknownTypeOfValue();
 
@@ -34,7 +35,7 @@ public class GetPlayerDataMethod : ReturningMethod, IAdditionalDescription, ICan
         var player = Args.GetPlayer("player");
         var key = Args.GetText("key");
 
-        if (!SetPlayerDataMethod.PlayerData.TryGetValue(player, out var dict) || 
+        if (!PlayerData_SetMethod.PlayerData.TryGetValue(player, out var dict) || 
             !dict.TryGetValue(key, out var value))
         {
             throw new ScriptRuntimeError(this, ErrorReasons[0]);
