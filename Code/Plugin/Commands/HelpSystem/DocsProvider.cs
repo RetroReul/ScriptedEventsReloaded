@@ -539,7 +539,7 @@ public static class DocsProvider
             if (index > 0) sb.AppendLine();
             
             var argument = method.ExpectedArguments[index];
-            var optionalArgPrefix = argument.DefaultValue is not null ? " optional" : "";
+            var optionalArgPrefix = argument.MustBeProvided ? "" : " optional";
             sb.AppendLine($"({index + 1}){optionalArgPrefix} '{argument.Name}' argument");
 
             if (argument.Description is not null)
@@ -552,7 +552,7 @@ public static class DocsProvider
             if (argument.DefaultValue is { } defVal)
             {
                 sb.AppendLine($" - Default value/behavior: {defVal.StringRep ?? defVal.Value?.ToString() ?? "<unknown>"}");
-                sb.AppendLine("   (you can skip providing this argument by using '_' character)");
+                sb.AppendLine("   (use '_' character to keep the default)");
             }
 
             if (argument.ConsumesRemainingValues)
@@ -639,8 +639,7 @@ public static class DocsProvider
     public static bool GetPropertiesForType(string typeName, out string response)
     {
         IReadOnlyDictionary<string, IValueWithProperties.PropInfo> props;
-        string messagePrefix = string.Empty;
-        
+
         if (typeName.Equals("player", StringComparison.OrdinalIgnoreCase))
         {
             props = new PlayerValue().Properties;

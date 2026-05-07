@@ -15,6 +15,7 @@ public class SetShownPlayerInfoMethod : SynchronousMethod
         new EnumArgument<PlayerInfoArea>("info to show")
         {
             ConsumesRemainingValues = true,
+            DefaultValue = new((PlayerInfoArea)0, "nothing")
         }
     ];
 

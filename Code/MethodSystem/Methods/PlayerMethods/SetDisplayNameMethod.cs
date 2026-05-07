@@ -14,7 +14,7 @@ public class SetDisplayNameMethod : SynchronousMethod
         new PlayersArgument("players"),
         new TextArgument("display name")
         {
-            Description = "Leave empty quotes if you want to remove display name from players"
+            DefaultValue = new("", "removes display name", true),
         }
     ];
 
@@ -22,7 +22,7 @@ public class SetDisplayNameMethod : SynchronousMethod
     {
         var players = Args.GetPlayers("players");
         var displayName = Args.GetText("display name");
-        
-        players.ForEach(p => p.DisplayName = displayName);
+
+        foreach (var p in players) p.DisplayName = displayName;
     }
 }

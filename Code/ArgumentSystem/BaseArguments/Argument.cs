@@ -6,7 +6,7 @@ public abstract class Argument(string name)
 {
     public string Name { get; } = name;
     
-    public bool IsRequired => DefaultValue is null;
+    public bool MustBeProvided => DefaultValue is null || DefaultValue.ExplicitSkip;
     
     /// <summary>
     /// Allows for this argument to get an unlimited amount of values of this type
@@ -20,7 +20,13 @@ public abstract class Argument(string name)
     /// </summary>
     public string? Description { get; init; } = null;
 
-    public record Default(object? Value, string? StringRep);
+    /// <summary>
+    /// The default value for this argument.
+    /// </summary>
+    /// <param name="Value">The actual C# value that will be used. Can be null.</param>
+    /// <param name="StringRep">The string representaton of the value or information regarding custom behavior.</param>
+    /// <param name="ExplicitSkip">Whether the argument must be explicitly skipped using '_'</param>
+    public record Default(object? Value, string? StringRep, bool ExplicitSkip = false);
 
     /// <summary>
     /// Sets the default value for this argument, allowing it to be skipped by the user.

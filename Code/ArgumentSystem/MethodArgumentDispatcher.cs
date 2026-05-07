@@ -71,7 +71,7 @@ public class MethodArgumentDispatcher(Method method)
 
         if (token.RawRep == "_")
         {
-            if (arg.IsRequired)
+            if (arg.DefaultValue is null)
             {
                 return rs + "This argument is required, you cannot skip providing it by using the floor character.";
             }

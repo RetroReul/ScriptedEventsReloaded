@@ -56,11 +56,11 @@ public class MethodContext(MethodToken methodToken) : YieldingContext, IMayRetur
 
     public override Result VerifyCurrentState()
     {
-        return Result.Assert(_providedArguments >= Method.ExpectedArguments.Count(arg => arg.IsRequired),
+        return Result.Assert(_providedArguments >= Method.ExpectedArguments.Count(arg => arg.MustBeProvided),
             $"Method '{Method.Name}' is missing required arguments: " +
             $"{", ".Join(Method.ExpectedArguments
                 .Skip(_providedArguments)
-                .Where(arg => arg.IsRequired)
+                .Where(arg => arg.MustBeProvided)
                 .Select(arg => arg.Name))}");
     }
 

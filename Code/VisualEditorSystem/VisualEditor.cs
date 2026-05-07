@@ -39,7 +39,7 @@ public static class VisualEditor
                 {
                     a.Name,
                     Type = a.GetType().Name,
-                    a.IsRequired, 
+                    IsRequired = a.MustBeProvided, 
                     HasDefault = a.DefaultValue != null, 
                     DefaultString = a.DefaultValue?.StringRep ?? (a.DefaultValue?.Value is Enum ? a.DefaultValue.Value.ToString().Replace(", ", "|") : a.DefaultValue?.Value is bool ? a.DefaultValue.Value.ToString().ToLowerInvariant() : a.DefaultValue?.Value?.ToString()),
                     Options = (a as SER.Code.ArgumentSystem.Arguments.OptionsArgument)?.Options.Select(o => new { o.Value, o.Description }),
