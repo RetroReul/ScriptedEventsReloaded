@@ -7,7 +7,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-public class BreakDoorMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class Door_BreakMethod : SynchronousMethod
 {
     public override string Description => "Breaks specified doors if possible.";
 

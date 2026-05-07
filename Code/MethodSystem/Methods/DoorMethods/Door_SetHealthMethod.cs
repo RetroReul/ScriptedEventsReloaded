@@ -7,7 +7,8 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-public class SetDoorHealthMethod : SynchronousMethod, IAdditionalDescription
+// ReSharper disable once InconsistentNaming
+public class Door_SetHealthMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Sets remaining health for specified doors if possible";
 

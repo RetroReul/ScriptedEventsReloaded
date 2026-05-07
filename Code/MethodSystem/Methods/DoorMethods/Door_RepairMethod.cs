@@ -7,7 +7,8 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-public class RepairDoorMethod : SynchronousMethod, IAdditionalDescription
+// ReSharper disable once InconsistentNaming
+public class Door_RepairMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Repairs specified doors if possible";
 

@@ -6,7 +6,8 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-public class SetDoorMaxHealthMethod : SynchronousMethod
+// ReSharper disable once InconsistentNaming
+public class Door_SetMaxHealthMethod : SynchronousMethod
 {
     public override string Description => "Sets max health for specified doors if possible";
 
