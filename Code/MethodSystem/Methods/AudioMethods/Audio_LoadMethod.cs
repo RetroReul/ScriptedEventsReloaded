@@ -25,7 +25,6 @@ public class Audio_LoadMethod : SynchronousMethod, IAdditionalDescription, ICanE
     public string[] ErrorReasons =>
     [
         "File doesn't exist",
-        "File was already loaded",
         "File is not of type 'ogg'"
     ];
 
@@ -46,9 +45,15 @@ public class Audio_LoadMethod : SynchronousMethod, IAdditionalDescription, ICanE
 
     public override void Execute()
     {
+        var name = Args.GetText("clip name");
+        if (AudioClipStorage.AudioClips.ContainsKey(name))
+        {
+            return;
+        }
+        
         if (!AudioClipStorage.LoadClip(
             Path.Combine(FileSystem.FileSystem.MainDirPath, Args.GetText("file path")), 
-            Args.GetText("clip name")
+            name
         )) throw new ScriptRuntimeError(this, "Audio has failed to load. Check the console for more info.");
     }
 }
