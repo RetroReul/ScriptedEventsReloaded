@@ -8,8 +8,7 @@ using SER.Code.VariableSystem.Bases;
 namespace SER.Code.MethodSystem.Methods.ScriptMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Script_RunAndWaitMethod : YieldingMethod
+public class RunScriptAndWaitMethod : YieldingMethod
 {
     public override string Description => "Runs a script and waits until the ran script has finished.";
 

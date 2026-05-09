@@ -6,8 +6,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RoundMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Round_SetLockMethod : SynchronousMethod
+public class SetRoundLockMethod : SynchronousMethod
 {
     public override string Description => "Changes the round lock state.";
 

@@ -8,8 +8,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RoomMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Room_BlackoutMethod : SynchronousMethod
+public class BlackoutMethod : SynchronousMethod
 {
     public override string Description => "Blackouts rooms.";
 

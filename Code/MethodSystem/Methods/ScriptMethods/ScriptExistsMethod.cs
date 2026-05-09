@@ -7,7 +7,7 @@ using SER.Code.ValueSystem.Other;
 namespace SER.Code.MethodSystem.Methods.ScriptMethods;
 
 [UsedImplicitly]
-public class Script_ExistsMethod : ReturningMethod
+public class ScriptExistsMethod : ReturningMethod
 {
     public override string Description => "Returns true or false indicating if a script with the provided name exists.";
 

@@ -5,8 +5,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RespawnMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Wave_SpawnMethod : SynchronousMethod
+public class SpawnWaveMethod : SynchronousMethod
 {
     public override string Description => "Forces a wave to start.";
 

@@ -5,14 +5,14 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.RoundMethods;
 
 [UsedImplicitly]
-public class Round_EndMethod : SynchronousMethod
+public class StartRoundMethod : SynchronousMethod
 {
-    public override string Description => "Ends a round.";
+    public override string Description => "Start a round.";
 
     public override Argument[] ExpectedArguments { get; } = [];
     
     public override void Execute()
     {
-        Round.End(true);
+        Round.Start();
     }
 }

@@ -10,8 +10,7 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.RoomMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Room_GetMethod : ReferenceReturningMethod<Room>, IAdditionalDescription
+public class GetRoomByNameMethod : ReferenceReturningMethod<Room>, IAdditionalDescription
 {
     public override string Description => "Returns a reference to a room which has the provided name.";
 

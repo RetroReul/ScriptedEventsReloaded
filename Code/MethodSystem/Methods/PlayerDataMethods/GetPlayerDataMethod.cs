@@ -14,7 +14,7 @@ public class GetPlayerDataMethod : ReturningMethod, IAdditionalDescription, ICan
 
     public string AdditionalDescription => 
         "WARNING: This method will error if the key doesn't exist. " +
-        $"Use {GetFriendlyName(typeof(HasPlayerDataMethod))} to verify if a key exists before calling this method.";
+        $"Use {NameOfMethod(typeof(HasPlayerDataMethod))} to verify if a key exists before calling this method.";
     
     public override TypeOfValue Returns => new UnknownTypeOfValue();
 

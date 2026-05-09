@@ -13,8 +13,7 @@ using SER.Code.VariableSystem.Bases;
 namespace SER.Code.MethodSystem.Methods.ScriptMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Script_RunFuncMethod : SynchronousMethod, ICanError
+public class RunFuncMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Runs a function script with arguments.";
 
