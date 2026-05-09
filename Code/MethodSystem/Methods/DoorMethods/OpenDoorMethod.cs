@@ -5,10 +5,9 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Door_CloseMethod : SynchronousMethod
+public class OpenDoorMethod : SynchronousMethod
 {
-    public override string Description => "Closes doors.";
+    public override string Description => "Opens doors.";
 
     public override Argument[] ExpectedArguments { get; } =
     [       
@@ -18,10 +17,10 @@ public class Door_CloseMethod : SynchronousMethod
     public override void Execute()
     {
         var doors = Args.GetDoors("doors");
-
+        
         foreach (var door in doors)
         {
-            door.IsOpened = false;
+            door.IsOpened = true;
         }
     }
 }

@@ -6,8 +6,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Door_SetPermissionMethod : SynchronousMethod
+public class SetDoorPermissionMethod : SynchronousMethod
 {
     public override string Description => "Sets door permissions.";
 
@@ -15,13 +14,22 @@ public class Door_SetPermissionMethod : SynchronousMethod
     [
         new DoorsArgument("doors"),
         new EnumArgument<DoorPermissionFlags>("permissions")
+        {
+            ConsumesRemainingValues = true,
+        }
     ];
     
     public override void Execute()
     {
         var doors = Args.GetDoors("doors");
-        var permissions = Args.GetEnum<DoorPermissionFlags>("permissions");
-
-        foreach (var door in doors) door.Permissions = permissions;
+        var permissions = Args
+            .GetRemainingArguments<object, EnumArgument<DoorPermissionFlags>>("permissions")
+            .Cast<DoorPermissionFlags>()
+            .ToArray();
+        
+        doors.ForEach(door =>
+        {
+            door.Permissions = permissions.Aggregate((a, b) => a | b);
+        });
     }
 }

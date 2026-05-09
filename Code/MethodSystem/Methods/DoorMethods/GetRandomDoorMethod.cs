@@ -6,8 +6,7 @@ using SER.Code.MethodSystem.BaseMethods.Synchronous;
 namespace SER.Code.MethodSystem.Methods.DoorMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Door_GetRandomMethod : ReferenceReturningMethod<Door>
+public class GetRandomDoorMethod : ReferenceReturningMethod<Door>
 {
     public override string Description => "Returns a reference to a random door.";
     
