@@ -221,10 +221,10 @@ AppDomain.CurrentDomain.AssemblyResolve += resolver;
     
     {
         // 4. Find the class (Namespace.ClassName)
-        Type? targetType = assembly.GetType("SER.Code.Examples.Example");
+        Type? targetType = assembly.GetType("SER.Example_Scripts.ExampleHandler");
         if (targetType == null) 
         {
-            Log.LogError("Validation Error: Type 'SER.Code.Examples.Example' not found.");
+            Log.LogError("Validation Error: Type 'SER.Example_Scripts.ExampleHandler' not found.");
             return false;
         }
   

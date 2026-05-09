@@ -1,10 +1,10 @@
 ﻿using LabApi.Features.Console;
 using LabApi.Loader.Features.Paths;
-using SER.Code.Examples;
 using SER.Code.FlagSystem;
 using SER.Code.Helpers;
 using SER.Code.ScriptSystem;
 using SER.Code.ScriptSystem.Structures;
+using SER.Example_Scripts;
 using EventHandler = SER.Code.EventSystem.EventHandler;
 
 namespace SER.Code.FileSystem;
@@ -102,7 +102,7 @@ public static class FileSystem
 
     public static void GenerateExamples()
     {
-        var examples = Example.GetAllExamples();
+        var examples = ExampleHandler.GetAllExamples();
 
         var exampleDir = Directory.CreateDirectory(Path.Combine(MainDirPath, "Example Scripts"));
         foreach (var kvp in examples)

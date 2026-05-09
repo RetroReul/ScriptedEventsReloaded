@@ -1,6 +1,7 @@
 ﻿using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Example_Scripts;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
@@ -20,7 +21,7 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
     public abstract string Description { get; }
     public abstract string[] Arguments { get; }
 
-    public string Example => Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+    public string Example => ExampleHandler.GetExample($"{KeywordName}KeywordExample") ??
                              $"""
                               {Usage}
 

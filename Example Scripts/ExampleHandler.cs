@@ -2,13 +2,10 @@
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 
-namespace SER.Code.Examples;
+namespace SER.Example_Scripts;
 
-public abstract class Example
+public static class ExampleHandler
 {
-    public abstract string Name { get; }
-    public abstract string Content { get; }
-
     private static Dictionary<string, string>? _cachedExamples;
 
     [UsedImplicitly]
@@ -29,7 +26,7 @@ public abstract class Example
             string content = reader.ReadToEnd();
             string[] parts = name.Split('.');
             if (parts.Length < 2) continue;
-            string fileName = parts[parts.Length - 2];
+            string fileName = parts[^2];
             examples[fileName] = content;
         }
 

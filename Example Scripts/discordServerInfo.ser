@@ -8,7 +8,7 @@ func *GetDiscordMessage
     ephm $title = "{ServerInfo name} status"
     ephm $content = "There are {AmountOf @all} players on the server:{Show @all name "<br> -" true}"
     
-    return DiscordMessage _ $title _ {DiscordEmbed $title $content}
+    return Discord.CreateMessage _ $title _ {Embed.Create $title $content}
 end
 
 if {$url -> length} is 0
@@ -23,14 +23,14 @@ attempt
     # IMPORTANT! this will create message every round
     # if you wish to not, just hardcode the message id
     *msg = run *GetDiscordMessage
-    $messageId = SendDiscordMessageAndWait $url *msg
+    $messageId = Discord.SendMessageAndWait $url *msg
     
     # update the message every 2 seconds
     forever
         wait 2s
     
         *msg = run *GetDiscordMessage
-        EditDiscordMessage $url $messageId *msg
+        Discord.EditMessage $url $messageId *msg
     end
 on_error with $err
     Error ($err + " Make sure that the webhook URL is correct!")

@@ -8,6 +8,7 @@ using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
 using SER.Code.TokenSystem.Tokens.Interfaces;
 using SER.Code.ValueSystem;
+using SER.Example_Scripts;
 
 namespace SER.Code.ContextSystem.Contexts.Control;
 
@@ -24,7 +25,7 @@ public class WaitKeyword : YieldingContext, IKeywordContext
 
     public virtual string[] Arguments => ["<duration>"];
 
-    public virtual string Example => Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+    public virtual string Example => ExampleHandler.GetExample($"{KeywordName}KeywordExample") ??
                                       """
                                       # wait for 5 seconds
                                       wait 5s

@@ -7,6 +7,7 @@ using SER.Code.Extensions;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.TokenSystem.Tokens;
+using SER.Example_Scripts;
 
 namespace SER.Code.ContextSystem.Contexts.Control;
 
@@ -24,7 +25,7 @@ public class WaitUntilKeyword : YieldingContext, IKeywordContext
 
     public virtual string[] Arguments => ["<condition...>"];
 
-    public virtual string? Example => Examples.Example.GetExample($"{KeywordName}KeywordExample") ??
+    public virtual string? Example => ExampleHandler.GetExample($"{KeywordName}KeywordExample") ??
                                       """
                                       # wait until there are no players on the server
                                       wait_until {AmountOf @all} is 0
