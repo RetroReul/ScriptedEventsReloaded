@@ -9,8 +9,7 @@ using Object = UnityEngine.Object;
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Pickup_CreateMethod : ReferenceReturningMethod<Pickup>
+public class CreatePickupMethod : ReferenceReturningMethod<Pickup>
 {
     public override string Description => "Creates a new item pickup to later spawn.";
 

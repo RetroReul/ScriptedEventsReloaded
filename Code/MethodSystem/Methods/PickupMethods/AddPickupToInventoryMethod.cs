@@ -7,8 +7,7 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Pickup_AddToInventoryMethod : SynchronousMethod, IAdditionalDescription
+public class AddPickupToInventoryMethod : SynchronousMethod, IAdditionalDescription
 {
     public override string Description => "Forces a pickup to be added to the player's inventory.";
 

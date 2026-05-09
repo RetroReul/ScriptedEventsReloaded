@@ -6,8 +6,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerDataMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class PlayerData_ContainsMethod : ReturningMethod<BoolValue>
+public class HasPlayerDataMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Checks if a given key has an associated value for a given player.";
 
@@ -23,7 +22,7 @@ public class PlayerData_ContainsMethod : ReturningMethod<BoolValue>
         var key = Args.GetText("key");
         
         ReturnValue = new BoolValue(
-            PlayerData_SetMethod.PlayerData.TryGetValue(player, out var dict) 
+            SetPlayerDataMethod.PlayerData.TryGetValue(player, out var dict) 
             && dict.ContainsKey(key)
         );
     }

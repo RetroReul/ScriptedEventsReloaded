@@ -7,9 +7,7 @@ using SER.Code.ValueSystem;
 
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
-[UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Pickup_ExistsMethod : ReturningMethod<BoolValue>
+public class PickupExistsMethod : ReturningMethod<BoolValue>
 {
     public override string Description => "Returns true if the provided pickup is still present on the server.";
 

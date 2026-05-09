@@ -3,7 +3,6 @@ using LabApi.Features.Wrappers;
 using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Exceptions;
-using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.MethodDescriptors;
 using Object = UnityEngine.Object;
@@ -12,14 +11,15 @@ using ThrowableItem = InventorySystem.Items.ThrowableProjectiles.ThrowableItem;
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Pickup_CreateGrenadeMethod : ReferenceReturningMethod<Projectile>, IAdditionalDescription
+public class CreateGrenadeMethod : ReferenceReturningMethod<Projectile>, IAdditionalDescription
 {
     public override string Description => "Creates a new grenade projectile to later spawn.";
 
     public string AdditionalDescription => 
-        $"IMPORTANT: To spawn SCP-018, SCP-2176 or the grenades' unactivated versions, " +
-        $"use the {NameOfMethod(typeof(Pickup_CreateMethod))} method.";
+        "To spawn SCP-018, SCP-2176 or the grenades' unactivated versions, use the Pickup method. " +
+        "IMPORTANT: Northwood had a very bright idea of making the grenades not damage people when " +
+        "not provided with an attacker. In order to have the grenades kill anyone, you HAVE to provide an attacker. " +
+        "We know this is stupid, but for now we can't do anything about it.";
 
     public override Argument[] ExpectedArguments { get; } =
     [

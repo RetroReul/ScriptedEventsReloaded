@@ -7,12 +7,11 @@ using SER.Code.MethodSystem.MethodDescriptors;
 namespace SER.Code.MethodSystem.Methods.PickupMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Pickup_SpawnInRoomMethod : SynchronousMethod, ICanError
+public class SpawnPickupRoomMethod : SynchronousMethod, ICanError
 {
     public override string Description => "Spawns an item pickup / grenade in a room.";
 
-    public string[] ErrorReasons => Pickup_SpawnOnPositionMethod.Singleton.ErrorReasons;
+    public string[] ErrorReasons => SpawnPickupPosMethod.Singleton.ErrorReasons;
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -41,6 +40,6 @@ public class Pickup_SpawnInRoomMethod : SynchronousMethod, ICanError
             Args.GetFloat("relative y"),
             Args.GetFloat("relative z")));
 
-        Pickup_SpawnOnPositionMethod.SpawnPickup(obj, pos, this);
+        SpawnPickupPosMethod.SpawnPickup(obj, pos, this);
     }
 }

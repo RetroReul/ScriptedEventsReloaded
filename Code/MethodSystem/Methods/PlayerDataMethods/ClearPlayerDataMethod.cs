@@ -6,8 +6,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerDataMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class PlayerData_ClearMethod : SynchronousMethod
+public class ClearPlayerDataMethod : SynchronousMethod
 {
     public override string Description => "Clears data associated with specified players";
 
@@ -32,7 +31,7 @@ public class PlayerData_ClearMethod : SynchronousMethod
         
         players.ForEach(p =>
         {
-            if (PlayerData_SetMethod.PlayerData.TryGetValue(p, out var dict))
+            if (SetPlayerDataMethod.PlayerData.TryGetValue(p, out var dict))
             {
                 func(dict);
             }

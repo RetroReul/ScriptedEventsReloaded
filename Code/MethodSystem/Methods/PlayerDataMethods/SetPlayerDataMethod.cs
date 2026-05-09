@@ -8,8 +8,7 @@ using SER.Code.ValueSystem;
 namespace SER.Code.MethodSystem.Methods.PlayerDataMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class PlayerData_SetMethod : SynchronousMethod, IAdditionalDescription
+public class SetPlayerDataMethod : SynchronousMethod, IAdditionalDescription
 {
     public static readonly Dictionary<Player, Dictionary<string, Value>> PlayerData = [];
     
