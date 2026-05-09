@@ -10,48 +10,26 @@ using UnityEngine;
 namespace SER.Code.MethodSystem.Methods.LightMethods;
 
 [UsedImplicitly]
-// ReSharper disable once InconsistentNaming
-public class Lights_SetColorMethod : SynchronousMethod
+public class TransitionLightColorMethod : SynchronousMethod
 {
-    public override string Description => "Sets the light color for rooms.";
+    public override string Description => "Transitions smoothly the light color for rooms.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
         new RoomsArgument("rooms"),
         new ColorArgument("color"),
-        new FloatArgument("intensity", 0, preferPercent: true)
-        {
-            DefaultValue = new(1f, "100%")
-        },
-        new DurationArgument("transition duration")
-        {
-            Description = "the amount of time in which the lights will fade to the new color",
-            DefaultValue = new(null, "instant change")
-        }
+        new DurationArgument("transitionDuration")
     ];
     
     public override void Execute()
     {
         var rooms = Args.GetRooms("rooms");
-        var intensity = Args.GetFloat("intensity");
-        var color = Args.GetColor("color") * intensity;
-
-        if (Args.GetNullableDuration("transition duration") is { } duration)
-        {
-            foreach (var room in rooms)
-            {
-                TransitionColor(room, color, duration.ToFloatSeconds()).Run(Script);
-            }
-            
-            return;
-        }
+        var targetColor = Args.GetColor("color");
+        var transitionDuration = Args.GetDuration("transitionDuration");
         
         foreach (var room in rooms)
         {
-            foreach (var lightsController in room.AllLightControllers)
-            {
-                lightsController.OverrideLightsColor = color;
-            }
+            TransitionColor(room, targetColor, transitionDuration.ToFloatSeconds()).Run(Script);
         }
     }
     
