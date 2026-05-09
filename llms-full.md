@@ -62,6 +62,7 @@ Use `_` to skip optional arguments:
 
 ```
 *embed = DiscordEmbed "Title" _ _ "Author"
+*embed = Discord.CreateEmbed "Title" _ _ "Author"
 ```
 
 ---
