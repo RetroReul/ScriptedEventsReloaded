@@ -15,7 +15,6 @@ namespace SER.Code.ArgumentSystem.Arguments;
 public class CallbackArgument(string argumentName, params (SingleTypeOfValue type, string name)[] requiredArguments)
     : Argument(argumentName)
 {
-
     public string FuncName = null!;
 
     public override string InputDescription =>
