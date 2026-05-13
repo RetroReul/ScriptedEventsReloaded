@@ -2,7 +2,7 @@
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ScriptSystem;
 
-namespace SER.Example_Scripts;
+namespace SER.Code.Helpers;
 
 public static class ExampleHandler
 {

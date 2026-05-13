@@ -7,64 +7,69 @@ namespace SER.Code.Extensions;
 
 public static class StringExtensions
 {
-    /// <summary>
-    /// Converts the first character of the given string to lowercase while keeping the rest of the string unchanged.
-    /// </summary>
     /// <param name="str">The input string to be modified.</param>
-    /// <returns>A new string with the first character decapitalized.</returns>
-    [Pure]
-    public static string LowerFirst(this string str)
+    extension(string str)
     {
-        return str[0].ToString().ToLowerInvariant() + str[1..];
+        /// <summary>
+        /// Converts the first character of the given string to lowercase while keeping the rest of the string unchanged.
+        /// </summary>
+        /// <returns>A new string with the first character decapitalized.</returns>
+        [Pure]
+        public string LowerFirst()
+        {
+            return str[0].ToString().ToLowerInvariant() + str[1..];
+        }
+        
+        [Pure]
+        public string Join(IEnumerable<string> values)
+        {
+            return string.Join(str, values);
+        }
+        
+        [Pure]
+        public Result AsError()
+        {
+            return new Result(false, str);
+        }
+        
+        [Pure]
+        public TryGet<string> AsSuccess()
+        {
+            return TryGet<string>.Success(str);
+        }
+        
+        [Pure]
+        public string Spaceify(bool lowerCase = false)
+        {
+            StringBuilder res = new();
+            for (var index = 0; index < str.Length; index++)
+            {
+                var c = str[index];
+                if (!char.IsUpper(c) || index == 0)
+                {
+                    res.Append(c);
+                    continue;
+                }
+
+                res.Append(lowerCase ? $" {c.ToString().ToLowerInvariant()}" : $" {c}");
+            }
+
+            return res.ToString();
+        }
+        
+        [Pure]
+        public StaticTextValue ToStaticTextValue()
+        {
+            return new StaticTextValue(str);
+        }
+        
+        [Pure]
+        public DynamicTextValue ToDynamicTextValue(Script script)
+        {
+            return new DynamicTextValue(str, script);
+        }
     }
 
     // python ahh
-    [Pure]
-    public static string Join(this string separator, IEnumerable<string> values)
-    {
-        return string.Join(separator, values);
-    }
 
-    [Pure]
-    public static Result AsError(this string error)
-    {
-        return new Result(false, error);
-    }
-    
-    [Pure]
-    public static TryGet<string> AsSuccess(this string value)
-    {
-        return TryGet<string>.Success(value);
-    }
-
-    [Pure]
-    public static string Spaceify(this string str, bool lowerCase = false)
-    {
-        StringBuilder res = new();
-        for (var index = 0; index < str.Length; index++)
-        {
-            var c = str[index];
-            if (!char.IsUpper(c) || index == 0)
-            {
-                res.Append(c);
-                continue;
-            }
-
-            res.Append(lowerCase ? $" {c.ToString().ToLowerInvariant()}" : $" {c}");
-        }
-
-        return res.ToString();
-    }
-    
-    [Pure]
-    public static StaticTextValue ToStaticTextValue(this string text)
-    {
-        return new StaticTextValue(text);
-    }
-
-    [Pure]
-    public static DynamicTextValue ToDynamicTextValue(this string text, Script script)
-    {
-        return new DynamicTextValue(text, script);
-    }
 }

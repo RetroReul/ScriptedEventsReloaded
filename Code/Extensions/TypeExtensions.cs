@@ -12,7 +12,7 @@ public static class TypeExtensions
             {
                 if (!type.IsGenericType)
                     return type.Name;
-
+                
                 var sb = new StringBuilder();
                 string name = type.Name;
                 int index = name.IndexOf('`');
@@ -32,20 +32,20 @@ public static class TypeExtensions
                 return sb.ToString();
             }
         }
-    }
-    
-    public static object CreateInstance(this Type type)
-    {
-        return Activator.CreateInstance(type);
-    }
-    
-    public static T CreateInstance<T>(this Type type)
-    {
-        return (T) Activator.CreateInstance(type);
-    }
-    
-    public static string FriendlyTypeName(this Type type, bool lowerCase = false)
-    {
-        return type.Name.Spaceify(lowerCase);
+        
+        public object CreateInstance()
+        {
+            return Activator.CreateInstance(type);
+        }
+        
+        public T CreateInstance<T>()
+        {
+            return (T) Activator.CreateInstance(type);
+        }
+        
+        public string FriendlyTypeName(bool lowerCase = false)
+        {
+            return type.Name.Spaceify(lowerCase);
+        }
     }
 }

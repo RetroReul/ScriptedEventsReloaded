@@ -4,7 +4,6 @@ using SER.Code.FlagSystem;
 using SER.Code.Helpers;
 using SER.Code.ScriptSystem;
 using SER.Code.ScriptSystem.Structures;
-using SER.Example_Scripts;
 using EventHandler = SER.Code.EventSystem.EventHandler;
 
 namespace SER.Code.FileSystem;

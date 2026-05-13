@@ -4,20 +4,23 @@ namespace SER.Code.Extensions;
 
 public static class CollectionExtensions
 {
-    public static void ForEachItem<T>(this IEnumerable<T> enumerable, Action<T> obj)
+    extension<T>(IEnumerable<T> enumerable)
     {
-        var list = enumerable as List<T> ?? enumerable.ToList();
-
-        foreach (var value in list)
+        public void ForEachItem(Action<T> obj)
         {
-            obj?.Invoke(value);
+            var list = enumerable as List<T> ?? enumerable.ToList();
+
+            foreach (var value in list)
+            {
+                obj?.Invoke(value);
+            }
         }
-    }
-    
-    public static T GetRandomValue<T>(this IEnumerable<T> enumerable)
-    {
-        var array = enumerable as T[] ?? enumerable.ToArray();
-        return array[Random.Range(0, array.Length)];
+        
+        public T GetRandomValue()
+        {
+            var array = enumerable as T[] ?? enumerable.ToArray();
+            return array[Random.Range(0, array.Length)];
+        }
     }
 
     public static IEnumerable<T> RemoveNulls<T>(this IEnumerable<T?> enumerable)
@@ -36,22 +39,24 @@ public static class CollectionExtensions
         return string.Join(separator, source);
     }
     
-    public static int GetEnumerableHashCode<T>(this IEnumerable<T> enumerable)
+    extension<T>(IEnumerable<T> enumerable)
     {
-        unchecked
+        public int GetEnumerableHashCode()
         {
-            var hashCode = 17;
-            foreach (var item in enumerable)
+            unchecked
             {
-                hashCode = hashCode * 31 + (item?.GetHashCode() ?? 0);
+                var hashCode = 17;
+                foreach (var item in enumerable)
+                {
+                    hashCode = hashCode * 31 + (item?.GetHashCode() ?? 0);
+                }
+                return hashCode;
             }
-            return hashCode;
         }
-    }
-
-    public static IEnumerable<T> Without<T>(this IEnumerable<T> source, T value)
-    {
-        return source.Where(x => x?.Equals(value) is false);
+        public IEnumerable<T> Without(T value)
+        {
+            return enumerable.Where(x => x?.Equals(value) is false);
+        }
     }
 
     extension<T>(List<T> list)

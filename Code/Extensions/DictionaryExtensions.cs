@@ -2,11 +2,11 @@
 
 public static class DictionaryExtensions
 {
-    public static void AddOrInitListWithKey<TKey, TCollection, TCollectionValue>(
-        this Dictionary<TKey, TCollection> dictionary, 
+    public static void AddOrInitListWithKey<TKey, TValueColl, TValue>(
+        this Dictionary<TKey, TValueColl> dictionary, 
         TKey key, 
-        TCollectionValue value
-    ) where TCollection : ICollection<TCollectionValue>, new()
+        TValue value
+    ) where TValueColl : ICollection<TValue>, new()
     {
         if (dictionary.TryGetValue(key, out var list))
         {
