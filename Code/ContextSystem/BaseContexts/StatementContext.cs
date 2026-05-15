@@ -45,10 +45,18 @@ public abstract class StatementContext : YieldingContext
 
     protected void WipeEphemeralVariables()
     {
+        if (EphemeralVariables.Count is 0) return;
+        
         foreach (var variable in EphemeralVariables)
         {
             Script.RemoveLocalVariable(variable);
         }
+        
         EphemeralVariables.Clear();
+    }
+
+    protected override void OnEndedExecution()
+    {
+        WipeEphemeralVariables();
     }
 }

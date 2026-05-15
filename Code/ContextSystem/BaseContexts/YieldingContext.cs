@@ -28,7 +28,12 @@ public abstract class YieldingContext : RunnableContext
         }
 
         prof?.Stop();
+        OnEndedExecution();
     }
 
     protected abstract IEnumerator<float> Execute();
+
+    protected virtual void OnEndedExecution()
+    {
+    }
 }
