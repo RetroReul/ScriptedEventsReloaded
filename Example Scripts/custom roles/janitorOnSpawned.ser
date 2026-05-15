@@ -1,0 +1,5 @@
+!-- OnCRole spawned
+-- forRoles janitor
+
+TPRoom @evPlayer LczToilets
+GiveItem @evCRole KeycardJanitor

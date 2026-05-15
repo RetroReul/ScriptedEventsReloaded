@@ -1,0 +1,8 @@
+# when a player with any custom role is spawned, 
+# this will tell the player the role he has
+
+!-- OnCRole spawned
+
+wait 6s
+
+AnimatedBroadcast @evPlayer 10s "Your custom role is:<br><br><br><size=60><b><wait=2s><charwait=300ms>{@evCRole -> displayName}"

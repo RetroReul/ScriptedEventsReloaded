@@ -1,19 +1,21 @@
+# this script makes players smaller on killing other player
+
 !-- OnEvent Death
 -- require @evPlayer @evAttacker
 
-# stop if death was a suicide - meaning @evPlayer and @evAttacker are the same player 
-if {Overlapping @evPlayer @evAttacker} is true
+# stop if death was a suicide
+if {@evPlayer -> name} is {@evAttacker -> name}
     stop
 end
 
 @plr = @evAttacker
 
-# lower size by .1 when killing someone
-SetSize @plr ({@plr -> sizeX} - .1) ({@plr -> sizeY} - .1) ({@plr -> sizeZ} - .1)
+# lower size by 10% when killing someone
+SetSize @plr ({@plr -> sizeX} - 10%) ({@plr -> sizeY} - 10%) ({@plr -> sizeZ} - 10%)
 Hint @plr 5s "KILLED PLAYER - IT'S GNOMING TIME!"
 
 wait 15s
 
 # return them to normal
-SetSize @plr ({@plr -> sizeX} + .1) ({@plr -> sizeY} + .1) ({@plr -> sizeZ} + .1)
-Hint @plr 5s "Gnoming potential depleted :("
+SetSize @plr ({@plr -> sizeX} + 10%) ({@plr -> sizeY} + 10%) ({@plr -> sizeZ} + 10%)
+Hint @plr 5s "Gnoming potential depleted..."

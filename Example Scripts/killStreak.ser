@@ -1,3 +1,5 @@
+# this script adds a custom kill streak counter
+
 !-- OnEvent Death
 
 if {VarExists @evAttacker} is true
@@ -11,6 +13,9 @@ if {VarExists @evAttacker} is true
     # save the new kill streak
     SetPlayerData @evAttacker "streak" $new
 
+    # inform attacker of kill
+    Broadcast @evAttacker 5s "Killstreak: {$new}"
+
     # announce milestone
     if $new is 5
         Broadcast @all 5s "{@evAttacker -> name} is on a KILLING SPREE (5 Kills)!"
@@ -22,4 +27,5 @@ end
 if {VarExists @evPlayer} is true
     # reset the victim's streak
     SetPlayerData @evPlayer "streak" 0
+    Broadcast @evPlayer 5s "Your killstreak has been reset!"
 end

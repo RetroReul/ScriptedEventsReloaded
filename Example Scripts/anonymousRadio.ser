@@ -1,3 +1,5 @@
+# this script makes the name into ??? when talking on the radio
+
 !-- OnEvent Joined
 -- require @evPlayer
 

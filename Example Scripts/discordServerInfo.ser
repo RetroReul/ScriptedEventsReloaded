@@ -1,3 +1,5 @@
+# this script creates a discord webhook informing of the players currently on the server
+
 !-- OnEvent WaitingForPlayers
 
 # this is the webhook URL, please set one here in order for this script to work

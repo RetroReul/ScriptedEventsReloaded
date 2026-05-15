@@ -108,6 +108,13 @@ public static class FileSystem
         {
             var path = Path.Combine(exampleDir.FullName, $"{kvp.Key}.ser");
             if (File.Exists(path)) continue;
+            
+            string? directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            
             using var sw = File.CreateText(path);
             sw.Write(kvp.Value);
         }

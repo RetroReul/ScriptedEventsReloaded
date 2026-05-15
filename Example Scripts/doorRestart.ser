@@ -1,3 +1,8 @@
+!-- CustomCommand doorrestart
+-- description "Does a door restart sequence"
+-- availableFor server remoteAdmin
+-- cooldown 1m
+
 # initial cassie announcement
 Cassie jingle "ATTENTIONALLPERSONNEL . DOOR CONTROL CONSOLE MALFUNCTION DETECTED . INITIALIZING REACTIVATION SEQUENCE . ATTEMPTING FULL SYSTEM REACTIVATION IN . 3 . 2 . 1" "Attention all personnel. Door control console malfunction detected.<split>Initializing reactivation sequence. Attempting full system reactivation in..."
 
@@ -6,7 +11,7 @@ wait 1s
 wait_until {IsCassieSpeaking} is false
 
 # restart effects
-LightsOut * 15s
+DisableLights * 15s
 CloseDoor *
 LockDoor * NoPower
 

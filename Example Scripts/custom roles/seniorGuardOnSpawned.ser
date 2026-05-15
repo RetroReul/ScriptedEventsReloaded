@@ -1,0 +1,11 @@
+!-- OnCRole spawned
+-- forRoles senior_guard
+
+ClearInventory @evPlayer
+GiveItem @evPlayer KeycardMTFPrivate
+GiveItem @evPlayer Radio
+GiveItem @evPlayer Medkit
+GiveItem @evPlayer GrenadeHE
+GiveItem @evPlayer Ammo9x19 3
+GiveItem @evPlayer ArmorCombat
+GiveItem @evPlayer GunFSP9

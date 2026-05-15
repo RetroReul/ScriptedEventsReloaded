@@ -1,10 +1,7 @@
 # this script makes SCP-173 drop pills or a medkit on damage, like a pinata
-!-- OnEvent Hurt
 
-# Only trigger if the victim exists
-if {VarExists @evPlayer} is false
-    stop
-end
+!-- OnEvent Hurt
+-- require @evPlayer @evAttacker
 
 # Only trigger if the victim is SCP-173
 if {@evPlayer -> role} isnt "Scp173"
@@ -25,6 +22,4 @@ end
 
 SpawnPickupPlayer *pickup @evPlayer
 
-if {VarExists @evAttacker} is true
-    Hint @evAttacker 3s "You hit the piñata!"
-end
+Hint @evAttacker 3s "You hit the piñata!"

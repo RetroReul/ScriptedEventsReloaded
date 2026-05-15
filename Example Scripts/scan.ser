@@ -1,3 +1,8 @@
+!-- CustomCommand scan
+-- description "Scans the facility"
+-- availableFor server remoteAdmin
+-- cooldown 1m
+
 # scan beginning announcement
 Cassie jingle "a facility scan is commencing" "A facility scan is commencing..."
 
@@ -5,14 +10,13 @@ wait 1s
 wait_until {IsCassieSpeaking} is false
 
 repeat 3
-    wait 10s
+    wait 5s
     
     # scan sound
     Cassie noJingle "pitch_0.3 .G1 .G4" ""
 end
 
-# wait until cassie finishes
-wait 10s
+wait_until {IsCassieSpeaking} is false
 
 # results
 $cassie = "scan complete . {AmountOf @scpPlayers} scpsubjects remaining . {AmountOf @classDPlayers} class d personnel remaining . {AmountOf @scientistPlayers} scientist personnel remaining . {AmountOf @foundationForcePlayers} foundation forces remaining . {AmountOf @chaosInsurgencyPlayers} hostileforces remaining . . . . ."
