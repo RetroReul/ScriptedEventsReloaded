@@ -22,9 +22,9 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
         new TextArgument("content")
         {
             Description = 
-                "Use <wait=x> and </wait> tags to specify how much time each character will take to be printed, " +
-                "or </wait=x> to specify a single wait action. " +
-                "Example: \"<wait=100ms>Slow print</wait><br></wait=2s>waited 2 seconds for that!\""
+                "Use <charwait=x> and </charwait> tags to specify how much time each character will take to be printed, " +
+                "or <wait=x> to specify a single wait action. " +
+                "Example: \"<charwait=100ms>Slow print</charwait><br><wait=2s>waited 2 seconds for that!\""
         },
         new IntArgument("line break length")
         {
@@ -166,8 +166,8 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
         
         private static string FormatLine(string text, int index, Stack<TimeSpan> activeDelayTags)
         {
-            var openTags = new Regex(@"<wait=((\d|\.)+(ms|s))>").Matches(text).Cast<Match>().ToArray();
-            var closeTags = new Regex("</wait>").Matches(text).Cast<Match>().ToArray();
+            var openTags = new Regex(@"<charwait=((\d|\.)+(ms|s))>").Matches(text).Cast<Match>().ToArray();
+            var closeTags = new Regex("</charwait>").Matches(text).Cast<Match>().ToArray();
             
             StringBuilder newText = new();
             var isTag = false;
@@ -225,7 +225,7 @@ public class AnimatedBroadcastMethod : SynchronousMethod, IAdditionalDescription
                 }
             }
 
-            foreach (var match in new Regex(@"</wait=(\d+(ms|s))>").Matches(newText.ToString()).Cast<Match>().ToArray())
+            foreach (var match in new Regex(@"<wait=(\d+(ms|s))>").Matches(newText.ToString()).Cast<Match>().ToArray())
             {
                 if (DurationToken.Parse(match.Groups[1].Value).HasErrored(out _, out var nullableTimeSpan)
                     || nullableTimeSpan is not { } timeSpan)
