@@ -58,6 +58,7 @@ public class PlayerValue : Value, IValueWithProperties
         Team,
         Inventory,
         ItemCount,
+        HeldItem,
         HeldItemRef,
         IsAlive,
         UserId,
@@ -112,7 +113,8 @@ public class PlayerValue : Value, IValueWithProperties
         UnitId,
         Unit,
         CRole,
-        IsTransmitting
+        IsTransmitting,
+        HasRemoteAdminAccess
     }
 
     private class Info<T>(Func<Player, T> handler, string? description)
@@ -131,6 +133,7 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.Team] = new Info<EnumValue<Team>>(plr => plr.Team.ToEnumValue(), null),
         [PlayerProperty.Inventory] = new Info<CollectionValue<Item>>(plr => new(plr.Inventory.UserInventory.Items.Values.Select(Item.Get).RemoveNulls()), $"A collection of references to {nameof(Item)} objects"),
         [PlayerProperty.ItemCount] = new Info<NumberValue>(plr => (decimal)plr.Inventory.UserInventory.Items.Count, null),
+        [PlayerProperty.HeldItem] = new Info<EnumValue<ItemType>>(plr => plr.CurrentItem?.Type ?? ItemType.None, null),
         [PlayerProperty.HeldItemRef] = new Info<ReferenceValue<Item>>(plr => new(plr.CurrentItem), "A reference to the item the player is holding"),
         [PlayerProperty.IsAlive] = new Info<BoolValue>(plr => plr.IsAlive, null),
         [PlayerProperty.UserId] = new Info<StaticTextValue>(plr => plr.UserId, "The ID of the account (like SteamID64)"),
@@ -224,12 +227,13 @@ public class PlayerValue : Value, IValueWithProperties
         [PlayerProperty.IsGrounded] = new Info<BoolValue>(plr => plr.ReferenceHub.IsGrounded(), null),
         [PlayerProperty.Stamina] = new Info<NumberValue>(plr => (decimal)plr.StaminaRemaining, "Returns the player's remaining stamina."),
         [PlayerProperty.MovementState] = new Info<TextValue>(plr => plr.RoleBase is IFpcRole currentRole ? currentRole.FpcModule.CurrentMovementState.ToString().ToStaticTextValue() : new("None"), "Returns the player's movement state or 'None' if the player is not a first-person role."),
-        [PlayerProperty.RoleColor] = new Info<ColorValue>(plr => plr.RoleBase.RoleColor, "Returns the hex value of the player's role color."),
+        [PlayerProperty.RoleColor] = new Info<ColorValue>(plr => plr.RoleBase.RoleColor, "Returns a color value of the player's role color."),
         [PlayerProperty.LifeId] = new Info<NumberValue>(plr => plr.LifeId, null),
         [PlayerProperty.UnitId] = new Info<NumberValue>(plr => (decimal)plr.UnitId, null),
         [PlayerProperty.Unit] = new Info<TextValue>(plr => NamingRulesManager.ClientFetchReceived(plr.Team, plr.UnitId).ToStaticTextValue(), "Returns the player's unit (e.g FOXTROT-03) if player is NTF or Facility Guard, otherwise returns an empty text value."),
-        [PlayerProperty.CRole] = new Info<ReferenceValue<CRole>>(plr => CRole.AssignedRoles.TryGetValue(plr, out var role) ? role : null, "Returns the player's CRole if player is a CRole, otherwise returns an empty reference value."),
-        [PlayerProperty.IsTransmitting] = new Info<BoolValue>(plr => PersonalRadioPlayback.IsTransmitting(plr.ReferenceHub), "Returns true if player is speaking through a radio, otherwise false.")
+        [PlayerProperty.CRole] = new Info<ReferenceValue<CRole>>(plr => CRole.LifeIdAssignedRoles.TryGetValue(plr.LifeId, out var role) ? role : null, "Returns the player's CRole if player is a CRole, otherwise returns an empty reference value."),
+        [PlayerProperty.IsTransmitting] = new Info<BoolValue>(plr => PersonalRadioPlayback.IsTransmitting(plr.ReferenceHub), "Returns true if player is speaking through a radio, otherwise false."),
+        [PlayerProperty.HasRemoteAdminAccess] = new Info<BoolValue>(plr => plr.RemoteAdminAccess, null)
     };
 
     public override TryGet<object> ToCSharpObject(Type targetType)
