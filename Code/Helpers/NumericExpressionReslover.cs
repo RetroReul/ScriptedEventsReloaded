@@ -109,6 +109,24 @@ public static class NumericExpressionReslover
     {
         switch (token)
         {
+            case ReferenceVariableToken referenceVariable:
+            {
+                var tmp = MakeTempName();
+                variables[tmp] = new(() =>
+                {
+                    if (referenceVariable.ExactValue.HasErrored(out var error, out var value))
+                    {
+                        return mainErr + error;
+                    }
+                    
+                    return value.IsValid 
+                        ? value.ToString()
+                        : "invalid";
+                });
+                
+                AppendRaw(tmp);
+                return true;
+            }
             case IValueToken valueToken when valueToken.CapableOf<LiteralValue>(out var get):
             {
                 var tmp = MakeTempName();
@@ -125,39 +143,14 @@ public static class NumericExpressionReslover
                 AppendRaw(tmp);
                 return true;
             }
-            case ParenthesesToken parentheses:
+            case
             {
-                var tmp = MakeTempName();
-                variables[tmp] = new(() =>
-                {
-                    if (parentheses.ParseExpression().HasErrored(out var conditonError, out var value))
-                    {
-                        return mainErr + conditonError;
-                    }
-                    
-                    return value;
-                });
-                
-                AppendRaw(tmp);
-                return true;
-            }
-            case VariableToken varToken:
-            {
-                var tmp = MakeTempName();
-                variables[tmp] = new(() =>
-                {
-                    if (varToken.TryGetVariable().HasErrored(out var err, out var variable))
-                    {
-                        return mainErr + err;
-                    }
-                    
-                    return variable.BaseValue.HashCode;
-                });
-                
-                AppendRaw(tmp);
-                return true;
-            }
-            case { RawRep: "==" or "!=" or ">" or ">=" or "<" or "<=" or "+" or "-" or "*" or "/" or "%" or "&&" or "||"}:
+                RawRep: 
+                    "==" or "!=" or ">" or ">=" or "<" or "<=" 
+                    or "+" or "-" or "*" or "/" or "%" 
+                    or "&&" or "||" 
+                    or "invalid"
+            }:
             {
                 AppendRaw(token.RawRep);
                 return true;
