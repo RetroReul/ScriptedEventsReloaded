@@ -7,7 +7,7 @@ namespace SER.Code.TokenSystem.Tokens.ValueTokens;
 
 public class TextToken : LiteralValueToken<TextValue>
 {
-    public bool IsDynamic => Value is DynamicTextValue;
+    public bool IsDynamic => ExactValue is DynamicTextValue;
     
     protected override IParseResult InternalParse(Script scr)
     {
@@ -18,7 +18,7 @@ public class TextToken : LiteralValueToken<TextValue>
 
         if (!TextValue.HasExpression(Slice.Value))
         {
-            Value = new StaticTextValue(Slice.Value);
+            ExactValue = new StaticTextValue(Slice.Value);
             return new Success();
         }
 
@@ -27,7 +27,7 @@ public class TextToken : LiteralValueToken<TextValue>
             return new Error(error);
         }
 
-        Value = new DynamicTextValue(Slice.Value, scr);
+        ExactValue = new DynamicTextValue(Slice.Value, scr);
         return new Success();
     }
 }

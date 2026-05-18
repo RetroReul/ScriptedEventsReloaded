@@ -12,7 +12,7 @@ public class ColorToken : LiteralValueToken<ColorValue>
     {
         if (TryParseColor(RawRep).WasSuccessful(out var color))
         {
-            Value = new ColorValue(color);
+            ExactValue = new ColorValue(color);
             return new Success();
         }
         

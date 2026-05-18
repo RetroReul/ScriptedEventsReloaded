@@ -7,10 +7,12 @@ public class SymbolToken : BaseToken
     public const string Joker = "*";
     public const string Floor = "_";
     public const string Arrow = "->";
+    public const string Coalescing = "??";
     
     public bool IsJoker => RawRep == Joker;
     public bool IsFloor => RawRep == Floor;
     public bool IsArrow => RawRep == Arrow;
+    public bool IsCoalescing => RawRep == Coalescing;
     
     protected override IParseResult InternalParse(Script scr)
     {

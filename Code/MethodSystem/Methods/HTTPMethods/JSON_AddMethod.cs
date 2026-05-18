@@ -37,13 +37,13 @@ public class JSON_AddMethod : ReferenceReturningMethod<JObject>, ICanError
         
         if (value is TextValue textValue)
         {
-            jsonToAddValueTo[key] = textValue.Value;
+            jsonToAddValueTo[key] = textValue.UnderlyingValue;
             return;
         }
 
         try
         {
-            jsonToAddValueTo[key] = JToken.FromObject(value.Value);
+            jsonToAddValueTo[key] = JToken.FromObject(value.UnderlyingValue);
         }
         catch
         {

@@ -1,6 +1,4 @@
-﻿using SER.Code.Extensions;
-using SER.Code.ValueSystem;
-using SER.Code.ValueSystem.Other;
+﻿using SER.Code.ValueSystem;
 using SER.Code.VariableSystem.Bases;
 
 namespace SER.Code.VariableSystem.Variables;

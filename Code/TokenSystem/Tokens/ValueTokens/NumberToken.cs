@@ -10,13 +10,13 @@ public class NumberToken : LiteralValueToken<NumberValue>
     {
         if (decimal.TryParse(RawRep, NumberStyles.Any, CultureInfo.InvariantCulture, out var value))
         {
-            Value = value;
+            ExactValue = value;
             return new Success();
         }
 
         if (RawRep.EndsWith("%") && decimal.TryParse(RawRep.TrimEnd('%'), NumberStyles.Any, CultureInfo.InvariantCulture, out value))
         {
-            Value = value / 100;
+            ExactValue = value / 100;
             return new Success();
         }
 

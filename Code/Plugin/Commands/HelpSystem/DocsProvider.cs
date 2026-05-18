@@ -314,7 +314,8 @@ public static class DocsProvider
     {
         var sb = new StringBuilder();
         
-        foreach (var category in EventSystem.EventHandler.AvailableEvents.Select(ev => ev.DeclaringType).ToHashSet().OfType<Type>())
+        foreach (var category in EventSystem.EventHandler.AvailableEvents
+                     .Select(ev => ev.DeclaringType).Distinct().RemoveNulls())
         {
             sb.AppendLine($"--- {category.Name} ---");
             sb.AppendLine(string.Join(", ",  EventSystem.EventHandler.AvailableEvents

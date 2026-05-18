@@ -4,7 +4,7 @@ using ValueType = SER.Code.ValueSystem.Other.ValueType;
 
 namespace SER.Code.ValueSystem;
 
-public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IValueWithProperties
+public class DurationValue(TimeSpan underlyingValue) : LiteralValue<TimeSpan>(underlyingValue), IValueWithProperties
 {
     [UsedImplicitly]
     public DurationValue() : this(TimeSpan.Zero) {}
@@ -16,7 +16,7 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IVal
     
     public static implicit operator TimeSpan(DurationValue value)
     {
-        return value.Value;
+        return value.UnderlyingValue;
     }
 
     public override string StringRep
@@ -24,24 +24,24 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IVal
         get
         {
             StringBuilder sb = new();
-            if (Value.Hours > 0)
+            if (UnderlyingValue.Hours > 0)
             {
-                sb.Append($"{Value.Hours}h ");
+                sb.Append($"{UnderlyingValue.Hours}h ");
             }
 
-            if (Value.Minutes > 0)
+            if (UnderlyingValue.Minutes > 0)
             {
-                sb.Append($"{Value.Minutes}m ");
+                sb.Append($"{UnderlyingValue.Minutes}m ");
             }
 
-            if (Value.Seconds > 0)
+            if (UnderlyingValue.Seconds > 0)
             {
-                sb.Append($"{Value.Seconds}s ");
+                sb.Append($"{UnderlyingValue.Seconds}s ");
             }
 
-            if (Value.Milliseconds > 0)
+            if (UnderlyingValue.Milliseconds > 0)
             {
-                sb.Append($"{Value.Milliseconds:D3}ms ");
+                sb.Append($"{UnderlyingValue.Milliseconds:D3}ms ");
             }
 
             if (sb.Length == 0)
@@ -61,14 +61,14 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IVal
 
     public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
     {
-        ["h"] = new Prop<NumberValue>(d => d.Value.Hours, "Hours component of the duration"),
-        ["m"] = new Prop<NumberValue>(d => d.Value.Minutes, "Minutes component of the duration"),
-        ["s"] = new Prop<NumberValue>(d => d.Value.Seconds, "Seconds component of the duration"),
-        ["ms"] = new Prop<NumberValue>(d => d.Value.Milliseconds, "Milliseconds component of the duration"),
-        ["totalH"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalHours, "Total hours in the duration"),
-        ["totalM"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMinutes, "Total minutes in the duration"),
-        ["totalS"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalSeconds, "Total seconds in the duration"),
-        ["totalMs"] = new Prop<NumberValue>(d => (decimal)d.Value.TotalMilliseconds, "Total milliseconds in the duration"),
+        ["h"] = new Prop<NumberValue>(d => d.UnderlyingValue.Hours, "Hours component of the duration"),
+        ["m"] = new Prop<NumberValue>(d => d.UnderlyingValue.Minutes, "Minutes component of the duration"),
+        ["s"] = new Prop<NumberValue>(d => d.UnderlyingValue.Seconds, "Seconds component of the duration"),
+        ["ms"] = new Prop<NumberValue>(d => d.UnderlyingValue.Milliseconds, "Milliseconds component of the duration"),
+        ["totalH"] = new Prop<NumberValue>(d => (decimal)d.UnderlyingValue.TotalHours, "Total hours in the duration"),
+        ["totalM"] = new Prop<NumberValue>(d => (decimal)d.UnderlyingValue.TotalMinutes, "Total minutes in the duration"),
+        ["totalS"] = new Prop<NumberValue>(d => (decimal)d.UnderlyingValue.TotalSeconds, "Total seconds in the duration"),
+        ["totalMs"] = new Prop<NumberValue>(d => (decimal)d.UnderlyingValue.TotalMilliseconds, "Total milliseconds in the duration"),
         ["valType"] = new Prop<EnumValue<ValueType>>(_ => ValueType.Duration, "The type of the value")
     };
 }

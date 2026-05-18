@@ -612,11 +612,11 @@ public class CustomCommandFlag : Flag, IMajorBehaviorFlag
 
         if (isGlobal)
         {
-            Command.GlobalCooldown = durationToken.Value;
+            Command.GlobalCooldown = durationToken.ExactValue;
         }
         else
         {
-            Command.PlayerCooldown = durationToken.Value;
+            Command.PlayerCooldown = durationToken.ExactValue;
         }
         
         return true;

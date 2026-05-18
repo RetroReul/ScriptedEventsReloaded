@@ -53,10 +53,7 @@ public class IfStatement : StatementContext, IExtendableStatement, IKeywordConte
 
     protected override IEnumerator<float> Execute()
     {
-        if (_expression.Evaluate().HasErrored(out var error, out var objResult))
-        {
-            throw new ScriptRuntimeError(this, error);
-        }
+        var objResult = _expression.Evaluate() ?? false;
 
         if (objResult is not bool result)
         {

@@ -63,10 +63,7 @@ public class WaitUntilKeyword : YieldingContext, IKeywordContext
 
     private bool GetConditionResult()
     {
-        if (_expression.Evaluate().HasErrored(out var error, out var objResult))
-        {
-            throw new ScriptRuntimeError(this, error);
-        }
+        var objResult = _expression.Evaluate() ?? false;
 
         if (objResult is not bool result)
         {

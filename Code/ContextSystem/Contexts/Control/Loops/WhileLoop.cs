@@ -79,11 +79,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
 
     private bool GetExpressionResult()
     {
-        if (_expression.Evaluate().HasErrored(out var error, out var objResult))
-        {
-            throw new ScriptRuntimeError(this, error);
-        }
-
+        var objResult = _expression.Evaluate() ?? false;
         if (objResult is not bool result)
         {
             throw new ScriptRuntimeError(

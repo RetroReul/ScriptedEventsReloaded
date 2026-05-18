@@ -19,7 +19,7 @@ public static class EventHandler
     private static readonly List<Action> UnsubscribeActions = [];
     private static readonly Dictionary<string, List<Action<EventArgs?, Variable[]>>> OnEventActions = [];
     private static readonly HashSet<string> DisabledEvents = [];
-    public static List<EventInfo> AvailableEvents = [];
+    public static HashSet<EventInfo> AvailableEvents = [];
     public static readonly HashSet<string> RegisteredHandlers = [];
     public static readonly HashSet<string> BindedEvents = [];
     
@@ -28,8 +28,10 @@ public static class EventHandler
         AvailableEvents = typeof(PluginLoader).Assembly.GetTypes()
             .Where(t => t.FullName?.Equals($"LabApi.Events.Handlers.{t.Name}") is true)
             .Select(t => t.GetEvents(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public 
-                                     | BindingFlags.NonPublic | BindingFlags.DeclaredOnly).ToList())
-            .Flatten().ToList();
+                                     | BindingFlags.NonPublic | BindingFlags.DeclaredOnly).Distinct().ToList())
+            .Distinct()
+            .Flatten()
+            .ToHashSet();
     }
     
     public static void Clear()
@@ -274,7 +276,8 @@ public static class EventHandler
         foreach (var (type, name) in properties)
         {
             if (type is null) continue;
-            variables.Add($"{Value.GetPrefixOfValue(new SingleTypeOfValue(Value.GuessValueType(type)))}ev{name.LowerFirst()}");
+            var valueType = Value.GuessValueType(type);
+            variables.Add($"{Value.GetPrefixOfValue(new SingleTypeOfValue(valueType))}ev{name} ({Value.GetFriendlyName(valueType)})");
         }
 
         return variables;

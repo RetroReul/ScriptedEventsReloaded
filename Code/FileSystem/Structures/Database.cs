@@ -73,7 +73,7 @@ public class Database
         switch (value)
         {
             case LiteralValue literalValue:
-                saveVal = literalValue.Value;
+                saveVal = literalValue.UnderlyingValue;
                 break;
             case PlayerValue playerValue:
                 saveVal = playerValue.Players.Select(p => p.UserId).ToArray();
