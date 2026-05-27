@@ -19,28 +19,40 @@ namespace SER.Code.MethodSystem.BaseMethods;
 /// </remarks>
 public abstract class Method
 {
+    private static readonly Dictionary<Type, (string Name, string Subgroup)> MethodMetadataCache = new();
+
     protected Method()
     {
         var type = GetType();
-        
-        Subgroup = type.Namespace?
-            .Split('.')
-            .LastOrDefault()?
-            .WithCurrent(name =>
-            {
-                if (name.EndsWith("Methods")) return name[..^"Methods".Length];
-                return name;
-            })
-            .Replace("_", " ")
-                   ?? "Unknown";
-        
-        var name = type.Name.Replace("_", ".");
-        if (!name.EndsWith("Method"))
+
+        if (MethodMetadataCache.TryGetValue(type, out var cached))
         {
-            throw new AndrzejFuckedUpException($"Method class name '{name}' must end with 'Method'.");
+            Name = cached.Name;
+            Subgroup = cached.Subgroup;
         }
-        
-        Name = name[..^"Method".Length];
+        else
+        {
+            Subgroup = type.Namespace?
+                .Split('.')
+                .LastOrDefault()?
+                .WithCurrent(name =>
+                {
+                    if (name.EndsWith("Methods")) return name[..^"Methods".Length];
+                    return name;
+                })
+                .Replace("_", " ")
+                       ?? "Unknown";
+
+            var name = type.Name.Replace("_", ".");
+            if (!name.EndsWith("Method"))
+            {
+                throw new AndrzejFuckedUpException($"Method class name '{name}' must end with 'Method'.");
+            }
+
+            Name = name[..^"Method".Length];
+            MethodMetadataCache[type] = (Name, Subgroup);
+        }
+
         Args = new(this);
     }
 

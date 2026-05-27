@@ -1,9 +1,12 @@
-﻿using System.Text;
+﻿using System.Linq.Expressions;
+using System.Text;
 
 namespace SER.Code.Extensions;
 
 public static class TypeExtensions
 {
+    private static readonly Dictionary<Type, Func<object>> ConstructorCache = new();
+
     extension(Type type)
     {
         public string AccurateName
@@ -35,12 +38,19 @@ public static class TypeExtensions
         
         public object CreateInstance()
         {
-            return Activator.CreateInstance(type);
+            if (ConstructorCache.TryGetValue(type, out var ctor))
+                return ctor();
+
+            var newExp = Expression.New(type);
+            var lambda = Expression.Lambda<Func<object>>(Expression.Convert(newExp, typeof(object)));
+            ctor = lambda.Compile();
+            ConstructorCache[type] = ctor;
+            return ctor();
         }
         
         public T CreateInstance<T>()
         {
-            return (T) Activator.CreateInstance(type);
+            return (T) type.CreateInstance();
         }
         
         public string FriendlyTypeName(bool lowerCase = false)

@@ -100,6 +100,14 @@ public static class ReferencePropertyRegistry
                 "Returns the name of the assembly the object is defined in"
             )
         );
+        
+        combined.Add(
+            "valType", 
+            new IValueWithProperties.PropInfo<ReferenceValue, EnumValue<SER.Code.ValueSystem.Other.ValueType>>(
+                _ => SER.Code.ValueSystem.Other.ValueType.Reference, 
+                "The type of the value"
+            )
+        );
 
         CachedCombinedProperties[type] = combined;
         return type == typeof(JObject) || type == typeof(JToken) || type.IsSubclassOf(typeof(JToken)) 

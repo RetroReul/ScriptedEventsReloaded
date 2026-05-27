@@ -102,7 +102,8 @@ public class CollectionValue(IEnumerable value) : Value, IValueWithProperties
     private class Prop<T>(Func<CollectionValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<CollectionValue, T>(handler, description) where T : Value;
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new() 
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= new() 
     {
         ["length"] = new Prop<NumberValue>(c => c.CastedValues.Length, "Amount of values in the collection"),
         ["isEmpty"] = new Prop<BoolValue>(c => c.CastedValues.Length == 0, "Whether the collection is empty"),

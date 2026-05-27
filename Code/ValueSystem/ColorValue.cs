@@ -18,7 +18,8 @@ public class ColorValue(Color color) : LiteralValue<Color>(color), IValueWithPro
     private class Prop<T>(Func<ColorValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<ColorValue, T>(handler, description) where T : Value;
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= new()
     {
         ["r"] = new Prop<NumberValue>(c => (decimal)c.Value.r, "Red component of the color (0-1)"),
         ["g"] = new Prop<NumberValue>(c => (decimal)c.Value.g, "Green component of the color (0-1)"),

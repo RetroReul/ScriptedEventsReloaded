@@ -106,6 +106,8 @@ public abstract class Value : IEquatable<Value>
     public static Dictionary<string, IValueWithProperties.PropInfo>? GetPropertiesOfValue(Type t)
     {
         if (!typeof(IValueWithProperties).IsAssignableFrom(t)) return null;
+
+        if (PropertyCache.TryGetValue(t, out var cached)) return cached;
         
         if (t == typeof(TextValue))
         {
@@ -116,8 +118,10 @@ public abstract class Value : IEquatable<Value>
             return ReferencePropertyRegistry.GetProperties(t.GetGenericArguments()[0]);
         }
         
-        return t.CreateInstance<IValueWithProperties>().Properties;
+        return PropertyCache[t] = t.CreateInstance<IValueWithProperties>().Properties;
     }
+
+    private static readonly Dictionary<Type, Dictionary<string, IValueWithProperties.PropInfo>> PropertyCache = new();
     
     public string FriendlyName => GetFriendlyName(GetType());
     

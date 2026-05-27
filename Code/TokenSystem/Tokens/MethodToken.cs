@@ -1,5 +1,6 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Contexts;
+using SER.Code.Extensions;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.BaseMethods;
 using SER.Code.ScriptSystem;
@@ -26,7 +27,7 @@ public class MethodToken : BaseToken, IContextableToken
             return new Ignore();
         }
 
-        Method = (Method)Activator.CreateInstance(method.GetType());
+        Method = method.GetType().CreateInstance<Method>();
         Method.Script = scr;
         Method.LineNum = LineNum;
         return new Success();

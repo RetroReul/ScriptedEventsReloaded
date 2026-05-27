@@ -1,4 +1,5 @@
-﻿using SER.Code.ScriptSystem;
+﻿using SER.Code.Extensions;
+using SER.Code.ScriptSystem;
 
 namespace SER.Code.ContextSystem.BaseContexts;
 
@@ -10,7 +11,7 @@ public abstract class RunnableContext : Context
 
     public static RunnableContext Create(Type contextType, Script scr, uint? lineNum)
     {
-        var context = (RunnableContext)Activator.CreateInstance(contextType);
+        var context = contextType.CreateInstance<RunnableContext>();
         context.Script = scr;
         context.LineNum = lineNum;
         return context;

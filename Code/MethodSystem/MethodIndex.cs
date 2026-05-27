@@ -51,7 +51,7 @@ public static class MethodIndex
             .Select(t =>
             {
                 Log.Debug($"trying to activate {t.AccurateName}");
-                return Activator.CreateInstance(t) as Method;
+                return t.CreateInstance<Method>();
             })
             .Where(t =>
             {

@@ -42,7 +42,8 @@ public class PlayerValue : Value, IValueWithProperties
     [UsedImplicitly]
     public new static string FriendlyName => "player value";
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = 
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= 
         PropertyInfoMap.ToDictionary(pair => pair.Key.ToString().LowerFirst(), pair => pair.Value, StringComparer.OrdinalIgnoreCase)
             .Append(new KeyValuePair<string, IValueWithProperties.PropInfo>("valType", 
                 new IValueWithProperties.PropInfo<PlayerValue, EnumValue<ValueType>>(_ => ValueType.Player, "The type of the value")))

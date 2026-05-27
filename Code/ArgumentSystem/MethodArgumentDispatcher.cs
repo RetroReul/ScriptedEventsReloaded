@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq.Expressions;
+using System.Reflection;
 using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.ArgumentSystem.Structures;
 using SER.Code.Exceptions;
@@ -12,19 +13,34 @@ namespace SER.Code.ArgumentSystem;
 
 public class MethodArgumentDispatcher(Method method)
 {
-    private class ConverterInfo(MethodInfo method)
+    private class ConverterInfo
     {
-        private MethodInfo Method { get; } = method;
+        private Func<Argument, BaseToken, DynamicTryGet> Delegate { get; }
+
+        public ConverterInfo(MethodInfo methodInfo)
+        {
+            var instanceParam = Expression.Parameter(typeof(Argument), "instance");
+            var tokenParam = Expression.Parameter(typeof(BaseToken), "token");
+
+            var call = Expression.Call(
+                Expression.Convert(instanceParam, methodInfo.DeclaringType!),
+                methodInfo,
+                tokenParam
+            );
+
+            var lambda = Expression.Lambda<Func<Argument, BaseToken, DynamicTryGet>>(call, instanceParam, tokenParam);
+            Delegate = lambda.Compile();
+        }
         
         public DynamicTryGet Invoke(BaseToken token, Argument arg)
         {
             try
             {
-                return (DynamicTryGet)Method.Invoke(arg, [token]);
+                return Delegate(arg, token);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex)
             {
-                return DynamicTryGet.Error($"This error is not an expected one, report it to the developers. {ex.InnerException?.Message} {ex.InnerException?.StackTrace}");
+                return DynamicTryGet.Error($"This error is not an expected one, report it to the developers. {ex.Message} {ex.StackTrace}");
             }
         }
     }

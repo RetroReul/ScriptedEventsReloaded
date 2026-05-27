@@ -59,7 +59,8 @@ public class DurationValue(TimeSpan value) : LiteralValue<TimeSpan>(value), IVal
     private class Prop<T>(Func<DurationValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<DurationValue, T>(handler, description) where T : Value;
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= new()
     {
         ["h"] = new Prop<NumberValue>(d => d.Value.Hours, "Hours component of the duration"),
         ["m"] = new Prop<NumberValue>(d => d.Value.Minutes, "Minutes component of the duration"),

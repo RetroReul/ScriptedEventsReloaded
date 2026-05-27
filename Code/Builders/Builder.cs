@@ -1,18 +1,21 @@
 using Newtonsoft.Json;
+using SER.Code.ArgumentSystem.Arguments;
 using SER.Code.FlagSystem.Flags;
 using SER.Code.MethodSystem;
 using SER.Code.MethodSystem.BaseMethods.Interfaces;
+using SER.Code.MethodSystem.MethodDescriptors;
+using SER.Code.MethodSystem.Structures;
 using SER.Code.Plugin.Commands.HelpSystem;
 using SER.Code.VariableSystem;
 using SER.Code.VariableSystem.Variables;
 
-namespace SER.Code.VisualEditorSystem;
+namespace SER.Code.Builders;
 
 [UsedImplicitly]
-public static class VisualEditor
+public static class Builder
 {
     [UsedImplicitly]
-    public static void CreateFile()
+    public static void CreateFiles()
     {
         if (MethodIndex.GetMethods().Length == 0) MethodIndex.Initialize();
         if (Flag.FlagInfos.Count == 0) Flag.RegisterFlags();
@@ -255,7 +258,10 @@ public static class VisualEditor
                     };
 
                     serGenerator.forBlock['ser_wait_until'] = function(block, generator) {
-                        const condition = generator.valueToCode(block, 'CONDITION', serGenerator.ORDER_ATOMIC) || '...';
+                        let condition = generator.valueToCode(block, 'CONDITION', serGenerator.ORDER_ATOMIC) || '...';
+                        if (condition.startsWith('{') && condition.endsWith('}')) {
+                            return "wait_until " + condition + "\n";
+                        }
                         return "wait_until {" + condition + "}\n";
                     };
 
@@ -446,6 +452,134 @@ public static class VisualEditor
                         }
                     };
 
+                    Blockly.Blocks['ser_while'] = {
+                        init: function() {
+                            this.appendValueInput("CONDITION")
+                                .setCheck(["Boolean", "String"])
+                                .appendField("while");
+                            this.appendStatementInput("DO")
+                                .setCheck(null);
+                            this.setPreviousStatement(true, null);
+                            this.setNextStatement(true, null);
+                            this.setColour(120);
+                            this.setTooltip("Repeats as long as a condition is true.");
+                            const mutator = (Blockly.icons && Blockly.icons.MutatorIcon) ? new Blockly.icons.MutatorIcon(['ser_loop_iter'], this) : new Blockly.Mutator(['ser_loop_iter']);
+                            if (this.setMutator) this.setMutator(mutator); else this.addIcon(mutator);
+                            this.hasIter_ = false;
+                        },
+                        updateShape_: function() {
+                            const inputExists = this.getInput('ITER');
+                            if (this.hasIter_) {
+                                if (!inputExists) {
+                                    this.appendValueInput('ITER')
+                                        .setCheck('Variable')
+                                        .appendField("with index");
+                                    this.moveInputBefore('ITER', 'DO');
+                                }
+                            } else if (inputExists) {
+                                this.removeInput('ITER');
+                            }
+                        },
+                        mutationToDom: function() {
+                            const container = Blockly.utils.xml.createElement('mutation');
+                            container.setAttribute('has_iter', this.hasIter_);
+                            return container;
+                        },
+                        domToMutation: function(xmlElement) {
+                            this.hasIter_ = (xmlElement.getAttribute('has_iter') === 'true');
+                            this.updateShape_();
+                        },
+                        decompose: function(workspace) {
+                            const containerBlock = workspace.newBlock('ser_loop_mutator');
+                            containerBlock.initSvg();
+                            if (this.hasIter_) {
+                                const iterBlock = workspace.newBlock('ser_loop_iter');
+                                iterBlock.initSvg();
+                                containerBlock.getInput('STACK').connection.connect(iterBlock.previousConnection);
+                            }
+                            return containerBlock;
+                        },
+                        compose: function(containerBlock) {
+                            let itemBlock = containerBlock.getInputTargetBlock('STACK');
+                            this.hasIter_ = false;
+                            while (itemBlock) {
+                                if (itemBlock.type === 'ser_loop_iter') this.hasIter_ = true;
+                                itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
+                            }
+                            this.updateShape_();
+                        },
+                        saveExtraState: function() {
+                            return { 'hasIter': this.hasIter_ };
+                        },
+                        loadExtraState: function(state) {
+                            this.hasIter_ = state['hasIter'];
+                            this.updateShape_();
+                        }
+                    };
+
+                    Blockly.Blocks['ser_forever'] = {
+                        init: function() {
+                            this.appendDummyInput().appendField("forever");
+                            this.appendStatementInput("DO")
+                                .setCheck(null);
+                            this.setPreviousStatement(true, null);
+                            this.setNextStatement(true, null);
+                            this.setColour(120);
+                            this.setTooltip("Repeats forever.");
+                            const mutator = (Blockly.icons && Blockly.icons.MutatorIcon) ? new Blockly.icons.MutatorIcon(['ser_loop_iter'], this) : new Blockly.Mutator(['ser_loop_iter']);
+                            if (this.setMutator) this.setMutator(mutator); else this.addIcon(mutator);
+                            this.hasIter_ = false;
+                        },
+                        updateShape_: function() {
+                            const inputExists = this.getInput('ITER');
+                            if (this.hasIter_) {
+                                if (!inputExists) {
+                                    this.appendValueInput('ITER')
+                                        .setCheck('Variable')
+                                        .appendField("with index");
+                                    this.moveInputBefore('ITER', 'DO');
+                                }
+                            } else if (inputExists) {
+                                this.removeInput('ITER');
+                            }
+                        },
+                        mutationToDom: function() {
+                            const container = Blockly.utils.xml.createElement('mutation');
+                            container.setAttribute('has_iter', this.hasIter_);
+                            return container;
+                        },
+                        domToMutation: function(xmlElement) {
+                            this.hasIter_ = (xmlElement.getAttribute('has_iter') === 'true');
+                            this.updateShape_();
+                        },
+                        decompose: function(workspace) {
+                            const containerBlock = workspace.newBlock('ser_loop_mutator');
+                            containerBlock.initSvg();
+                            if (this.hasIter_) {
+                                const iterBlock = workspace.newBlock('ser_loop_iter');
+                                iterBlock.initSvg();
+                                containerBlock.getInput('STACK').connection.connect(iterBlock.previousConnection);
+                            }
+                            return containerBlock;
+                        },
+                        compose: function(containerBlock) {
+                            let itemBlock = containerBlock.getInputTargetBlock('STACK');
+                            this.hasIter_ = false;
+                            while (itemBlock) {
+                                if (itemBlock.type === 'ser_loop_iter') this.hasIter_ = true;
+                                itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
+                            }
+                            this.updateShape_();
+                        },
+                        saveExtraState: function() {
+                            return { 'hasIter': this.hasIter_ };
+                        },
+                        loadExtraState: function(state) {
+                            this.hasIter_ = state['hasIter'];
+                            this.updateShape_();
+                        }
+                    };
+
                     Blockly.Blocks['ser_loop_mutator'] = {
                         init: function() {
                             this.appendDummyInput().appendField("loop options");
@@ -471,6 +605,16 @@ public static class VisualEditor
                             this.setPreviousStatement(true);
                             this.setNextStatement(true);
                             this.setColour(120);
+                            this.contextMenu = false;
+                        }
+                    };
+
+                    Blockly.Blocks['ser_func_arg'] = {
+                        init: function() {
+                            this.appendDummyInput().appendField("argument");
+                            this.setPreviousStatement(true);
+                            this.setNextStatement(true);
+                            this.setColour(290);
                             this.contextMenu = false;
                         }
                     };
@@ -502,6 +646,180 @@ public static class VisualEditor
                             }
                         }
                         return code + `\n${branch}end\n`;
+                    };
+
+                    serGenerator.forBlock['ser_while'] = function(block, generator) {
+                        let condition = generator.valueToCode(block, 'CONDITION', serGenerator.ORDER_ATOMIC) || '...';
+                        if (condition.startsWith('{') && condition.endsWith('}')) {
+                            // Already bracketed
+                        } else if (condition !== '...') {
+                            condition = "{" + condition + "}";
+                        }
+                        const branch = generator.statementToCode(block, 'DO');
+                        let code = `while ${condition}`;
+                        if (block.hasIter_) {
+                            const iterName = generator.valueToCode(block, 'ITER', serGenerator.ORDER_ATOMIC) || '$i';
+                            code += ` with ${iterName}`;
+                        }
+                        return code + `\n${branch}end\n`;
+                    };
+
+                    serGenerator.forBlock['ser_forever'] = function(block, generator) {
+                        const branch = generator.statementToCode(block, 'DO');
+                        let code = `forever`;
+                        if (block.hasIter_) {
+                            const iterName = generator.valueToCode(block, 'ITER', serGenerator.ORDER_ATOMIC) || '$i';
+                            code += ` with ${iterName}`;
+                        }
+                        return code + `\n${branch}end\n`;
+                    };
+
+                    Blockly.Blocks['ser_comment'] = {
+                        init: function() {
+                            this.appendDummyInput()
+                                .appendField("#")
+                                .appendField(new Blockly.FieldTextInput("Comment"), "TEXT");
+                            this.setPreviousStatement(true, null);
+                            this.setNextStatement(true, null);
+                            this.setColour(160);
+                            this.setTooltip("Adds a comment to the script.");
+                        }
+                    };
+
+                    serGenerator.forBlock['ser_comment'] = function(block) {
+                        const text = block.getFieldValue('TEXT');
+                        return `# ${text}\n`;
+                    };
+
+                    Blockly.Blocks['ser_func_def'] = {
+                        init: function() {
+                            this.appendDummyInput()
+                                .appendField("func")
+                                .appendField(new Blockly.FieldTextInput("$myFunc"), "NAME");
+                            this.appendStatementInput("DO")
+                                .setCheck(null);
+                            this.setPreviousStatement(true, null);
+                            this.setNextStatement(true, null);
+                            this.setColour(290);
+                            this.setTooltip("Defines a function.");
+                            const mutator = (Blockly.icons && Blockly.icons.MutatorIcon) ? new Blockly.icons.MutatorIcon(['ser_func_arg'], this) : new Blockly.Mutator(['ser_func_arg']);
+                            if (this.setMutator) this.setMutator(mutator); else this.addIcon(mutator);
+                            this.argCount_ = 0;
+                        },
+                        updateShape_: function() {
+                            for (let i = 1; i <= this.argCount_; i++) {
+                                if (!this.getInput('ARG' + i)) {
+                                    this.appendValueInput('ARG' + i)
+                                        .setCheck('Variable')
+                                        .appendField("with arg");
+                                    this.moveInputBefore('ARG' + i, 'DO');
+                                }
+                            }
+                            let i = this.argCount_ + 1;
+                            while (this.getInput('ARG' + i)) {
+                                this.removeInput('ARG' + i);
+                                i++;
+                            }
+                        },
+                        mutationToDom: function() {
+                            const container = Blockly.utils.xml.createElement('mutation');
+                            container.setAttribute('args', this.argCount_);
+                            return container;
+                        },
+                        domToMutation: function(xmlElement) {
+                            this.argCount_ = parseInt(xmlElement.getAttribute('args'), 10) || 0;
+                            this.updateShape_();
+                        },
+                        decompose: function(workspace) {
+                            const containerBlock = workspace.newBlock('ser_loop_mutator');
+                            containerBlock.initSvg();
+                            let connection = containerBlock.getInput('STACK').connection;
+                            for (let i = 0; i < this.argCount_; i++) {
+                                const argBlock = workspace.newBlock('ser_func_arg');
+                                argBlock.initSvg();
+                                connection.connect(argBlock.previousConnection);
+                                connection = argBlock.nextConnection;
+                            }
+                            return containerBlock;
+                        },
+                        compose: function(containerBlock) {
+                            let itemBlock = containerBlock.getInputTargetBlock('STACK');
+                            this.argCount_ = 0;
+                            while (itemBlock) {
+                                if (itemBlock.type === 'ser_func_arg') this.argCount_++;
+                                itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock();
+                            }
+                            this.updateShape_();
+                        },
+                        saveExtraState: function() {
+                            return { 'argCount': this.argCount_ };
+                        },
+                        loadExtraState: function(state) {
+                            this.argCount_ = state['argCount'];
+                            this.updateShape_();
+                        }
+                    };
+
+                    serGenerator.forBlock['ser_func_def'] = function(block, generator) {
+                        const name = block.getFieldValue('NAME');
+                        const branch = generator.statementToCode(block, 'DO');
+                        let code = `func ${name}`;
+                        if (block.argCount_ > 0) {
+                            code += ` with`;
+                            for (let i = 1; i <= block.argCount_; i++) {
+                                const arg = generator.valueToCode(block, 'ARG' + i, serGenerator.ORDER_ATOMIC) || `$arg${i}`;
+                                code += ` ${arg}`;
+                            }
+                        }
+                        return code + `\n${branch}end\n`;
+                    };
+
+                    Blockly.Blocks['ser_func_run'] = {
+                        init: function() {
+                            this.appendDummyInput()
+                                .appendField("run")
+                                .appendField(new Blockly.FieldTextInput("$myFunc"), "NAME");
+                            this.setPreviousStatement(true, null);
+                            this.setNextStatement(true, null);
+                            this.setColour(290);
+                            this.setTooltip("Runs a function.");
+                            const mutator = (Blockly.icons && Blockly.icons.MutatorIcon) ? new Blockly.icons.MutatorIcon(['ser_func_arg'], this) : new Blockly.Mutator(['ser_func_arg']);
+                            if (this.setMutator) this.setMutator(mutator); else this.addIcon(mutator);
+                            this.argCount_ = 0;
+                        },
+                        updateShape_: function() {
+                            for (let i = 1; i <= this.argCount_; i++) {
+                                if (!this.getInput('ARG' + i)) {
+                                    this.appendValueInput('ARG' + i)
+                                        .setCheck(null)
+                                        .appendField("with arg");
+                                }
+                            }
+                            let i = this.argCount_ + 1;
+                            while (this.getInput('ARG' + i)) {
+                                this.removeInput('ARG' + i);
+                                i++;
+                            }
+                        },
+                        mutationToDom: Blockly.Blocks['ser_func_def'].mutationToDom,
+                        domToMutation: Blockly.Blocks['ser_func_def'].domToMutation,
+                        decompose: Blockly.Blocks['ser_func_def'].decompose,
+                        compose: Blockly.Blocks['ser_func_def'].compose,
+                        saveExtraState: Blockly.Blocks['ser_func_def'].saveExtraState,
+                        loadExtraState: Blockly.Blocks['ser_func_def'].loadExtraState
+                    };
+
+                    serGenerator.forBlock['ser_func_run'] = function(block, generator) {
+                        const name = block.getFieldValue('NAME');
+                        let code = `run ${name}`;
+                        if (block.argCount_ > 0) {
+                            code += ` with`;
+                            for (let i = 1; i <= block.argCount_; i++) {
+                                const arg = generator.valueToCode(block, 'ARG' + i, serGenerator.ORDER_ATOMIC) || '...';
+                                code += ` ${arg}`;
+                            }
+                        }
+                        return code + `\n`;
                     };
 
                     // Value Blocks (Literals)
@@ -544,6 +862,60 @@ public static class VisualEditor
 
                     serGenerator.forBlock['ser_bool_value'] = function(block) {
                         return [block.getFieldValue('VALUE'), serGenerator.ORDER_ATOMIC];
+                    };
+
+                    Blockly.Blocks['ser_interpolate'] = {
+                        init: function() {
+                            this.appendValueInput("VALUE")
+                                .setCheck(["Variable", "String", "Number"])
+                                .appendField("{")
+                                .appendField("}");
+                            this.setOutput(true, "String");
+                            this.setColour(160);
+                        }
+                    };
+
+                    serGenerator.forBlock['ser_interpolate'] = function(block, generator) {
+                        const val = generator.valueToCode(block, 'VALUE', serGenerator.ORDER_ATOMIC) || '$var';
+                        return ["{" + val + "}", serGenerator.ORDER_ATOMIC];
+                    };
+
+                    Blockly.Blocks['ser_math'] = {
+                        init: function() {
+                            this.appendValueInput("A").setCheck("Number");
+                            this.appendDummyInput().appendField(new Blockly.FieldDropdown([["+", "+"], ["-", "-"], ["*", "*"], ["/", "/"], ["%", "%"]]), "OP");
+                            this.appendValueInput("B").setCheck("Number");
+                            this.setOutput(true, "Number");
+                            this.setColour(230);
+                            this.setInputsInline(true);
+                        }
+                    };
+
+                    serGenerator.forBlock['ser_math'] = function(block, generator) {
+                        const a = generator.valueToCode(block, 'A', serGenerator.ORDER_ATOMIC) || '0';
+                        const op = block.getFieldValue('OP');
+                        const b = generator.valueToCode(block, 'B', serGenerator.ORDER_ATOMIC) || '0';
+                        return [`${a} ${op} ${b}`, serGenerator.ORDER_ATOMIC];
+                    };
+
+                    Blockly.Blocks['ser_property'] = {
+                        init: function() {
+                            this.appendValueInput("OBJECT")
+                                .setCheck(["Player", "Variable", "Collection", "String"])
+                                .appendField("property");
+                            this.appendDummyInput()
+                                .appendField("->")
+                                .appendField(new Blockly.FieldTextInput("name"), "PROP");
+                            this.setOutput(true, null);
+                            this.setColour(160);
+                            this.setInputsInline(true);
+                        }
+                    };
+
+                    serGenerator.forBlock['ser_property'] = function(block, generator) {
+                        const obj = generator.valueToCode(block, 'OBJECT', serGenerator.ORDER_ATOMIC) || '...';
+                        const prop = block.getFieldValue('PROP');
+                        return [`${obj} -> ${prop}`, serGenerator.ORDER_ATOMIC];
                     };
 
                     // Define Flags
@@ -764,12 +1136,15 @@ public static class VisualEditor
                     Blockly.Blocks['ser_var_assign'] = {
                         init: function() {
                             this.appendDummyInput()
-                                .appendField("Variable:")
+                                .appendField(new Blockly.FieldDropdown([
+                                    ["local", "local"], ["global", "global"], ["ephm", "ephm"]
+                                ]), "SCOPE")
                                 .appendField(new Blockly.FieldDropdown([
                                     ["$", "$"], ["@", "@"], ["*", "*"], ["&", "&"]
                                 ]), "PREFIX")
                                 .appendField(new Blockly.FieldTextInput("myVar"), "VAR")
-                                .appendField(new Blockly.FieldTextInput("Value"), "VALUE");
+                                .appendField("=");
+                            this.appendValueInput("VALUE");
                             this.setInputsInline(true);
                             this.setPreviousStatement(true, null);
                             this.setNextStatement(true, null);
@@ -798,7 +1173,8 @@ public static class VisualEditor
                             method.Arguments.forEach((arg, index) => {
                                 let val = null;
                                 if (block.getField(arg.Name)) {
-                                    val = block.getFieldValue(arg.Name); if (arg.HasDefault && val == arg.DefaultString) val = null;
+                                    val = block.getFieldValue(arg.Name); 
+                                    if (arg.HasDefault && val == arg.DefaultString && !arg.IsRequired) val = null;
                                 } else {
                                     val = generator.valueToCode(block, arg.Name, serGenerator.ORDER_ATOMIC);
                                 }
@@ -815,7 +1191,7 @@ public static class VisualEditor
                                 let val;
                                 if (block.getField(arg.Name)) {
                                     val = block.getFieldValue(arg.Name); 
-                                    if (arg.HasDefault && val == arg.DefaultString) val = null;
+                                    if (arg.HasDefault && val == arg.DefaultString && !arg.IsRequired) val = null;
                                     
                                     if (!arg.IsRequired && arg.HasDefault && index < lastProvidedIndex && (val === "" || val === null || val === arg.DefaultString)) {
                                          val = "_";
@@ -847,7 +1223,8 @@ public static class VisualEditor
                                 method.Arguments.forEach((arg, index) => {
                                     let val = null;
                                     if (block.getField(arg.Name)) {
-                                        val = block.getFieldValue(arg.Name); if (arg.HasDefault && val == arg.DefaultString) val = null;
+                                        val = block.getFieldValue(arg.Name); 
+                                        if (arg.HasDefault && val == arg.DefaultString && !arg.IsRequired) val = null;
                                     } else {
                                         val = generator.valueToCode(block, arg.Name, serGenerator.ORDER_ATOMIC);
                                     }
@@ -860,7 +1237,7 @@ public static class VisualEditor
                                     let val;
                                     if (block.getField(arg.Name)) {
                                         val = block.getFieldValue(arg.Name);
-                                        if (arg.HasDefault && val == arg.DefaultString) val = null;
+                                        if (arg.HasDefault && val == arg.DefaultString && !arg.IsRequired) val = null;
                                         if (!arg.IsRequired && arg.HasDefault && index < lastProvidedIndex && (val === "" || val === null || val === arg.DefaultString)) {
                                              val = "_";
                                         } else {
@@ -895,14 +1272,31 @@ public static class VisualEditor
                     };
 
                     serGenerator.forBlock['ser_var_assign'] = function(block, generator) {
+                        const scope = block.getFieldValue('SCOPE');
                         const prefix = block.getFieldValue('PREFIX');
                         const name = block.getFieldValue('VAR');
-                        const value = block.getFieldValue('VALUE');
-                        return `Variable: ${prefix}${name} ${value}\n`;
+                        const value = generator.valueToCode(block, 'VALUE', serGenerator.ORDER_ATOMIC) || '...';
+                        
+                        let code = "";
+                        if (scope !== "local") code += scope + " ";
+                        return code + `${prefix}${name} = ${value}\n`;
                     };
 
                     // --- 3. INITIALIZE WORKSPACE ---
                     
+                    // Add Wildcard block
+                    Blockly.Blocks['ser_wildcard'] = {
+                        init: function() {
+                            this.appendDummyInput().appendField("* (Wildcard)");
+                            this.setOutput(true, ["String", "Player", "Collection"]);
+                            this.setColour(160);
+                            this.setTooltip("Targets ALL of something.");
+                        }
+                    };
+                    serGenerator.forBlock['ser_wildcard'] = function(block) {
+                        return ["*", serGenerator.ORDER_ATOMIC];
+                    };
+
                     // Group methods by subgroup for toolbox
                     const methodCategories = [];
                     const categoryMap = {};
@@ -939,6 +1333,7 @@ public static class VisualEditor
                             {
                                 "kind": "category", "name": "Control", "colour": "120",
                                 "contents": [
+                                    { "kind": "block", "type": "ser_comment" },
                                     { "kind": "block", "type": "ser_wait" },
                                     { "kind": "block", "type": "ser_wait_until" },
                                     { "kind": "block", "type": "controls_if" },
@@ -954,25 +1349,47 @@ public static class VisualEditor
                                         "type": "ser_over",
                                         "extraState": { "hasVar": true }
                                     },
+                                    { "kind": "block", "type": "ser_while" },
+                                    {
+                                        "kind": "block",
+                                        "type": "ser_while",
+                                        "extraState": { "hasIter": true }
+                                    },
+                                    { "kind": "block", "type": "ser_forever" },
+                                    {
+                                        "kind": "block",
+                                        "type": "ser_forever",
+                                        "extraState": { "hasIter": true }
+                                    },
                                     { "kind": "block", "type": "ser_comparison" },
-                                    { "kind": "block", "type": "ser_logic" },
-                                    { "kind": "block", "type": "ser_not" }
+                                    { "kind": "block", "type": "ser_logic" }
+                                ]
+                            },
+                            {
+                                "kind": "category", "name": "Functions", "colour": "290",
+                                "contents": [
+                                    { "kind": "block", "type": "ser_func_def" },
+                                    { "kind": "block", "type": "ser_func_run" }
                                 ]
                             },
                             {
                                 "kind": "category", "name": "Values", "colour": "160",
                                 "contents": [
                                     { "kind": "block", "type": "ser_text_value" },
+                                    { "kind": "block", "type": "ser_interpolate" },
                                     { "kind": "block", "type": "ser_number_value" },
-                                    { "kind": "block", "type": "ser_bool_value" }
+                                    { "kind": "block", "type": "ser_bool_value" },
+                                    { "kind": "block", "type": "ser_math" }
                                 ]
                             },
                             {
                                 "kind": "category", "name": "Variables", "colour": "160",
                                 "contents": [
                                     { "kind": "block", "type": "ser_var_assign" },
+                                    { "kind": "block", "type": "ser_property" },
                                     { "kind": "block", "type": "ser_player_var" },
-                                    { "kind": "block", "type": "ser_custom_var" }
+                                    { "kind": "block", "type": "ser_custom_var" },
+                                    { "kind": "block", "type": "ser_wildcard" }
                                 ]
                             }
                         ]
@@ -1058,5 +1475,48 @@ public static class VisualEditor
             """;
         
         File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "SER Visual Editor.html"), file);
+        CreateSerMethodInfo();
+    }
+
+    private static void CreateSerMethodInfo()
+    {
+        var methods = MethodIndex.GetMethods().ToDictionary(m => m.Name, object (m) => new
+        {
+            syntax = $"{m.Name} " + string.Join(" ", m.ExpectedArguments.Select(a =>
+            {
+                var name = a.Name.Replace(" ", "_");
+
+                name = a switch
+                {
+                    PlayersArgument or PlayerArgument => $"@{name}",
+                    TextArgument { AllowsSpaces: true } => $"\"{name}\"",
+                    _ => name
+                };
+                if (a.ConsumesRemainingValues) name += "...";
+                if (!a.MustBeProvided) name += "?";
+                
+                return name;
+            })),
+            description = m.Description,
+            additionalDescription = (m as IAdditionalDescription)?.AdditionalDescription,
+            requiredFramework = (m as IDependOnFramework)?.DependsOn.ToString(),
+            returns = (m as IReturningMethod)?.Returns.ToString(),
+            arguments = m.ExpectedArguments.Select(a => new
+            {
+                name = a.Name,
+                mustBeProvided = a.MustBeProvided,
+                type = a.InputDescription,
+                description = a.Description,
+                defaultValue = a.DefaultValue?.StringRep ?? a.DefaultValue?.Value?.ToString(),
+                consumesRemainingValues = a.ConsumesRemainingValues
+            }),
+            errors = (m as ICanError)?.ErrorReasons ?? []
+        });
+
+        var truthTable = new { methods };
+        var json = JsonConvert.SerializeObject(truthTable, Formatting.Indented);
+        var content = $"export const SER_TRUTH_TABLE = {json};";
+
+        File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "ser_method_info.js"), content);
     }
 }

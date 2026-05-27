@@ -10,6 +10,8 @@ public class TextArgument(string name, bool allowsSpaces = true) : Argument(name
     public override string InputDescription => allowsSpaces
         ? "Any text e.g. \"Hello, World!\""
         : "Text with no spaces e.g. \"someValue\" or someValue (quotes are not required)";
+    
+    public bool AllowsSpaces => allowsSpaces;
 
     [UsedImplicitly]
     public DynamicTryGet<string> GetConvertSolution(BaseToken token)

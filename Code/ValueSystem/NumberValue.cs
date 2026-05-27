@@ -26,7 +26,8 @@ public class NumberValue(decimal value) : LiteralValue<decimal>(value), IValueWi
     private class Prop<T>(Func<NumberValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<NumberValue, T>(handler, description) where T : Value;
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= new()
     {
         ["abs"] = new Prop<NumberValue>(n => Math.Abs(n.Value), "Absolute value of the number"),
         ["round"] = new Prop<NumberValue>(n => Math.Round(n.Value), "Rounded value of the number"),

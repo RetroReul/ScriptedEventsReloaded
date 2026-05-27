@@ -40,11 +40,7 @@ public class ReferenceValue(object? value) : Value, IValueWithDynamicProperties
     }
 
     public Dictionary<string, IValueWithProperties.PropInfo> Properties => 
-        ReferencePropertyRegistry.GetProperties(ReferenceType)
-            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase)
-            .Append(new KeyValuePair<string, IValueWithProperties.PropInfo>("valType", 
-                new IValueWithProperties.PropInfo<ReferenceValue, EnumValue<ValueType>>(_ => ValueType.Reference, "The type of the value")))
-            .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.OrdinalIgnoreCase);
+        ReferencePropertyRegistry.GetProperties(ReferenceType);
 }
 
 [UsedImplicitly]

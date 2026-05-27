@@ -24,6 +24,8 @@ public class ValueExpressionContext : AdditionalContext
     private readonly BaseToken _initial;
     private readonly IValueToken? _initialValueToken;
     private Handler? _handler;
+    
+    private bool _ran = false;
 
     /// <summary>
     ///     Used to unify method calls, math expressions and property access into a single context that returns a value.
@@ -98,13 +100,23 @@ public class ValueExpressionContext : AdditionalContext
     /// </summary>
     public IEnumerator<float> Run()
     {
+        _ran = true;
         if (_handler is null) yield break;
         var coro = _handler.Run();
         while (coro.MoveNext()) yield return coro.Current;
     }
 
+    /// <summary>
+    ///     REMEMBER TO CALL RUN() FIRST!
+    /// </summary>
     public TryGet<Value> GetValue()
     {
+        if (!_ran)
+        {
+            Log.Warn("value expression was not ran yet");
+            Run().MoveNext();
+        }
+        
         return _handler?.GetReturnValue()
                ?? _initialValueToken?.Value()
                ?? throw new AndrzejFuckedUpException();

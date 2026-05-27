@@ -26,7 +26,8 @@ public class BoolValue(bool value) : LiteralValue<bool>(value), IValueWithProper
     private class Prop<T>(Func<BoolValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<BoolValue, T>(handler, description) where T : Value;
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= new()
     {
         ["not"] = new Prop<BoolValue>(b => !b.Value, "Inverted boolean value"),
         ["asNumber"] = new Prop<NumberValue>(b => b.Value ? 1m : 0m, "Converts boolean to number (1 for true, 0 for false)"),

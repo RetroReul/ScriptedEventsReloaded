@@ -91,7 +91,8 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
     private class Prop<T>(Func<TextValue, T> handler, string? description)
         : IValueWithProperties.PropInfo<TextValue, T>(handler, description) where T : Value;
 
-    public Dictionary<string, IValueWithProperties.PropInfo> Properties { get; } = new()
+    private static Dictionary<string, IValueWithProperties.PropInfo>? _properties;
+    public Dictionary<string, IValueWithProperties.PropInfo> Properties => _properties ??= new()
     {
         ["length"] = new Prop<NumberValue>(t => t.Value.Length, "Amount of characters in the text"),
         ["upper"] = new Prop<StaticTextValue>(t => t.Value.ToUpper(), "Upper case of the text"),

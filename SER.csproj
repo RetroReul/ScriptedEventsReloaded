@@ -165,7 +165,7 @@
 
 // --- Helpers ---
 // Using a local function for repeated reflection logic
-bool TryInvoke(Assembly asm, string typeName, string methodName, object?[]? args = null, bool mandatory = false)
+bool TryInvoke(Assembly asm, string typeName, string methodName, object?[]? args = null, bool mandatory = true)
 {
     try
     {
@@ -253,7 +253,7 @@ try
     // 5. Systems Initialization (Optional/Silent failure)
     TryInvoke(assembly, "SER.Code.EventSystem.EventHandler", "Initialize");
     TryInvoke(assembly, "SER.Code.FlagSystem.Flags.Flag", "RegisterFlags", [null]);
-    TryInvoke(assembly, "SER.Code.VisualEditorSystem.VisualEditor", "CreateFile");
+    TryInvoke(assembly, "SER.Code.Builders.Builder", "CreateFiles");
 
     return true;
 }
