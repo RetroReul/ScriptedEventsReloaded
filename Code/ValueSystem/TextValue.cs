@@ -21,8 +21,10 @@ public abstract class TextValue : LiteralValue<string>, IValueWithProperties
     /// </summary>
     /// <param name="text">the text itself</param>
     /// <param name="script">script context used to parse formatting, use null when formatting is not applicable</param>
-    protected TextValue(string text, Script? script) : 
-        base(script is null ? text.Replace("<br>", "\n") : () => ParseValue(text.Replace("<br>", "\n"), script))
+    protected TextValue(string text, Script? script) : base(
+        script is null 
+            ? text.Replace("<br>", "\n") 
+            : () => ParseValue(text, script).Replace("<br>", "\n"))
     {
     }
     
