@@ -16,8 +16,13 @@ public record Option(string Value, string Description = "")
         return new(name ?? typeof(T).Name.LowerFirst(), $"Returns a {typeof(T).AccurateName} enum value");
     }
     
-    public static Option Reference<T>(string value) where T : class
+    public static Option Reference<T>(string value)
     {
         return new(value, $"Returns a reference to {typeof(T).AccurateName} object");
+    }
+    
+    public static Option ReferenceCollection<T>(string value)
+    {
+        return new(value, $"Returns a collection of references to {typeof(T).AccurateName} objects");
     }
 }
