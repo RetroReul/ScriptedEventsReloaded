@@ -18,7 +18,7 @@ public class EnumValue<T> : TextValue where T : struct, Enum
                 $"{typeof(T).AccurateName} uses flags = Flags enums are not supported with EnumValue");
         }
         
-        HelpInfoStorage.UsedEnums.Add(typeof(T));
+        EnumIndex.AddEnum(typeof(T));
     }
 
     [UsedImplicitly]

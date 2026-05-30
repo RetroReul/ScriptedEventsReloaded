@@ -30,7 +30,7 @@ public class EnumArgument<TEnum> : EnumArgument where TEnum : struct, Enum
 
     public EnumArgument(string name) : base(name)
     {
-        HelpInfoStorage.UsedEnums.Add(typeof(TEnum));
+        EnumIndex.AddEnum(typeof(TEnum));
 
         if (typeof(TEnum).IsDefined(typeof(FlagsAttribute), false))
         {

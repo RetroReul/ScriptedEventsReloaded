@@ -12,7 +12,7 @@ public record Option(string Value, string Description = "")
 
     public static Option Enum<T>(string? name = null) where T : struct, Enum
     {
-        HelpInfoStorage.UsedEnums.Add(typeof(T));
+        EnumIndex.AddEnum(typeof(T));
         return new(name ?? typeof(T).Name.LowerFirst(), $"Returns a {typeof(T).AccurateName} enum value");
     }
     

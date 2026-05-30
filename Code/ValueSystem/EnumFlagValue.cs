@@ -10,7 +10,7 @@ public class EnumFlagValue<T> : CollectionValue<EnumValue<T>> where T : struct, 
 
     public EnumFlagValue(T value) : base(value.GetFlags())
     {
-        HelpInfoStorage.UsedEnums.Add(typeof(T));
+        EnumIndex.AddEnum(typeof(T));
     }
 
     [UsedImplicitly]
