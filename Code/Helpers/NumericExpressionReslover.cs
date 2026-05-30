@@ -68,17 +68,30 @@ public static class NumericExpressionReslover
         );
     }
 
-    public readonly struct CompiledExpression(
-        Expression expression, 
-        Dictionary<string, DynamicTryGet<object>> parameters,
-        string rawRepresentation
-    )
+    public class CompiledExpression
     {
+        private readonly Expression expression;
+        private readonly Dictionary<string, DynamicTryGet<object>> parameters;
+        private readonly string rawRepresentation;
+        private readonly Dictionary<string, object> values = [];
+
+        public CompiledExpression(
+            Expression expression, 
+            Dictionary<string, DynamicTryGet<object>> parameters,
+            string rawRepresentation
+        )
+        {
+            this.expression = expression;
+            this.parameters = parameters;
+            this.rawRepresentation = rawRepresentation;
+            this.expression.Parameters = values;
+        }
+
         public TryGet<object> Evaluate()
         {
             try
             {
-                Dictionary<string, object> values = [];
+                values.Clear();
                 foreach (var (key, dtg) in parameters)
                 {
                     if (dtg.Invoke().HasErrored(out var err, out var value))
@@ -89,8 +102,6 @@ public static class NumericExpressionReslover
                     values[key] = value;
                 }
 
-                expression.Parameters = values;
-                
                 return expression.Evaluate();
             }
             catch (Exception)

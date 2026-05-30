@@ -1,6 +1,6 @@
-﻿using SER.Code.ContextSystem.Extensions;
-using SER.Code.ContextSystem.Interfaces;
+﻿using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
+using SER.Code.Exceptions;
 using SER.Code.Helpers;
 
 namespace SER.Code.ContextSystem.BaseContexts;
@@ -47,13 +47,23 @@ public abstract class LoopContext : StatementContext, IExtendableStatement, IKey
 
     protected IEnumerator<float> RunChildren()
     {
-        foreach (var coro in Children
-                     .TakeWhile(_ => !ReceivedBreak)
-                     .Select(child => child.ExecuteBaseContext()))
+        foreach (var child in Children)
         {
-            while (coro.MoveNext())
+            if (ReceivedBreak) break;
+            
+            switch (child)
             {
-                yield return coro.Current;
+                case StandardContext standardContext:
+                    standardContext.Run();
+                    break;
+
+                case YieldingContext yieldingContext:
+                    var coro = yieldingContext.Run();
+                    while (coro.MoveNext()) yield return coro.Current;
+                    break;
+
+                default:
+                    throw new AndrzejFuckedUpException("context is not standard nor yielding");
             }
 
             if (!ReceivedContinue) continue;

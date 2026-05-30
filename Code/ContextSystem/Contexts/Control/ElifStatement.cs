@@ -1,5 +1,4 @@
 ﻿using SER.Code.ContextSystem.BaseContexts;
-using SER.Code.ContextSystem.Extensions;
 using SER.Code.ContextSystem.Interfaces;
 using SER.Code.ContextSystem.Structures;
 using SER.Code.Exceptions;
@@ -84,12 +83,21 @@ public class ElifStatement : StatementContext, IStatementExtender, IExtendableSt
             yield break;
         }
 
-        foreach (var coro in Children
-                     .Select(child => child.ExecuteBaseContext()))
+        foreach (var child in Children)
         {
-            while (coro.MoveNext())
+            switch (child)
             {
-                yield return coro.Current;
+                case StandardContext standardContext:
+                    standardContext.Run();
+                    break;
+
+                case YieldingContext yieldingContext:
+                    var coro = yieldingContext.Run();
+                    while (coro.MoveNext()) yield return coro.Current;
+                    break;
+
+                default:
+                    throw new AndrzejFuckedUpException("context is not standard nor yielding");
             }
         }
     }

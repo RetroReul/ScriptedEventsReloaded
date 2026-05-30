@@ -3,7 +3,6 @@ using LabApi.Features.Wrappers;
 using SER.Code.ContextSystem;
 using SER.Code.ContextSystem.BaseContexts;
 using SER.Code.ContextSystem.Contexts;
-using SER.Code.ContextSystem.Extensions;
 using SER.Code.Exceptions;
 using SER.Code.Extensions;
 using SER.Code.FlagSystem;
@@ -74,8 +73,8 @@ public class Script
     private static readonly HashSet<Script> RunningScriptsList = [];
     public static Script[] RunningScripts => RunningScriptsList.ToArray();
     
-    private readonly HashSet<Variable> _localVariables = [];
-    public Variable[] LocalVariables => _localVariables.ToArray();
+    private readonly Dictionary<(char, string), Variable> _localVariables = [];
+    public Variable[] LocalVariables => _localVariables.Values.ToArray();
 
     private readonly Dictionary<string, FuncStatement> _definedFunctions = [];
     public ReadOnlyDictionary<string, FuncStatement> DefinedFunctions => new(_definedFunctions);
@@ -199,14 +198,14 @@ public class Script
     /// This is NOT to be used in an actual server.
     /// </summary>
     [UsedImplicitly]
-    public static string? VerifyForExternalTool(string content)
+    public static string? VerifyForExternalTool(string content, string? name = null)
     {
         if (MethodIndex.NameToMethodIndex.Count is 0)
         {
             MethodIndex.Initialize();
         }
         
-        return CreateAnonymous("test", content).Compile().HasErrored(out var err) ? err : null;
+        return CreateAnonymous(name ?? "test", content).Compile().HasErrored(out var err) ? err : null;
     }
 
     /// <summary>
@@ -366,12 +365,22 @@ public class Script
             }
         }
         
-        foreach (var context in _contexts)
+        for (var i = 0; i < _contexts.Length; i++)
         {
-            var handle = context.ExecuteBaseContext();
-            while (handle.MoveNext())
+            var context = _contexts[i];
+            if (context is StandardContext sc)
             {
-                yield return handle.Current;
+                sc.Run();
+                continue;
+            }
+
+            if (context is YieldingContext yc)
+            {
+                var handle = yc.Run();
+                while (handle.MoveNext())
+                {
+                    yield return handle.Current;
+                }
             }
         }
 
@@ -380,23 +389,28 @@ public class Script
 
     public TryGet<T> TryGetVariable<T>(VariableToken varToken) where T : Variable
     {
-        var variable = _localVariables
-            .FirstOrDefault(var => var.Name == varToken.Name && varToken.ValueType.CanHold(var.BaseValue.Type));
-        if (variable is not null)
+        if (_localVariables.TryGetValue((varToken.Prefix, varToken.Name), out var variable))
         {
-            if (variable is not T casted)
+            if (varToken.ValueType.CanHold(variable.BaseValue.Type))
             {
-                return $"Variable '{varToken.RawRepr}' is not a {Variable.GetFriendlyName(typeof(T))}, but a {variable.FriendlyName} instead.";
-            }
+                if (variable is not T casted)
+                {
+                    return $"Variable '{varToken.RawRepr}' is not a {Variable.GetFriendlyName(typeof(T))}, but a {variable.FriendlyName} instead.";
+                }
 
-            return casted;
+                return casted;
+            }
         }
         
-        var global = VariableIndex.GlobalVariables.
-            FirstOrDefault(var => var.Name == varToken.Name && varToken.ValueType.CanHold(var.BaseValue.Type));
-        if (global is T globalT)
+        if (VariableIndex.TryGetGlobalVariable(varToken.Prefix, varToken.Name, out var global))
         {
-            return globalT;
+            if (varToken.ValueType.CanHold(global.BaseValue.Type))
+            {
+                if (global is T globalT)
+                {
+                    return globalT;
+                }
+            }
         }
 
         return $"Variable {varToken.RawRepr} doesn't exist or is inaccessible.";
@@ -404,11 +418,14 @@ public class Script
 
     public void AddLocalVariable(Variable variable)
     {
-        Variable.AssertNoVariableNameCollisions(variable, VariableIndex.GlobalVariables);
-        
+        if (!_localVariables.ContainsKey((variable.Prefix, variable.Name)) && VariableIndex.TryGetGlobalVariable(variable.Prefix, variable.Name, out _))
+        {
+            throw new CustomScriptRuntimeError(
+                $"Tried to create a local variable '{variable}', but there already exists a global variable with the same name.");
+        }
+
         Log.Debug($"Added variable {variable.Name} to script {Name}");
-        RemoveLocalVariable(variable);
-        _localVariables.Add(variable);
+        _localVariables[(variable.Prefix, variable.Name)] = variable;
     }
 
     public void AddLocalVariables(params Variable[] variables)
@@ -421,6 +438,6 @@ public class Script
 
     public void RemoveLocalVariable(IVariableRepr variable)
     {
-        _localVariables.RemoveWhere(lv => Variable.AreSyntacticallySame(lv, variable));
+        _localVariables.Remove((variable.Prefix, variable.Name));
     }
 }

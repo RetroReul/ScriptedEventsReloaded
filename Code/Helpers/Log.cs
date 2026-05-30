@@ -7,11 +7,10 @@ namespace SER.Code.Helpers;
 
 public static class Log
 {
+    [Conditional("DEBUG")]
     public static void Debug<T>(T obj)
     {
-        #if DEBUG
-            Logger.Raw($"Debug: {obj!.ToString()}", ConsoleColor.Gray);
-        #endif
+        Logger.Raw($"Debug: {obj!.ToString()}", ConsoleColor.Gray);
     }
 
     public static void Signal(object o)
@@ -55,11 +54,10 @@ public static class Log
         Logger.Raw($"[Script '{scrName}'] [Compile error] [Line {line}] {msg}", ConsoleColor.Red);
     }
     
+    [Conditional("DEBUG")]
     public static void D(string msg)
     {
-        #if DEBUG
-            Logger.Raw(msg, ConsoleColor.Cyan);
-        #endif
+        Logger.Raw(msg, ConsoleColor.Cyan);
     }
     
     public static string GetStackTrace()

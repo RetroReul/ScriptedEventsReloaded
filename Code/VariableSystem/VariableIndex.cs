@@ -11,11 +11,12 @@ namespace SER.Code.VariableSystem;
 
 public static class VariableIndex
 {
-    public static readonly List<Variable> GlobalVariables = [];
+    private static readonly Dictionary<(char, string), Variable> _globalVariables = [];
+    public static IEnumerable<Variable> GlobalVariables => _globalVariables.Values;
 
     public static void Initialize()
     {
-        GlobalVariables.Clear();
+        _globalVariables.Clear();
         
         List<PredefinedPlayerVariable> allApiVariables =
         [
@@ -81,7 +82,10 @@ public static class VariableIndex
                 })
                 .OfType<PredefinedPlayerVariable>());
         
-        GlobalVariables.AddRange(allApiVariables);
+        foreach (var v in allApiVariables)
+        {
+            _globalVariables[(v.Prefix, v.Name)] = v;
+        }
     }
 
     public static void AddGlobalVariable(Variable variable)
@@ -91,14 +95,16 @@ public static class VariableIndex
             Variable.AssertNoVariableNameCollisions(variable, runningScript.LocalVariables);
         }
         
-        RemoveGlobalVariable(variable);
-        GlobalVariables.Add(variable);
+        _globalVariables[(variable.Prefix, variable.Name)] = variable;
     }
 
     public static void RemoveGlobalVariable(IVariableRepr variable)
     {
-        GlobalVariables.RemoveAll(
-            existingVar => Variable.AreSyntacticallySame(existingVar, variable)
-        );
+        _globalVariables.Remove((variable.Prefix, variable.Name));
+    }
+
+    public static bool TryGetGlobalVariable(char prefix, string name, out Variable variable)
+    {
+        return _globalVariables.TryGetValue((prefix, name), out variable);
     }
 }

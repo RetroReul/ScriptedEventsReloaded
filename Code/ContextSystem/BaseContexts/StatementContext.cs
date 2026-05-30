@@ -1,5 +1,4 @@
-﻿using SER.Code.ContextSystem.Extensions;
-using SER.Code.ContextSystem.Structures;
+﻿using SER.Code.ContextSystem.Structures;
 using SER.Code.Helpers;
 using SER.Code.VariableSystem.Bases;
 
@@ -24,20 +23,32 @@ public abstract class StatementContext : YieldingContext
 
     protected IEnumerator<float> RunChildren(Func<bool>? endCond = null)
     {
-        foreach (var coro in Children.Select(c => c.ExecuteBaseContext()))
+        foreach (var child in Children)
         {
             if (endCond?.Invoke() is true) goto leave;
-            while (coro.MoveNext())
+
+            switch (child)
             {
-                if (endCond?.Invoke() is true) goto leave;
-                yield return coro.Current;
+                case StandardContext sc:
+                    sc.Run();
+                    continue;
+                case YieldingContext yc:
+                {
+                    var coro = yc.Run();
+                    while (coro.MoveNext())
+                    {
+                        if (endCond?.Invoke() is true) goto leave;
+                        yield return coro.Current;
+                    }
+                    break;
+                }
             }
         }
 
         leave:
         WipeEphemeralVariables();
     }
-
+    
     public void MarkVariableAsEphemeral(Variable variable)
     {
         EphemeralVariables.Add(variable);

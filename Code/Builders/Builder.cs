@@ -19,7 +19,7 @@ public static class Builder
     {
         if (MethodIndex.GetMethods().Length == 0) MethodIndex.Initialize();
         if (Flag.FlagInfos.Count == 0) Flag.RegisterFlags();
-        if (VariableIndex.GlobalVariables.Count == 0) VariableIndex.Initialize();
+        if (!VariableIndex.GlobalVariables.Any()) VariableIndex.Initialize();
         try
         {
             SER.Code.EventSystem.EventHandler.Initialize();
