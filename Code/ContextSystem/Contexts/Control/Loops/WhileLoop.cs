@@ -15,7 +15,7 @@ public class WhileLoop : LoopContextWithSingleIterationVariable<NumberValue>
     private readonly List<BaseToken> _condition = [];
 
     private readonly Result _rs = "Cannot create 'while' loop.";
-    private NumericExpressionReslover.CompiledExpression _expression;
+    private NumericExpressionReslover.CompiledExpression _expression = null!;
     public override string KeywordName => "while";
 
     public override string Description =>

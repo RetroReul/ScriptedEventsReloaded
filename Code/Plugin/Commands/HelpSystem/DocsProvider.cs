@@ -194,7 +194,7 @@ public static class DocsProvider
             return true;
         }
         
-        var enumType = HelpInfoStorage.UsedEnums.FirstOrDefault(e => e.Name.ToLowerInvariant() == arg);
+        var enumType = EnumIndex.GetAllEnums().FirstOrDefault(e => e.Name.ToLowerInvariant() == arg);
         if (enumType is not null)
         {
             response = GetEnum(enumType);
@@ -484,8 +484,8 @@ public static class DocsProvider
             To get the list of all available values that an enum has, just use 'serhelp <enumName>'.
             For example: 'serhelp RoomName' will get you a list of all available room names to use in methods.
             
-            Here are all enums used in SER:
-            {string.Join("\n", HelpInfoStorage.UsedEnums.Select(e => $"> {e.Name}"))}
+            Here are some of the enums used in SER:
+            {string.Join("\n", EnumIndex.GetNonReflectedEnums().Select(e => $"> {e.Name}"))}
             """;
     }
 
@@ -565,8 +565,7 @@ public static class DocsProvider
     public static string GetVariableList()
     {
         var allVars = VariableIndex.GlobalVariables
-            .Where(var => var is PredefinedPlayerVariable)
-            .Cast<PredefinedPlayerVariable>()
+            .OfType<PredefinedPlayerVariable>()
             .ToList();
         
         var sb = new StringBuilder($"Hi! There are {allVars.Count} variables available for your use!\n");
@@ -702,7 +701,8 @@ public static class DocsProvider
         }
 
         // Special case for collection of references: show both collection and element props
-        if (val is CollectionValue collection && collection.StoredTypes != null && typeof(ReferenceValue).IsAssignableFrom(collection.StoredTypes))
+        if (val is CollectionValue { StoredTypes: not null } collection 
+            && typeof(ReferenceValue).IsAssignableFrom(collection.StoredTypes))
         {
             var elementProps = Value.GetPropertiesOfValue(collection.StoredTypes);
             if (elementProps != null)
@@ -787,7 +787,7 @@ public static class DocsProvider
 
         return
             $$"""
-            Properties allow you to access internal data of SER values and C# objects using the '->' operator.
+            Properties allow you to access internal data of SER values and SCP:SL objects using the '->' operator.
 
             Syntax:
             $hp = @player -> hp               - Accesses 'hp' property of a player variable.
@@ -839,9 +839,10 @@ public static class DocsProvider
             - {{durationPropsList}}
 
             
-            --- Registered C# objects ---
+            --- Registered SCP:SL objects ---
             Use 'serhelp properties <objectName>' to see available properties for these types:
             {{registeredTypes}}
+            and many more not listed here!
             """;
     }
 
@@ -854,24 +855,7 @@ public static class DocsProvider
 
     public static bool GetPropertiesForType(string typeName, out string response)
     {
-        string? assemblyFilter = null;
-        if (typeName.Contains("@"))
-        {
-            var parts = typeName.Split('@');
-            typeName = parts[0];
-            assemblyFilter = parts[1];
-
-            // Map friendly names to actual assembly names
-            assemblyFilter = assemblyFilter.ToLowerInvariant() switch
-            {
-                "basegame" => "Assembly-CSharp",
-                "labapi" => "LabApi",
-                "nwlib" => "NorthwoodLib",
-                _ => assemblyFilter
-            };
-        }
-
-        IReadOnlyDictionary<string, IValueWithProperties.PropInfo>? props = null;
+        IReadOnlyDictionary<string, IValueWithProperties.PropInfo>? props;
 
         if (typeName.Equals("player", StringComparison.OrdinalIgnoreCase))
         {
@@ -958,7 +942,7 @@ public static class DocsProvider
             }
         }
         
-        response = RenderProperties(typeName, props, null);
+        response = RenderProperties(typeName, props);
         return true;
     }
 }

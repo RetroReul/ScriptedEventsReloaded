@@ -56,7 +56,7 @@ We use `Result` and `TryGet<T>` (found in `Result.cs` and `TryGet.cs`) instead o
 The engine uses specific prefixes to identify variable types:
 *   `$` : **Literal Variables** (strings, numbers).
 *   `@` : **Player Variables** (references to in-game players).
-*   `*` : **Reference Variables** (wrappers for C# objects).
+*   `*` : **Reference Variables** (wrappers for SCP:SL objects).
 *   `&` : **Collection Variables** (lists/groups of data).
 
 ---
@@ -81,15 +81,15 @@ The engine uses specific prefixes to identify variable types:
 
 ## 5. The Value System: Under the Hood
 
-The Value System is a complex hierarchy designed to bridge script variables with C# objects. It is divided into two primary categories.
+The Value System is a complex hierarchy designed to bridge script variables with SCP:SL objects. It is divided into two primary categories.
 
 ### 5.1. LiteralValue (Constants and Data)
 Classes inheriting from `LiteralValue<T>` represent "static" data that can be parsed directly from a script.
 *   Examples: `NumberValue`, `TextValue`, `BoolValue`, `ColorValue`.
 *   **Dynamic Discovery**: `LiteralValue.Subclasses` automatically finds all classes inheriting from `LiteralValue` that implement `IValueWithProperties`. This allows literals to have built-in properties (e.g., `$count -> abs`).
 
-### 5.2. ReferenceValue (C# Object Wrappers)
-`ReferenceValue` wraps external C# objects (like `Player` or `Item`).
+### 5.2. ReferenceValue (SCP:SL Object Wrappers)
+`ReferenceValue` wraps external SCP:SL objects (like `Player` or `Item`).
 *   **Property Registry**: Properties for these values are defined in `ReferencePropertyRegistry.cs`.
 *   **Arrow Operator (`->`)**: Accessing properties on any value is done via the arrow operator.
     *   Example: `@player -> health` or `*item -> type`.

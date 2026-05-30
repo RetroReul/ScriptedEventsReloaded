@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
-using SER.Code.Helpers;
 
 namespace SER.Code.Helpers
 {
@@ -45,10 +41,9 @@ namespace SER.Code.Helpers
                             case "see":
                             case "seealso":
                                 var cref = child.Attributes?["cref"]?.Value;
-                                if (!string.IsNullOrEmpty(cref))
-                                    sb.Append(FormatCref(cref));
-                                else
-                                    sb.Append(ProcessXmlNodes(child));
+                                sb.Append(!string.IsNullOrEmpty(cref) 
+                                    ? FormatCref(cref!) 
+                                    : ProcessXmlNodes(child));
                                 break;
                             case "paramref":
                             case "typeparamref":
@@ -155,8 +150,12 @@ namespace SER.Code.Helpers
                 _ => '?'
             };
 
-            string fullName = member is Type t ? t.FullName : $"{member.DeclaringType.FullName}.{member.Name}";
-            // XML doc names use dots for nested types too, and have specific formats for methods, but for properties/fields it's usually just TypeFullName.MemberName
+            string fullName = member is Type { FullName: {} name } 
+                ? name 
+                : $"{member.DeclaringType?.FullName}.{member.Name}";
+            
+            // XML doc names use dots for nested types too, and have specific formats for methods,
+            // but for properties/fields it's usually just TypeFullName.MemberName
             return $"{prefix}:{fullName.Replace('+', '.')}";
         }
     }

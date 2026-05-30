@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using InventorySystem.Items.Firearms;
 using LabApi.Features.Wrappers;

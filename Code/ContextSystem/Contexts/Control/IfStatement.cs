@@ -14,7 +14,7 @@ public class IfStatement : StatementContext, IExtendableStatement, IKeywordConte
 {
     private readonly List<BaseToken> _condition = [];
 
-    private NumericExpressionReslover.CompiledExpression _expression;
+    private NumericExpressionReslover.CompiledExpression _expression = null!;
 
     public override string FriendlyName => "'if' statement";
 
