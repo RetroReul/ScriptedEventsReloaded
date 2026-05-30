@@ -41,8 +41,8 @@ namespace SER.Code.Helpers
                             case "see":
                             case "seealso":
                                 var cref = child.Attributes?["cref"]?.Value;
-                                sb.Append(!string.IsNullOrEmpty(cref) 
-                                    ? FormatCref(cref!) 
+                                sb.Append(cref is { Length: > 0}
+                                    ? FormatCref(cref) 
                                     : ProcessXmlNodes(child));
                                 break;
                             case "paramref":
