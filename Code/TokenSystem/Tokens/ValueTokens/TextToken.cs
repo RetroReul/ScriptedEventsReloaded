@@ -7,8 +7,8 @@ namespace SER.Code.TokenSystem.Tokens.ValueTokens;
 
 public class TextToken : LiteralValueToken<TextValue>
 {
-    public bool IsDynamic => Value is DynamicTextValue;
-    
+    public override bool IsConstant => Value is StaticTextValue;
+
     protected override IParseResult InternalParse(Script scr)
     {
         if (Slice is not CollectionSlice { Type: CollectionBrackets.Quotes })

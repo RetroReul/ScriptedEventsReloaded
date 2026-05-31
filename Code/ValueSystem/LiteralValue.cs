@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using SER.Code.Exceptions;
+using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
 using SER.Code.ValueSystem.PropertySystem;
 
@@ -37,8 +38,8 @@ public abstract class LiteralValue : Value
     public abstract string StringRep { get; }
 
     [field: AllowNull, MaybeNull]
-    public object Value => field 
-                           ?? _valueGetter?.Invoke() 
+    public object Value => field
+                           ?? _valueGetter?.Invoke()
                            ?? throw new AndrzejFuckedUpException("literal value is null");
 
     public override bool Equals(Value? other) => other is LiteralValue otherP && Value.Equals(otherP.Value);
@@ -67,16 +68,8 @@ public abstract class LiteralValue : Value
     public new static string FriendlyName => "literal value";
 }
 
-public abstract class LiteralValue<T>: LiteralValue
+public abstract class LiteralValue<T>(object value) : LiteralValue(value)
     where T : notnull
 {
-    protected LiteralValue(object value) : base(value)
-    {
-    }
-
-    protected LiteralValue(Func<object> valueGetter) : base(valueGetter)
-    {
-    }
-
     public new T Value => (T)base.Value;
 }

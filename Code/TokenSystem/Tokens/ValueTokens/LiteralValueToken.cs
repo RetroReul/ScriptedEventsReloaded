@@ -23,5 +23,5 @@ public abstract class LiteralValueToken<T> : BaseToken, IValueToken
     
     TryGet<Value> IValueToken.Value() => Value;
     public TypeOfValue PossibleValues => new TypeOfValue<T>();
-    public bool IsConstant => true;
+    public virtual bool IsConstant => true;
 }

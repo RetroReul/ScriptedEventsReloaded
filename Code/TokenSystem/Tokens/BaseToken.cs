@@ -55,7 +55,7 @@ public class BaseToken
         // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (this is TextToken textToken)
         {
-            if (textToken.IsDynamic)
+            if (!textToken.IsConstant)
             {
                 return new(() => textToken.Value);
             }
