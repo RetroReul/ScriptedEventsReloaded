@@ -62,4 +62,14 @@ public class CountdownMethod : SynchronousMethod
             yield return Timing.WaitForSeconds(1);
         }
     }
+
+    internal static void Clear()
+    {
+        foreach (var coroutine in Coroutines.Values.ToArray())
+        {
+            coroutine.Kill();
+        }
+
+        Coroutines.Clear();
+    }
 }

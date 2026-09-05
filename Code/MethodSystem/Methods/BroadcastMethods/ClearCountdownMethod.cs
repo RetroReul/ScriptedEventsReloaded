@@ -20,8 +20,11 @@ public class ClearCountdownMethod : SynchronousMethod
         var players = Args.GetPlayers("players");
         players.ForEach(plr =>
         {
-            if (CountdownMethod.Coroutines.TryGetValue(plr, out var coroutine)) 
+            if (CountdownMethod.Coroutines.TryGetValue(plr, out var coroutine))
+            {
                 coroutine.Kill();
+                CountdownMethod.Coroutines.Remove(plr);
+            }
         });
     }
 }

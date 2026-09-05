@@ -11,6 +11,7 @@ using SER.Code.FlagSystem;
 using SER.Code.FlagSystem.Flags;
 using SER.Code.Helpers;
 using SER.Code.MethodSystem;
+using SER.Code.MethodSystem.Methods.BroadcastMethods;
 using SER.Code.MethodSystem.Methods.CustomRoleMethods.Structures;
 using SER.Code.MethodSystem.Methods.DamageRuleMethods;
 using SER.Code.MethodSystem.Methods.PlayerDataMethods;
@@ -128,6 +129,7 @@ public class MainPlugin : Exiled.API.Features.Plugin<Config>
         }
         
         Instance = this;
+        _scriptsLoadedDuringMapGeneration = false;
         
         if (Config.SendLogo)
         {
@@ -156,12 +158,17 @@ public class MainPlugin : Exiled.API.Features.Plugin<Config>
     {
         Script.StopAll();
         BetterCoros.KillAll();
+        CountdownMethod.Clear();
         BlackoutMethod.Clear();
         FileSystem.FileSystem.Shutdown();
         ScriptFlagHandler.Clear();
         EventHandler.Clear();
         CommandEvents.Clear();
         FrameworkBridge.Clear();
+        SetPlayerDataMethod.PlayerData.Clear();
+        TeslaRuleHandler.ResetAll();
+        DamageRuleHandler.ResetAll();
+        CRole.ResetAll();
 
         foreach (var coroutine in _pendingContributorBadges.ToArray())
         {
@@ -186,6 +193,7 @@ public class MainPlugin : Exiled.API.Features.Plugin<Config>
     {
         Script.StopAll();
         BetterCoros.KillAll();
+        CountdownMethod.Clear();
         BlackoutMethod.Clear();
         ScriptFlagHandler.Clear();
         SetPlayerDataMethod.PlayerData.Clear();
