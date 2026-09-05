@@ -19,6 +19,8 @@ public static class Contexter
 {
     private static List<string>? _suggestions = null;
 
+    internal static void InvalidateSuggestionCache() => _suggestions = null;
+
     public static TryGet<RunnableContext[]> ContextLines(Line[] lines, Script scr)
     {
         Stack<StatementContext> statementStack = [];

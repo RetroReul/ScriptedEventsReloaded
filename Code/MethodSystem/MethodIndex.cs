@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using LabApi.Features.Console;
+using SER.Code.ContextSystem;
 using SER.Code.Extensions;
 using SER.Code.Helpers;
 using SER.Code.Helpers.ResultSystem;
@@ -91,6 +92,8 @@ public static class MethodIndex
                 NameToMethodIndex.Add(alias, method);
             }
         }
+
+        Contexter.InvalidateSuggestionCache();
         
         // Used to create all arguments, so initializers can do outside work
         // for example, EnumArgument adds its enum type to serhelp command
