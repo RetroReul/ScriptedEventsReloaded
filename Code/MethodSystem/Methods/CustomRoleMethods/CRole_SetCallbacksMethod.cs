@@ -11,7 +11,8 @@ namespace SER.Code.MethodSystem.Methods.CustomRoleMethods;
 // ReSharper disable once InconsistentNaming
 public class CRole_SetCallbacksMethod : SynchronousMethod
 {
-    public override string Description => "Sets the callbacks for a provided custom role.";
+    public override string Description =>
+        "Sets the callbacks for a provided custom role. Calling it again from the same script replaces the previous callbacks.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -38,12 +39,12 @@ public class CRole_SetCallbacksMethod : SynchronousMethod
 
         if (Args.GetCallback("on spawning") is { } onSpawning)
         {
-            CRole.EventHandlers.AddOrInitListWithKey(CRole.CustomRoleEvent.Spawned, GetHandler(onSpawning));
+            CRole.AddOrReplaceHandler(CRole.CustomRoleEvent.Spawned, GetHandler(onSpawning));
         }
         
         if (Args.GetCallback("on removing") is { } onRemoving)
         {
-            CRole.EventHandlers.AddOrInitListWithKey(CRole.CustomRoleEvent.Removed, GetHandler(onRemoving));
+            CRole.AddOrReplaceHandler(CRole.CustomRoleEvent.Removed, GetHandler(onRemoving));
         }
 
         return;

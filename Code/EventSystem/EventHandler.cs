@@ -27,16 +27,21 @@ public static class EventHandler
     }
 
     private readonly record struct EventKey(EventSource Source, string Name);
+    private sealed record RegisteredEventAction(string HandlerId, Action<object?, Variable[]> Action);
+    private sealed record BoundEvent(EventKey Event, Action Unsubscribe);
 
     public sealed record EventVariableInfo(string Name, string Type, string? Description)
     {
         public string Display => $"{Name} ({Type})";
     }
 
-    private static readonly List<Action> UnsubscribeActions = [];
-    private static readonly Dictionary<EventKey, List<Action<object?, Variable[]>>> OnEventActions = [];
-    private static readonly Dictionary<(ScriptName Script, EventKey Event), Action<object?, Variable[]>> ScriptEventActions = [];
+    private static readonly List<BoundEvent> BoundEventSubscriptions = [];
+    private static readonly Dictionary<EventKey, List<RegisteredEventAction>> OnEventActions = [];
+    private static readonly Dictionary<(ScriptName Script, EventKey Event), RegisteredEventAction> ScriptEventActions = [];
+    private static readonly Dictionary<string, (EventKey Event, RegisteredEventAction Registration)> ExternalEventActions =
+        new(StringComparer.Ordinal);
     private static readonly HashSet<string> DisabledEvents = [];
+    private static readonly HashSet<string> LoggedEventVariableFailures = [];
     private static readonly Dictionary<string, string> UcrEventDescriptions = new(StringComparer.Ordinal)
     {
         ["Registering"] = "Runs before UCR registers a custom role. Use `IsAllowed false` to stop the registration.",
@@ -155,15 +160,36 @@ public static class EventHandler
         RegisteredHandlers.Clear();
         OnEventActions.Clear();
         ScriptEventActions.Clear();
-        foreach (var unsubscribeAction in UnsubscribeActions)
+        ExternalEventActions.Clear();
+        LoggedEventVariableFailures.Clear();
+
+        var subscriptionsStillBound = new List<BoundEvent>();
+        foreach (var subscription in BoundEventSubscriptions)
         {
-            unsubscribeAction();
+            try
+            {
+                subscription.Unsubscribe();
+            }
+            catch (Exception exception)
+            {
+                subscriptionsStillBound.Add(subscription);
+                Log.Error(
+                    $"SER could not disconnect its {subscription.Event.Source} event " +
+                    $"'{subscription.Event.Name}'. It will retry during the next reload.\n{exception}");
+            }
         }
-        UnsubscribeActions.Clear();
+
+        BoundEventSubscriptions.Clear();
+        BoundEventSubscriptions.AddRange(subscriptionsStillBound);
         DisabledEvents.Clear();
         BindedEvents.Clear();
         BindedPmerEvents.Clear();
         BindedUcrEvents.Clear();
+        foreach (var subscription in subscriptionsStillBound)
+        {
+            GetBoundEvents(subscription.Event.Source).Add(subscription.Event.Name);
+        }
+
         AvailablePmerEvents.Clear();
         AvailableUcrEvents.Clear();
     }
@@ -232,7 +258,7 @@ public static class EventHandler
             return error;
         }
         
-        var action = RunScriptOnEvent(scriptName, eventKey);
+        var action = new RegisteredEventAction(handlerId, RunScriptOnEvent(scriptName, eventKey));
         ScriptEventActions[(scriptName, eventKey)] = action;
         RegisteredHandlers.Add(handlerId);
         if (OnEventActions.TryGetValue(eventKey, out var actions))
@@ -272,33 +298,41 @@ public static class EventHandler
             }
         }
 
-        RegisteredHandlers.Remove($"'{scriptName}' script");
+        if (!ScriptEventActions.Keys.Any(key => key.Script == scriptName))
+        {
+            RegisteredHandlers.Remove($"'{scriptName}' script");
+        }
     }
     
     public static Result AddEventHandler(string evName, Action<EventArgs?, Variable[]> action, string handlerId)
-        => AddExternalEventHandler(evName, (eventArgs, variables) => action(eventArgs as EventArgs, variables), handlerId);
+        => AddExternalEventHandler(
+            evName,
+            (eventArgs, variables) => action(eventArgs as EventArgs, variables),
+            handlerId);
 
     private static Result AddExternalEventHandler(string evName, Action<object?, Variable[]> action, string handlerId)
     {
-        if (RegisteredHandlers.Contains(handlerId))
-        {
-            return $"{handlerId}' is already registered as an event handler!";
-        }
-        
         var eventKey = new EventKey(EventSource.LabApi, evName);
         if (BindEvent(eventKey).HasErrored(out var error))
         {
             return error;
         }
-        
+
+        if (ExternalEventActions.TryGetValue(handlerId, out var previous))
+        {
+            RemoveAction(previous.Event, previous.Registration);
+        }
+
+        var registration = new RegisteredEventAction(handlerId, action);
+        ExternalEventActions[handlerId] = (eventKey, registration);
         RegisteredHandlers.Add(handlerId);
         if (OnEventActions.TryGetValue(eventKey, out var actions))
         {
-            actions.Add(action);
+            actions.Add(registration);
         }
         else
         {
-            OnEventActions.Add(eventKey, [action]);
+            OnEventActions.Add(eventKey, [registration]);
         }
         
         return true;
@@ -325,27 +359,48 @@ public static class EventHandler
             };
         }
 
-        var boundEvents = eventKey.Source switch
+        var boundEvents = GetBoundEvents(eventKey.Source);
+        if (boundEvents.Contains(eventKey.Name))
         {
-            EventSource.ProjectMer => BindedPmerEvents,
-            EventSource.Ucr => BindedUcrEvents,
-            _ => BindedEvents
-        };
-        if (!boundEvents.Add(eventKey.Name))
-        {
-            // already binded
             return true;
         }
-        
-        var genericType = matchingEventInfo.EventHandlerType.GetGenericArguments().FirstOrDefault();
-        if (genericType is not null)
+
+        try
         {
-            BindArgumented(matchingEventInfo, genericType, eventKey);
+            var genericType = matchingEventInfo.EventHandlerType.GetGenericArguments().FirstOrDefault();
+            var unsubscribe = genericType is not null
+                ? BindArgumented(matchingEventInfo, genericType, eventKey)
+                : BindNonArgumented(matchingEventInfo, eventKey);
+            BoundEventSubscriptions.Add(new BoundEvent(eventKey, unsubscribe));
+            boundEvents.Add(eventKey.Name);
             return true;
         }
-        
-        BindNonArgumented(matchingEventInfo, eventKey);
-        return true;
+        catch (Exception exception)
+        {
+            var cause = exception.GetBaseException();
+            return $"Event '{eventKey.Name}' could not be connected: {cause.GetType().AccurateName}: {cause.Message}";
+        }
+    }
+
+    private static HashSet<string> GetBoundEvents(EventSource source) => source switch
+    {
+        EventSource.ProjectMer => BindedPmerEvents,
+        EventSource.Ucr => BindedUcrEvents,
+        _ => BindedEvents
+    };
+
+    private static void RemoveAction(EventKey eventKey, RegisteredEventAction registration)
+    {
+        if (!OnEventActions.TryGetValue(eventKey, out var actions))
+        {
+            return;
+        }
+
+        actions.Remove(registration);
+        if (actions.Count == 0)
+        {
+            OnEventActions.Remove(eventKey);
+        }
     }
 
     private static Action<object?, Variable[]> RunScriptOnEvent(ScriptName scrName, EventKey eventKey)
@@ -380,7 +435,7 @@ public static class EventHandler
         }
     }
 
-    private static void BindNonArgumented(EventInfo eventInfo, EventKey eventKey)
+    private static Action BindNonArgumented(EventInfo eventInfo, EventKey eventKey)
     {
         // Create delegate that captures the event source and name
         var call = Expression.Call(
@@ -389,13 +444,16 @@ public static class EventHandler
         var handler = Expression.Lambda(eventInfo.EventHandlerType!, call).Compile();
 
         // Subscribe
-        eventInfo.GetAddMethod(false).Invoke(null!, [handler]);
+        var addMethod = eventInfo.GetAddMethod(false)
+                        ?? throw new InvalidOperationException($"Event '{eventKey.Name}' has no add method.");
+        var removeMethod = eventInfo.GetRemoveMethod(false)
+                           ?? throw new InvalidOperationException($"Event '{eventKey.Name}' has no remove method.");
+        addMethod.Invoke(null!, [handler]);
 
-        // Store unsubscribe action
-        UnsubscribeActions.Add(() => eventInfo.GetRemoveMethod(false).Invoke(null!, [handler]));
+        return () => removeMethod.Invoke(null!, [handler]);
     }
 
-    private static void BindArgumented(EventInfo eventInfo, Type generic, EventKey eventKey)
+    private static Action BindArgumented(EventInfo eventInfo, Type generic, EventKey eventKey)
     {
         // We'll build (T ev) => OnArgumentedEvent(eventKey, ev)
         var evParam = Expression.Parameter(generic, "ev");
@@ -413,10 +471,13 @@ public static class EventHandler
         var handler = lambda.Compile();
 
         // Subscribe
-        eventInfo.GetAddMethod(false).Invoke(null!, [handler]);
+        var addMethod = eventInfo.GetAddMethod(false)
+                        ?? throw new InvalidOperationException($"Event '{eventKey.Name}' has no add method.");
+        var removeMethod = eventInfo.GetRemoveMethod(false)
+                           ?? throw new InvalidOperationException($"Event '{eventKey.Name}' has no remove method.");
+        addMethod.Invoke(null!, [handler]);
 
-        // Store unsubscribe action
-        UnsubscribeActions.Add(() => eventInfo.GetRemoveMethod(false).Invoke(null!, [handler]));
+        return () => removeMethod.Invoke(null!, [handler]);
     }
 
     private static void OnNonArgumentedEvent(EventKey eventKey)
@@ -429,7 +490,7 @@ public static class EventHandler
         if (!OnEventActions.TryGetValue(eventKey, out var actions))
             return;
 
-        foreach (var action in actions.ToArray()) action(null, []);
+        InvokeActions(eventKey, actions, null, []);
     }
 
     private static void OnArgumentedEvent<T>(EventKey eventKey, T ev)
@@ -445,43 +506,103 @@ public static class EventHandler
             return;
         }
 
-        var variables = GetVariablesFromEvent(ev!, eventKey.Source);
         if (!OnEventActions.TryGetValue(eventKey, out var actions))
         {
             Log.Debug($"Event '{eventKey.Name}' has no scripts connected.");
             return;
         }
 
-        foreach (var action in actions.ToArray()) action(ev, variables);
+        var variables = GetVariablesFromEvent(ev!, eventKey.Source, eventKey.Name);
+        InvokeActions(eventKey, actions, ev, variables);
+    }
+
+    private static void InvokeActions(
+        EventKey eventKey,
+        IEnumerable<RegisteredEventAction> actions,
+        object? eventArgs,
+        Variable[] variables)
+    {
+        foreach (var registration in actions.ToArray())
+        {
+            try
+            {
+                registration.Action(eventArgs, variables);
+            }
+            catch (Exception exception)
+            {
+                var errorId = Guid.NewGuid().ToString("N")[..8];
+                Log.Error(
+                    $"SER event handler error [{errorId}] in {registration.HandlerId} while handling " +
+                    $"{eventKey.Source} event '{eventKey.Name}'. Other SER handlers will continue.\n{exception}");
+            }
+        }
     }
     
     public static Variable[] GetVariablesFromEvent(EventArgs ev)
         => GetVariablesFromEvent(ev, EventSource.LabApi);
 
-    private static Variable[] GetVariablesFromEvent(object ev, EventSource source)
+    private static Variable[] GetVariablesFromEvent(
+        object ev,
+        EventSource source,
+        string? eventName = null)
     {
-        List<(object, string, Type)> properties = (
-            from prop in ev.GetType().GetProperties()
-            where !Attribute.IsDefined(prop, typeof(ObsoleteAttribute))
-            let value = prop.GetValue(ev)
-            let type = prop.PropertyType
-            select (
-                value is null ? null : source switch
+        List<Variable> variables = [];
+        foreach (var property in ev.GetType().GetProperties())
+        {
+            if (Attribute.IsDefined(property, typeof(ObsoleteAttribute))
+                || property.GetIndexParameters().Length > 0)
+            {
+                continue;
+            }
+
+            try
+            {
+                var value = property.GetValue(ev);
+                if (value is null)
+                {
+                    continue;
+                }
+
+                var wrappedValue = source switch
                 {
                     EventSource.ProjectMer => MerBridge.WrapEventValue(value),
                     EventSource.Ucr => UcrBridge.WrapEventValue(value),
                     _ => value
-                },
-                prop.Name,
-                source switch
-                {
-                    EventSource.ProjectMer => MerBridge.GetEventValueType(type),
-                    EventSource.Ucr => UcrBridge.GetEventValueType(type),
-                    _ => type
-                })
-        ).ToList();
+                };
+                variables.Add(Variable.Create(
+                    $"ev{property.Name[0].ToString().ToUpper()}{property.Name[1..]}",
+                    Value.Parse(wrappedValue)));
+            }
+            catch (Exception exception)
+            {
+                LogEventVariableFailure(source, eventName, property, exception);
+            }
+        }
 
-        return InternalGetVariablesFromProperties(properties);
+        return variables.ToArray();
+    }
+
+    private static void LogEventVariableFailure(
+        EventSource source,
+        string? eventName,
+        PropertyInfo property,
+        Exception exception)
+    {
+        var eventLabel = eventName is null
+            ? property.DeclaringType?.AccurateName ?? "unknown event"
+            : $"{source} event '{eventName}'";
+        var failureKey = $"{source}:{eventName}:{property.DeclaringType?.FullName}:{property.Name}";
+        if (!LoggedEventVariableFailures.Add(failureKey))
+        {
+            return;
+        }
+
+        var cause = exception.GetBaseException();
+        var errorId = Guid.NewGuid().ToString("N")[..8];
+        Log.Error(
+            $"SER could not create @ev{property.Name} for {eventLabel} [{errorId}]. " +
+            "Scripts will run without this variable. This message will only be shown once until reload.\n" +
+            cause);
     }
     
     public static List<string> GetMimicVariables(EventInfo ev)
@@ -544,21 +665,6 @@ public static class EventHandler
                 : null;
     }
 
-    private static Variable[] InternalGetVariablesFromProperties(List<(object value, string name, Type type)> properties)
-    {
-        List<Variable> variables = [];
-        foreach (var (value, name, _) in properties)
-        {
-            if (value is null) continue;
-            variables.Add(Variable.Create(
-                $"ev{name[0].ToString().ToUpper()}{name[1..]}", 
-                Value.Parse(value))
-            );
-        }
-
-        return variables.ToArray();
-    }
-    
     private static List<EventVariableInfo> GetMimicVariablesForEventHelp(
         List<(Type type, string name, string? description)> properties)
     {

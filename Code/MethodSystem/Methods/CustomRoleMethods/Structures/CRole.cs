@@ -75,6 +75,14 @@ public class CRole
 
     public static void ResetAll()
     {
+        foreach (var player in Player.ReadyList
+                     .Where(player => LifeIdAssignedRoles.ContainsKey(player.LifeId))
+                     .ToArray())
+        {
+            player.CustomInfo = "";
+            player.InfoArea = (PlayerInfoArea)~0;
+        }
+
         LifeIdAssignedRoles.Clear();
         LastRoles.Clear();
         PlayersInProcessOfReceivingCRole.Clear();
@@ -92,6 +100,18 @@ public class CRole
         }
 
         RegisteredRoles[role.Id] = role;
+    }
+
+    public static void AddOrReplaceHandler(CustomRoleEvent @event, Handler handler)
+    {
+        if (!EventHandlers.TryGetValue(@event, out var handlers))
+        {
+            EventHandlers[@event] = [handler];
+            return;
+        }
+
+        handlers.RemoveWhere(existing => existing.Id == handler.Id);
+        handlers.Add(handler);
     }
 
     public static void Unregister(CRole role)
@@ -195,7 +215,17 @@ public class CRole
         {
             if (handler.ForRoles is not { } roles || roles.Contains(Id))
             {
-                handler.Action(plr, this);
+                try
+                {
+                    handler.Action(plr, this);
+                }
+                catch (Exception exception)
+                {
+                    var errorId = Guid.NewGuid().ToString("N")[..8];
+                    Log.Error(
+                        $"SER custom-role handler error [{errorId}] in {handler.Id} while handling " +
+                        $"{@event} for role '{Id}'. Other handlers will continue.\n{exception}");
+                }
             }
         }
     }

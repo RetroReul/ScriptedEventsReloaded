@@ -82,7 +82,7 @@ public class OnCRoleFlag : Flag, IMajorBehaviorFlag
             ForRoles = ForRoles
         };
 
-        CRole.EventHandlers.AddOrInitListWithKey(Event, handler);
+        CRole.AddOrReplaceHandler(Event, handler);
     }
 
     public override void Unbind()

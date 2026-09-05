@@ -15,10 +15,9 @@ public class AddEventHandlerMethod : SynchronousMethod, IAdditionalDescription
     public override string Description => "Adds an event handler to the provided event.";
 
     public string AdditionalDescription =>
-        "This is a simplified version of the event handling system. " +
-        "It is recommended to use the '!-- OnEvent' flag when possible. " +
-        "Additionally, the variables are NOT going to be added via the arguments defined on the function, " +
-        "but automatically (like in the '!-- OnEvent' flag) - this is due to a technical limitation.";
+        "Runs the function when the event happens. Prefer the '!-- OnEvent' flag when you can. " +
+        "Event variables such as @evPlayer are added automatically, so do not list them as function arguments. " +
+        "Calling AddEventHandler again for the same function replaces its previous event handler.";
 
     public override Argument[] ExpectedArguments { get; } =
     [
@@ -31,11 +30,6 @@ public class AddEventHandlerMethod : SynchronousMethod, IAdditionalDescription
         var eventName = Args.GetEvent("event name");
         var callback = Args.GetCallback("callback");
         var handlerId = $"function '{callback.Name}' in script '{Script.Name}'";
-        
-        if (EventHandler.RegisteredHandlers.Contains(handlerId))
-        {
-            return;
-        }
         
         var result = EventHandler.AddEventHandler(
             eventName, 

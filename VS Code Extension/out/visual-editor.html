@@ -11155,7 +11155,7 @@ const SER_TRUTH_TABLE = {
       "description": "Adds an event handler to the provided event.",
       "subgroup": "Event",
       "essential": false,
-      "additionalDescription": "This is a simplified version of the event handling system. It is recommended to use the '!-- OnEvent' flag when possible. Additionally, the variables are NOT going to be added via the arguments defined on the function, but automatically (like in the '!-- OnEvent' flag) - this is due to a technical limitation.",
+      "additionalDescription": "Runs the function when the event happens. Prefer the '!-- OnEvent' flag when you can. Event variables such as @evPlayer are added automatically, so do not list them as function arguments. Calling AddEventHandler again for the same function replaces its previous event handler.",
       "requiredFramework": null,
       "returns": null,
       "arguments": [
@@ -13723,7 +13723,7 @@ const SER_TRUTH_TABLE = {
     },
     "CRole.SetCallbacks": {
       "syntax": "CRole.SetCallbacks custom_role on_spawning? on_removing?",
-      "description": "Sets the callbacks for a provided custom role.",
+      "description": "Sets the callbacks for a provided custom role. Calling it again from the same script replaces the previous callbacks.",
       "subgroup": "CustomRole",
       "essential": false,
       "additionalDescription": null,

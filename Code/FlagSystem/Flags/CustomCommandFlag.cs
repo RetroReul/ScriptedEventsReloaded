@@ -234,6 +234,13 @@ public class CustomCommandFlag : Flag, IMajorBehaviorFlag
         
         foreach (var console in Command.ConsoleTypes.GetFlags())
         {
+            // A previous unregister attempt may have failed. In that case the
+            // command is still connected and must not be registered twice.
+            if (_boundConsoles.Contains(console))
+            {
+                continue;
+            }
+
             try
             {
                 switch (console)
@@ -291,13 +298,15 @@ public class CustomCommandFlag : Flag, IMajorBehaviorFlag
             }
             catch (Exception exception)
             {
-                Log.Error($"Failed to unregister command '{Command.Command}' from {console} console: " +
-                          exception.Message);
+                var errorId = Guid.NewGuid().ToString("N")[..8];
+                Log.Error(
+                    $"SER could not remove custom command '{Command.Command}' from the {console} console " +
+                    $"[{errorId}]. The previous command remains active; SER will retry during the next reload.\n" +
+                    exception);
+                continue;
             }
-            finally
-            {
-                _boundConsoles.Remove(console);
-            }
+
+            _boundConsoles.Remove(console);
         }
     }
 

@@ -179,6 +179,11 @@ public static class ExampleHandler
             return ("An explicit IsAllowed decision was not stored by the script.", examples.Keys.ToArray());
         }
 
+        if (VerifyEventRegistrationContracts() is { } eventRegistrationError)
+        {
+            return (eventRegistrationError, examples.Keys.ToArray());
+        }
+
         const string multiSectionContent =
             "# file comment\n\n" +
             "!-- OnEvent RoundStarted\n" +
@@ -272,6 +277,11 @@ public static class ExampleHandler
             return ("Custom-role spawn chance boundary handling is incorrect.", examples.Keys.ToArray());
         }
 
+        if (VerifyCustomRoleHandlerReplacement() is { } customRoleHandlerError)
+        {
+            return (customRoleHandlerError, examples.Keys.ToArray());
+        }
+
         const string invalidSecondSection =
             "!-- Function\n" +
             "Print \"valid\"\n" +
@@ -289,6 +299,129 @@ public static class ExampleHandler
         }
 
         return (null, examples.Keys.ToArray());
+    }
+
+    private static string? VerifyEventRegistrationContracts()
+    {
+        // Build validation runs before runtime event registration. Do not disturb
+        // a live server if an external tool calls Verify after the plugin starts.
+        if (EventSystem.EventHandler.BindedEvents.Count > 0
+            || EventSystem.EventHandler.BindedPmerEvents.Count > 0
+            || EventSystem.EventHandler.BindedUcrEvents.Count > 0)
+        {
+            return null;
+        }
+
+        var previousAvailableEvents = EventSystem.EventHandler.AvailableEvents;
+        var healthyEvent = typeof(EventRegistrationAuditSource).GetEvent(
+            nameof(EventRegistrationAuditSource.Raised))!;
+        var brokenEvent = typeof(EventRegistrationAuditSource).GetEvent(
+            nameof(EventRegistrationAuditSource.Rejected))!;
+        EventSystem.EventHandler.AvailableEvents = [healthyEvent, brokenEvent];
+
+        var callCount = 0;
+        try
+        {
+            const string handlerId = "event registration audit";
+            if (EventSystem.EventHandler.AddEventHandler(
+                    healthyEvent.Name,
+                    (_, _) => callCount++,
+                    handlerId).HasErrored(out var registrationError))
+            {
+                return $"The event registration audit could not bind: {registrationError}";
+            }
+
+            EventRegistrationAuditSource.Raise();
+            if (callCount != 1)
+            {
+                return "A newly registered event handler did not run exactly once.";
+            }
+
+            if (EventSystem.EventHandler.AddEventHandler(
+                    healthyEvent.Name,
+                    (_, _) => callCount += 10,
+                    handlerId).HasErrored(out registrationError))
+            {
+                return $"The event registration audit could not replace a handler: {registrationError}";
+            }
+
+            EventRegistrationAuditSource.Raise();
+            if (callCount != 11)
+            {
+                return "Registering the same callback twice left its stale event handler active.";
+            }
+
+            if (!EventSystem.EventHandler.AddEventHandler(
+                    brokenEvent.Name,
+                    (_, _) => { },
+                    "rejected event registration audit").HasErrored()
+                || EventSystem.EventHandler.BindedEvents.Contains(brokenEvent.Name))
+            {
+                return "A failed event subscription was marked as active.";
+            }
+
+            EventSystem.EventHandler.Clear();
+            EventRegistrationAuditSource.Raise();
+            return callCount == 11
+                ? null
+                : "Clearing event handlers left a callback subscribed.";
+        }
+        finally
+        {
+            EventSystem.EventHandler.Clear();
+            EventSystem.EventHandler.AvailableEvents = previousAvailableEvents;
+        }
+    }
+
+    private static string? VerifyCustomRoleHandlerReplacement()
+    {
+        if (CRole.EventHandlers.Count > 0)
+        {
+            return null;
+        }
+
+        const string handlerId = "custom-role handler audit";
+        var first = new CRole.Handler
+        {
+            Id = handlerId,
+            Action = (_, _) => { }
+        };
+        var replacement = new CRole.Handler
+        {
+            Id = handlerId,
+            Action = (_, _) => { }
+        };
+
+        try
+        {
+            CRole.AddOrReplaceHandler(CRole.CustomRoleEvent.Spawned, first);
+            CRole.AddOrReplaceHandler(CRole.CustomRoleEvent.Spawned, replacement);
+            return CRole.EventHandlers[CRole.CustomRoleEvent.Spawned] is { Count: 1 } handlers
+                   && ReferenceEquals(handlers.Single(), replacement)
+                ? null
+                : "Registering a custom-role callback twice left its stale handler active.";
+        }
+        finally
+        {
+            CRole.EventHandlers.Clear();
+        }
+    }
+
+    public sealed class EventRegistrationAuditArgs : EventArgs
+    {
+    }
+
+    public static class EventRegistrationAuditSource
+    {
+        public static event Action<EventRegistrationAuditArgs>? Raised;
+
+        public static event Action<EventRegistrationAuditArgs> Rejected
+        {
+            add => throw new InvalidOperationException("Expected event subscription failure.");
+            remove { }
+        }
+
+        public static void Raise() => Raised?.Invoke(new EventRegistrationAuditArgs());
     }
 
     private static string? VerifyMethodContracts()
