@@ -61,6 +61,23 @@ Hint @all 4s "A coin has appeared in your inventory."
 Methods use exact capitalization. `GiveItem` works; `giveitem` and `GIVEITEM`
 do not. Text containing spaces belongs in double quotes.
 
+Ammo uses the same player-first order. This gives every player 30 rounds of
+9 mm ammo:
+
+```ser
+GiveAmmo @all Ammo9x19 30
+```
+
+Use `GetAmmo` when the script needs the current amount. `DestroyAmmo` removes
+rounds without dropping them, while `DropAmmo` leaves an ammo pickup in the
+world:
+
+```ser
+$ammo = GetAmmo @sender Ammo9x19
+DestroyAmmo @sender Ammo9x19 10
+DropAmmo @sender Ammo9x19 10
+```
+
 ## Build a tiny admin utility
 
 Create `classd.ser`:

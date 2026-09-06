@@ -9453,6 +9453,84 @@ const SER_TRUTH_TABLE = {
       ],
       "errors": []
     },
+    "DestroyAmmo": {
+      "syntax": "DestroyAmmo @players ammo_type amount?",
+      "description": "Removes ammo from players without dropping it.",
+      "subgroup": "Item",
+      "essential": false,
+      "additionalDescription": null,
+      "requiredFramework": null,
+      "returns": null,
+      "arguments": [
+        {
+          "name": "players",
+          "argumentKind": "PlayersArgument",
+          "mustBeProvided": true,
+          "type": "Player variable (e.g. @all, @classDPlayers)",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "@players",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        },
+        {
+          "name": "ammo type",
+          "argumentKind": "OptionsArgument",
+          "mustBeProvided": true,
+          "type": "One of the following options:\n > Ammo9x19\n > Ammo556x45\n > Ammo762x39\n > Ammo44cal\n > Ammo12gauge",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "ammo_type",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": [
+            {
+              "value": "Ammo9x19",
+              "description": ""
+            },
+            {
+              "value": "Ammo556x45",
+              "description": ""
+            },
+            {
+              "value": "Ammo762x39",
+              "description": ""
+            },
+            {
+              "value": "Ammo44cal",
+              "description": ""
+            },
+            {
+              "value": "Ammo12gauge",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "argumentKind": "IntArgument",
+          "mustBeProvided": false,
+          "type": "A whole number between 1 and 65535 (inclusive)",
+          "description": null,
+          "defaultValue": "1",
+          "consumesRemainingValues": false,
+          "syntax": "amount?",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        }
+      ],
+      "errors": []
+    },
     "DestroyItem": {
       "syntax": "DestroyItem @players item amount?",
       "description": "Destroys an item in players' inventory.",
@@ -9569,6 +9647,84 @@ const SER_TRUTH_TABLE = {
           "argumentKind": "IntArgument",
           "mustBeProvided": false,
           "type": "A whole number bigger or equal 1",
+          "description": null,
+          "defaultValue": "1",
+          "consumesRemainingValues": false,
+          "syntax": "amount?",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        }
+      ],
+      "errors": []
+    },
+    "DropAmmo": {
+      "syntax": "DropAmmo @players ammo_type amount?",
+      "description": "Drops ammo from players' inventories.",
+      "subgroup": "Item",
+      "essential": false,
+      "additionalDescription": null,
+      "requiredFramework": null,
+      "returns": null,
+      "arguments": [
+        {
+          "name": "players",
+          "argumentKind": "PlayersArgument",
+          "mustBeProvided": true,
+          "type": "Player variable (e.g. @all, @classDPlayers)",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "@players",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        },
+        {
+          "name": "ammo type",
+          "argumentKind": "OptionsArgument",
+          "mustBeProvided": true,
+          "type": "One of the following options:\n > Ammo9x19\n > Ammo556x45\n > Ammo762x39\n > Ammo44cal\n > Ammo12gauge",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "ammo_type",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": [
+            {
+              "value": "Ammo9x19",
+              "description": ""
+            },
+            {
+              "value": "Ammo556x45",
+              "description": ""
+            },
+            {
+              "value": "Ammo762x39",
+              "description": ""
+            },
+            {
+              "value": "Ammo44cal",
+              "description": ""
+            },
+            {
+              "value": "Ammo12gauge",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "argumentKind": "IntArgument",
+          "mustBeProvided": false,
+          "type": "A whole number between 1 and 65535 (inclusive)",
           "description": null,
           "defaultValue": "1",
           "consumesRemainingValues": false,
@@ -9876,6 +10032,147 @@ const SER_TRUTH_TABLE = {
             "Scp021J",
             "None"
           ],
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        }
+      ],
+      "errors": []
+    },
+    "GetAmmo": {
+      "syntax": "GetAmmo @player ammo_type",
+      "description": "Returns how much ammo a player has.",
+      "subgroup": "Item",
+      "essential": false,
+      "additionalDescription": null,
+      "requiredFramework": null,
+      "returns": "number value",
+      "arguments": [
+        {
+          "name": "player",
+          "argumentKind": "PlayerArgument",
+          "mustBeProvided": true,
+          "type": "Player value e.g. @player, with EXACTLY 1 player.",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "@player",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        },
+        {
+          "name": "ammo type",
+          "argumentKind": "OptionsArgument",
+          "mustBeProvided": true,
+          "type": "One of the following options:\n > Ammo9x19\n > Ammo556x45\n > Ammo762x39\n > Ammo44cal\n > Ammo12gauge",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "ammo_type",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": [
+            {
+              "value": "Ammo9x19",
+              "description": ""
+            },
+            {
+              "value": "Ammo556x45",
+              "description": ""
+            },
+            {
+              "value": "Ammo762x39",
+              "description": ""
+            },
+            {
+              "value": "Ammo44cal",
+              "description": ""
+            },
+            {
+              "value": "Ammo12gauge",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "errors": []
+    },
+    "GiveAmmo": {
+      "syntax": "GiveAmmo @players ammo_type amount?",
+      "description": "Gives ammo to players.",
+      "subgroup": "Item",
+      "essential": true,
+      "additionalDescription": null,
+      "requiredFramework": null,
+      "returns": null,
+      "arguments": [
+        {
+          "name": "players",
+          "argumentKind": "PlayersArgument",
+          "mustBeProvided": true,
+          "type": "Player variable (e.g. @all, @classDPlayers)",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "@players",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": null
+        },
+        {
+          "name": "ammo type",
+          "argumentKind": "OptionsArgument",
+          "mustBeProvided": true,
+          "type": "One of the following options:\n > Ammo9x19\n > Ammo556x45\n > Ammo762x39\n > Ammo44cal\n > Ammo12gauge",
+          "description": null,
+          "defaultValue": null,
+          "consumesRemainingValues": false,
+          "syntax": "ammo_type",
+          "enumValues": null,
+          "enumDescription": null,
+          "enumDescriptions": null,
+          "isEnumFlags": false,
+          "options": [
+            {
+              "value": "Ammo9x19",
+              "description": ""
+            },
+            {
+              "value": "Ammo556x45",
+              "description": ""
+            },
+            {
+              "value": "Ammo762x39",
+              "description": ""
+            },
+            {
+              "value": "Ammo44cal",
+              "description": ""
+            },
+            {
+              "value": "Ammo12gauge",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "argumentKind": "IntArgument",
+          "mustBeProvided": false,
+          "type": "A whole number between 1 and 65535 (inclusive)",
+          "description": null,
+          "defaultValue": "1",
+          "consumesRemainingValues": false,
+          "syntax": "amount?",
+          "enumValues": null,
           "enumDescription": null,
           "enumDescriptions": null,
           "isEnumFlags": false,
