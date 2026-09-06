@@ -6,6 +6,8 @@ using SER.Code.ArgumentSystem.BaseArguments;
 using SER.Code.Extensions;
 using SER.Code.MethodSystem.BaseMethods.Synchronous;
 using SER.Code.MethodSystem.Structures;
+using SER.Code.TokenSystem.Tokens;
+using SER.Code.TokenSystem.Tokens.VariableTokens;
 using SER.Code.ValueSystem;
 using UnityEngine;
 using Utils;
@@ -19,8 +21,8 @@ public class ParsePlayersMethod : ReturningMethod<PlayerValue>, IAdditionalDescr
 
     public string AdditionalDescription =>
         "Tries to parse using: " +
-        "nickname, display name, user group, user id, ip address, player id, team, role, room, zone," +
-        $"{nameof(Room)} reference, {nameof(Item)} reference, {nameof(ReferenceHub)} reference, " +
+        "player variable name, nickname, display name, user group, user id, ip address, player id, team, role, " +
+        $"room, zone, {nameof(Room)} reference, {nameof(Item)} reference, {nameof(ReferenceHub)} reference, " +
         $"{nameof(GameObject)} reference, {nameof(Transform)} reference.";
 
     public override Argument[] ExpectedArguments { get; } =
@@ -42,7 +44,16 @@ public class ParsePlayersMethod : ReturningMethod<PlayerValue>, IAdditionalDescr
             {
                 var stringRep = literalValue.StringRep;
 
-                if (Player.ReadyList.Where(p => 
+                if (BaseToken.TryParse<PlayerVariableToken>(stringRep, Script).WasSuccessful(out var token))
+                {
+                    if (token.ExactValue.WasSuccessful(out var playerValue))
+                    {
+                        ReturnValue = playerValue;
+                        return;
+                    }
+                }
+
+                if (Player.ReadyList.Where(p =>
                         p.Nickname == stringRep
                         || p.DisplayName == stringRep
                         || p.UserGroup?.Name == stringRep
@@ -53,7 +64,7 @@ public class ParsePlayersMethod : ReturningMethod<PlayerValue>, IAdditionalDescr
                     ReturnValue = players.ToPlayerValue();
                     return;
                 }
-                
+
                 var raParsing = RAUtils
                     .ProcessPlayerIdOrNamesList(new ArraySegment<string>([stringRep]), 0, out _);
                 if (raParsing.Any())
@@ -61,7 +72,7 @@ public class ParsePlayersMethod : ReturningMethod<PlayerValue>, IAdditionalDescr
                     ReturnValue = Player.Get(raParsing).ToPlayerValue();
                     return;
                 }
-                
+
                 if (EnumArgument<Team>.Convert(stringRep).WasSuccessful(out var team))
                 {
                     ReturnValue = Player.ReadyList.Where(p => p.Team == team).ToPlayerValue();

@@ -1,5 +1,4 @@
-﻿using System.Security;
-using LabApi.Features.Console;
+﻿using LabApi.Features.Console;
 using LabApi.Loader.Features.Paths;
 using SER.Code.Extensions;
 using SER.Code.Helpers;
